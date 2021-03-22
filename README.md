@@ -14,10 +14,9 @@
 
 ```xml
 <dependency>
-    <groupId>com.szyk.platform</groupId>
-    <artifactId>platform-starter-mybatis</artifactId>
-    <!-- 使用企业maven架构的情况下可以不指定版本号 -->
-    <version>4.0.0-SNAPSHOT</version>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
