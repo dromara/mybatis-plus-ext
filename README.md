@@ -2,24 +2,15 @@
 
 ​      微服务架构下，基于领域拆分的各个服务彼此之间的耦合度大大降低，进而以前的各种复杂的关联查询都会被解开，放在不同的服务中，因此sql的复杂度上，也大大的降低了，这种情况下，有采用JPA的，JPA有良好的书写体验，可以较少百分之九十的sql书写，改用简单的java代码即可实现，但是，JPA也有它的局限性，那就是某些特殊情况下的复杂查询，用JPA实现，非常的繁琐，不如xml的sql看起来更好理解，因此一款叫[Mybatis-Plus](https://mybatis.plus/) 框架应运而生，它把JPA的良好书写体验和复杂场景用sql书写给结合到了一起，具体的介绍可参照官网。
 
-​      本starter结合公司业务场景，对Mybatis-Plus做了进一步的轻度封装，更加方便使用，在代码生成、审计、默认值设置等功能做了完善。
-
 ## 使用教程
 
-### 一、开始
+### 一、介绍
 
-> 该jar包中引入了mybatis-plus版本（3.4.3）以及相关的代码生成所需的jar包。
+本框架结合目前所在公司的业务场景，对Mybatis-Plus做了进一步的轻度封装，更加方便使用，在数据（创建人、创建时间、修改人、修改时间、默认值等）自动填充、数据自动同步、固定查询条件、级联查询等方面通过注解做了增强。
+
+> 本框架引入了mybatis-plus版本（3.3.4）以及相关所需的jar包。
 >
 > **注意：关于mybatis相关的jar包以及page-helper相关的jar包都不要再引入了，否则会产生冲突。**
-
-```xml
-<dependency>
-    <groupId>com.szyk.platform</groupId>
-    <artifactId>platform-starter-mybatis</artifactId>
-    <!-- 使用企业maven架构的情况下可以不指定版本号 -->
-    <version>4.0.0-SNAPSHOT</version>
-</dependency>
-```
 
 ### 二、数据新增、更新增强注解
 
@@ -27,7 +18,7 @@
 
 **描述：**
 
-> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
 >
 > 被标注的字段，在可允许的类型范围（`String`、`Long`、`long`、`Date`、`LocalDate`、`LocalDateTime`）内，数据被操作的情况下，会自动被赋值上当前时间。
 >
@@ -44,15 +35,15 @@
 
 | 注解                    | 描述                                                         |
 | ----------------------- | ------------------------------------------------------------ |
-| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值数据操作时间。 |
-| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
-| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值数据操作时间。 |
+| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
 
 ### `@OptionUser`
 
 **描述：**
 
-> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
 >
 > 被标注的字段，会根据`@OptionUser`中`AuditHandler`的实现来返回对应的值。
 >
@@ -69,9 +60,9 @@
 
 | 注解                      | 描述                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值操作人信息。 |
-| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
-| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值操作人信息。 |
+| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
 
 ### `@DefaultValue`
 
@@ -453,19 +444,27 @@ Binder.bindOn(Deeper.with(users).in(User::getAccount), Account::getCardNumber);
 
 ### 六、service 增强
 
-> 生成的service类中，携带了一个InnerService内部增强类，该类基于Mybatis-Plus的[ServiceImpl](https://mybatis.plus/guide/crud-interface.html#service-crud-接口)做了拓展，拓展内容如下：
+> 框架内部提供了一个BaseService，该类基于Mybatis-Plus的[ServiceImpl](https://mybatis.plus/guide/crud-interface.html#service-crud-接口) 做了拓展，主要拓展目的是为了结合前面增强功能做的优化，其中涉及几个方面：
 
-#### getFirstOne
+1. 提供了新的MyLambdaQueryChainWrapper类，用于在做级联查询的时候拓展了新的lambda语法。
 
-**描述：**
+   > 比如User对象上绑定了Account的信息，需要查询User信息的时候一并级联出来。
 
-> 根据指定查询条件，获取第一条数据。
+   ```java
+   Page<User> page = new Page<>(1, 10);
+   
+   // 默认UserService继承ServiceImpl的情况下
+   Page<User> pageResult = userService.lambdaQuery()
+                   .like(userName != null, User::getName, userName)
+                   .page(page);
+   Binder.bind(pageResult);
+   
+   // UserService继承BaseService的情况下。该继承类兼容上面的用法
+   Page<User> pageResult = userService.lambdaQueryPlus()
+                   .like(userName != null, User::getName, userName)
+                   .bindPage(page);
+   ```
 
-#### listLimit
-
-**描述：**
-
-> 根据起始位置+查询长度，进行范围限定的数据查询。类似分页查询
-
+2. 提供了数据更新（@DataSource）功能自动化，拦截了updateById和updateBatchById，自动发送spring的事件通知。
 
 
