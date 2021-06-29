@@ -1,6 +1,6 @@
 ## 前言
 
-​      微服务架构下，基于领域拆分的各个服务彼此之间的耦合度大大降低，进而以前的各种复杂的关联查询都会被解开，放在不同的服务中，因此sql的复杂度上，也大大的降低了，这种情况下，有采用JPA的，JPA有良好的书写体验，可以较少百分之九十的sql书写，改用简单的java代码即可实现，但是，JPA也有它的局限性，那就是某些特殊情况下的复杂查询，用JPA实现，非常的繁琐，不如xml的sql看起来更好理解，因此一款叫[Mybatis-Plus](https://mybatis.plus/)框架应运而生，它把JPA的良好书写体验和复杂场景用sql书写给结合到了一起，具体的介绍可参照官网。
+​      微服务架构下，基于领域拆分的各个服务彼此之间的耦合度大大降低，进而以前的各种复杂的关联查询都会被解开，放在不同的服务中，因此sql的复杂度上，也大大的降低了，这种情况下，有采用JPA的，JPA有良好的书写体验，可以较少百分之九十的sql书写，改用简单的java代码即可实现，但是，JPA也有它的局限性，那就是某些特殊情况下的复杂查询，用JPA实现，非常的繁琐，不如xml的sql看起来更好理解，因此一款叫[Mybatis-Plus](https://mybatis.plus/) 框架应运而生，它把JPA的良好书写体验和复杂场景用sql书写给结合到了一起，具体的介绍可参照官网。
 
 ​      本starter结合公司业务场景，对Mybatis-Plus做了进一步的轻度封装，更加方便使用，在代码生成、审计、默认值设置等功能做了完善。
 
@@ -8,15 +8,16 @@
 
 ### 一、开始
 
-> 该jar包中引入了mybatis-plus最新版（3.3.2）以及相关的代码生成所需的jar包。
+> 该jar包中引入了mybatis-plus版本（3.4.3）以及相关的代码生成所需的jar包。
 >
 > **注意：关于mybatis相关的jar包以及page-helper相关的jar包都不要再引入了，否则会产生冲突。**
 
 ```xml
 <dependency>
-    <groupId>com.tangzc</groupId>
-    <artifactId>mybatis-plus-ext</artifactId>
-    <version>1.0.0</version>
+    <groupId>com.szyk.platform</groupId>
+    <artifactId>platform-starter-mybatis</artifactId>
+    <!-- 使用企业maven架构的情况下可以不指定版本号 -->
+    <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -419,7 +420,38 @@ Binder.bindOn(Deeper.with(users).in(User::getAccount), Account::getCardNumber);
 | orderBy         | @JoinOrderBy[] | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 | deepBind        | boolean        | 否   | false  | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
 
-### 四、service 增强
+### 四、数据绑定自动更新增强注解
+
+#### `@DataSource`
+
+**描述：**
+
+> 数据源绑定注解，绑定指定的数据源字段后，框架会自动监听数据源表的updateById方法和updateBatchById方法，当数据源调用上述两个方法进行数据变更，对应字段会自动更新最新数据。
+
+**字段：**
+
+| 属性       | 类型       | 必需                     | 默认值     | 描述                                      |
+| ---------- | ---------- | ------------------------ | ---------- | ----------------------------------------- |
+| source     | Class<?>   | 是（与sourceName二选一） | Void.class | 需要监听数据来源的Entity                  |
+| sourceName | String     | 是（与source二选一）     | ""         | 需要监听数据来源的Entity全名称（包.类名） |
+| field      | String     | 是                       |            | 需要监听数据来源的Entity的具体字段        |
+| condition  | @Condition | 是                       |            | 关联数据变化的Entity所需要的条件          |
+
+### 五、固定条件增强注解
+
+#### `@FixedCondition`
+
+**描述：**
+
+> 固定条件注解，常用于一表对应多实体的场景，比如一张表记录了所有用户的信息，其中分为管理员用户和普通用户，业务模型中管理员与普通用户分别为两个实体，此种情况下，可以在不同的实体声明固定类型条件，后续所有的更新、查询、删除操作，均会自动以等于的条件表达式追加该固定条件。
+
+**字段：**
+
+| 属性  | 类型   | 必需 | 默认值 | 描述                     |
+| ----- | ------ | ---- | ------ | ------------------------ |
+| value | String | 是   |        | 需要监听数据来源的Entity |
+
+### 六、service 增强
 
 > 生成的service类中，携带了一个InnerService内部增强类，该类基于Mybatis-Plus的[ServiceImpl](https://mybatis.plus/guide/crud-interface.html#service-crud-接口)做了拓展，拓展内容如下：
 
