@@ -2,8 +2,8 @@ package com.tangzc.mpe.relevance;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.LambdaMeta;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
 import com.tangzc.mpe.relevance.builder.ConditionSign;
 import com.tangzc.mpe.relevance.manager.BeanAnnotationManager;
 import com.tangzc.mpe.relevance.metadata.BeanDescription;
@@ -71,7 +71,7 @@ public class Binder {
         if (bindFields != null) {
 
             Function<SFunction<BEAN, ?>, String> getFieldName = sf -> {
-                SerializedLambda lambda = LambdaUtils.resolve(sf);
+                LambdaMeta lambda = LambdaUtils.extract(sf);
                 return PropertyNamer.methodToProperty(lambda.getImplMethodName());
             };
 
@@ -124,23 +124,21 @@ public class Binder {
 
         /**
          * 绑定操作
-         * @param beans
-         * @param fieldDescriptions
          */
         default void doBind(List<BEAN> beans, List<FD> fieldDescriptions) {
 
-                if(fieldDescriptions.isEmpty()) {
-                    return;
-                }
+            if (fieldDescriptions.isEmpty()) {
+                return;
+            }
 
-                // 合并相同条件的关联，减少查询
-                Map<ConditionSign<?, CONDITION_DESC>, List<FD>> fieldAnnotationListGroupByCondition =
-                        fieldDescriptions.stream().collect(Collectors.groupingBy(fd -> fd.conditionUniqueKey()));
+            // 合并相同条件的关联，减少查询
+            Map<ConditionSign<?, CONDITION_DESC>, List<FD>> fieldAnnotationListGroupByCondition =
+                    fieldDescriptions.stream().collect(Collectors.groupingBy(fd -> fd.conditionUniqueKey()));
 
-                // 填充数据
-                fieldAnnotationListGroupByCondition.forEach(
-                        (entityJoinCondition, fieldAnnotationList) -> fillData(beans, entityJoinCondition, fieldAnnotationList)
-                );
+            // 填充数据
+            fieldAnnotationListGroupByCondition.forEach(
+                    (entityJoinCondition, fieldAnnotationList) -> fillData(beans, entityJoinCondition, fieldAnnotationList)
+            );
         }
 
         <ENTITY> void fillData(List<BEAN> beans, ConditionSign<ENTITY, CONDITION_DESC> entityJoinCondition, List<FD> fieldAnnotationList);

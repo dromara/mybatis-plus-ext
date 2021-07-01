@@ -1,8 +1,8 @@
 package com.tangzc.mpe.util;
 
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.LambdaMeta;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.core.toolkit.support.SerializedLambda;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 import org.springframework.beans.BeanUtils;
 
@@ -21,7 +21,7 @@ import java.util.Map;
 public class BeanClassUtil {
 
     public static <E> String getFieldName(SFunction<E, ?> sf) {
-        SerializedLambda lambda = LambdaUtils.resolve(sf);
+        LambdaMeta lambda = LambdaUtils.extract(sf);
         return PropertyNamer.methodToProperty(lambda.getImplMethodName());
     }
 
@@ -58,7 +58,7 @@ public class BeanClassUtil {
 
     public static <T> Class<?> getFieldRealClass(Class<T> clazz, SFunction<T, ?> sFunction) {
 
-        SerializedLambda lambda = LambdaUtils.resolve(sFunction);
+        LambdaMeta lambda = LambdaUtils.extract(sFunction);
         String fieldName = PropertyNamer.methodToProperty(lambda.getImplMethodName());
         Field field;
         try {
@@ -130,4 +130,5 @@ public class BeanClassUtil {
             getFieldList(fields, superclass);
         }
     }
+
 }

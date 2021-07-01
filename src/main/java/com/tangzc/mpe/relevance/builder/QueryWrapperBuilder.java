@@ -3,7 +3,6 @@ package com.tangzc.mpe.relevance.builder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tangzc.mpe.relevance.metadata.JoinConditionDescription;
 import com.tangzc.mpe.relevance.metadata.OrderByDescription;
-import com.tangzc.mpe.relevance.parser.CustomConditionParser;
 import com.tangzc.mpe.util.TableColumnUtil;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -70,7 +69,7 @@ public class QueryWrapperBuilder<ENTITY> {
                         e.printStackTrace();
                     }
                 }
-                whereSet.add(new Where(whereItemList, CustomConditionParser.parse(bean, customCondition)));
+                whereSet.add(new Where(whereItemList, customCondition));
             }
         }
 
