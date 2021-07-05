@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.tangzc.mpe.conf.AutoConfig
+com.tangzc.mpe.conf.PlatformMybatisAutoConfig
