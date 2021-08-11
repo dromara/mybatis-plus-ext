@@ -1,142 +1,150 @@
-## 前言
+# Mybatis-Plus-Ext
 
-#### 新版的教程正在编写中，届时会分别针对`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等几个方面展开，增加更多的实例。
-## 使用教程（旧版）
+## 简介
 
-### 一、介绍
+​		本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus)做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance)框架上的集成优化，部分优化也会反馈回原框架，绝大部分功能均是通用的，详细教程可以直接参考A.CTable官方。
 
-本框架结合目前所在公司的业务场景，对Mybatis-Plus做了进一步的轻度封装，更加方便使用，在数据（创建人、创建时间、修改人、修改时间、默认值等）自动填充、数据自动同步、固定查询条件、级联查询等方面通过注解做了增强。
+## 快速开始
 
-> 本框架引入了mybatis-plus版本（3.3.4）以及相关所需的jar包。
+### 自动建表
+
+> 根据实体上的注解及字段注解自动创建、更新数据库表。
 >
-> **注意：关于mybatis相关的jar包以及page-helper相关的jar包都不要再引入了，否则会产生冲突。**
-
-### 二、数据新增、更新增强注解
-
-### `@OptionDate`
-
-**描述：**
-
-> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
->
-> 被标注的字段，在可允许的类型范围（`String`、`Long`、`long`、`Date`、`LocalDate`、`LocalDateTime`）内，数据被操作的情况下，会自动被赋值上当前时间。
->
-> ***如果使用String的话需要同时指明`format`参，用以确认格式化后的样式。***
-
-**字段：**
-
-| 属性     | 类型    | 必需 | 默认值              | 描述                                     |
-| -------- | ------- | ---- | ------------------- | ---------------------------------------- |
-| format   | String  | 否   | yyyy-MM-dd HH:mm:ss | 如果字段类型为String，需要制定字符串格式 |
-| override | boolean | 否   | true                | 若对象上存在值，是否覆盖                 |
-
-**扩展注解：**
-
-| 注解                    | 描述                                                         |
-| ----------------------- | ------------------------------------------------------------ |
-| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值数据操作时间。 |
-| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
-| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
-
-### `@OptionUser`
-
-**描述：**
-
-> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
->
-> 被标注的字段，会根据`@OptionUser`中`AuditHandler`的实现来返回对应的值。
->
-> 通常的实现方案都是用户信息（id、name等）放入header中，全局定义函数来获取。
-
-**字段：**
-
-| 属性     | 类型                             | 必需 | 默认值 | 描述                     |
-| -------- | -------------------------------- | ---- | ------ | ------------------------ |
-| value    | Class<? extends AuditHandler<?>> | 是   |        | 自定义用户信息生成方式   |
-| override | boolean                          | 否   | true   | 若对象上存在值，是否覆盖 |
-
-**扩展注解：**
-
-| 注解                      | 描述                                                         |
-| ------------------------- | ------------------------------------------------------------ |
-| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值操作人信息。 |
-| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
-| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
-
-### `@DefaultValue`
-
-**描述：**
-
-> 数据插入的时候字段的默认值，支持类型：String, Integer, int, Long, long, Boolean, boolean, Double, double, Float, float, BigDecimal, Date, LocalDate, LocalDateTime，枚举（仅支持枚举的名字作为默认值）
-
-**字段：**
-
-| 属性     | 类型    | 必需   | 默认值 | 描述                     |
-| -------- | ------- | ------ | ------ | ------------------------ |
-| value    | String  | 是   |        | 默认值   |
-| format | boolean | 否 | yyyy-MM-dd HH:mm:ss | 如果字段类型为时间类型（Date,LocalDateTime等），需要制定字符串格式 |
-
-### `例子`
-
-> 针对Entity增强注解，此处以文章实体为例
+> 官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
 
 ```java
-/**
- * 文章
- */
 @Data
-public class Article {
+// @Table、@Entity、@TableName均可被识别为需要自动创建表的Entity
+@Table(comment = "用户")
+public class User {
+	
+    // 自动识别id属性名为主键
+    // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能）
+    @IsAutoIncrement
+    // 字段注释
+    @ColumnComment("主键")
+    private Long id;
 
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
-    /**
-     * 标题
-     */
-    private String title;
-    /**
-     * 内容
-     */
-    private String content;
-    /**
-     * 创建人
-     */
-    @InsertOptionUser(UserIdAutoFillHandler.class)
-    private String publisherId;
-    /**
-     * 创建人名字
-     */
-    @InsertOptionUser(UserNameAutoFillHandler.class)
-    private String publisherName;
-    /**
-     * 发布时间
-     */
-    @InsertOptionDate
-    private Long publishTime;
-    /**
-     * 最后发布时间
-     */
-    @InsertUpdateOptionDate
-    private Long lastPublishTime;
-    /**
-     * 文章审核状态: 0:未审核，1:审核通过，2:审核不通过
-     */
-    @DefaultValue("0")
-    private Integer status;
+    // 索引
+    @Index
+    // 非空
+    @IsNotNull
+    @ColumnComment("名字")
+    private String name;
+    
+    // 唯一索引
+    @Unique
+    @IsNotNull
+    @ColumnComment("手机号")
+    private String phone;
+    
+    // 省略其他属性
+    ......
 }
 ```
 
-> 网关层在鉴权的时候，将user的信息放入了header中，微服务的场景下可以通过feign的传递进而整个服务获取了header信息，共享了当前登录的用户信息
+```java
+// 启用自动生成数据库表功能，此处简化了A.CTable的复杂配置，均采用默认配置
+@EnableAutoTable
+@SpringBootApplication
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+```
+
+```properties
+# actable的配置信息保留了如下几项，均做了默认配置，正常无需配置
+actable.table.auto=update
+actable.model.pack=[Spring启动类所在包]
+actable.database.type=mysql
+actable.index.prefix=自己定义的索引前缀#该配置项不设置默认使用actable_idx_
+actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
+```
+
+
+
+### 数据填充
+
+> 可以在数据插入或更新的时候，自动赋值数据操作人、操作时间、默认值等属性。
+>
+> 以文章发布为例，讲解一下数据填充的基本用法。通过如下例子可发现，在创建Artice的时候，我们无需再去关心过多的与业务无关的字段值，只需要关心`title`、`content`两个核心数据即可，其他的数据均会被框架处理。
+
+```java
+@Data
+@Table(comment = "文章")
+public class Article {
+	
+    // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("标题")
+    private String title;
+    
+    @ColumnComment("内容")
+    private String content;
+    
+    // 文章默认激活状态
+    @DefaultValue("ACTIVE")
+    @ColumnComment("内容")
+    // ActicleStatusEnum(ACTIVE, INACTIVE)
+    private ActicleStatusEnum status;
+
+    @ColumnComment("发布时间")
+    // 插入数据时候会自动获取系统当前时间赋值，支持多种数据类型，具体可参考@OptionDate注解详细介绍
+    @InsertOptionDate
+    private Date publishedTime;
+
+    @ColumnComment("发布人")
+    // 插入的时候，根据UserIdAutoFillHandler自动填充用户id
+    @InsertOptionUser(UserIdAutoFillHandler.class)
+    private String publishedUserId;
+
+    @ColumnComment("发布人名字")
+    // 插入的时候，根据UserIdAutoFillHandler自动填充用户名字
+    @InsertOptionUser(UsernameAutoFillHandler.class)
+    private String publishedUsername;
+
+    @ColumnComment("最后更新时间")
+    // 插入和更新数据时候会自动获取系统当前时间赋值，支持多种数据类型，具体可参考@OptionDate注解详细介绍
+    @InsertUpdateOptionDate
+    private Date publishedTime;
+
+    @ColumnComment("最后更新人")
+    // 插入和更新的时候，根据UserIdAutoFillHandler自动填充用户id
+    @InsertUpdateOptionUser(UserIdAutoFillHandler.class)
+    private String publishedUserId;
+
+    @ColumnComment("最后更新人名字")
+    // 插入和更新的时候，根据UserIdAutoFillHandler自动填充用户名字
+    @InsertUpdateOptionUser(UsernameAutoFillHandler.class)
+    private String publishedUsername;
+}
+```
 
 ```java
 /**
  * 全局获取用户ID
+ * 此处实现IOptionByAutoFillHandler接口和AutoFillHandler接口均可，建议实现IOptionByAutoFillHandler接口，
+ * 因为框架内的BaseEntity默认需要IOptionByAutoFillHandler的实现。后面会讲到BaseEntity的使用。
  */
-public class UserIdAutoFillHandler implements AutoFillHandler<String> {
+@Component
+public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
 
+    /**
+     * @param object 当前操作的数据对象
+     * @param clazz  当前操作的数据对象的class
+     * @param field  当前操作的数据对象上的字段
+     * @return 当前登录用户id
+     */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
       	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+        // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
     }
 }
@@ -146,30 +154,371 @@ public class UserIdAutoFillHandler implements AutoFillHandler<String> {
 /**
  * 全局获取用户名
  */
-public class UserNameAutoFillHandler implements AutoFillHandler<String> {
+@Component
+public class UsernameAutoFillHandler implements AutoFillHandler<String> {
 
+    /**
+     * @param object 当前操作的数据对象
+     * @param clazz  当前操作的数据对象的class
+     * @param field  当前操作的数据对象上的字段
+     * @return 当前登录用户id
+     */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+        // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-name");
     }
 }
 ```
 
-以上例子，针对文章实体的操作，创建、修改的时候只关注`title`与`content`，审核操作只关注`status`，简化了所关注的字段数量，提升了开发效率的同时也降低了错误发生几率。
+### 数据绑定
 
-### 三、数据查询增强注解
+> 数据关联查询的解决方案，替代sql中的join方式，通过注解关联多表之间的关系，查询某实体的时候，自动带出其关联性的数据实体。
+>
+> 本示例以比较复杂的通过中间表关联数据的案例来讲解下，用户和角色之间多对多，通过中间表进行数据级联，@BindEntity\*系列是关联Entity的数据，@BindField\*系列是关联Entity下的某个字段。当@Bind\*系列注解用在对象上即表达一对一，当注解在List上时便表达一对多的意思，当外部对象本身就是查询集合的情况下便是多对多的场景了。
 
-> mybatis-plus的查询已经极大的简化了单表查询的工作量，但是面对多表联合查询，仍然存在不足，尤其是面对深层次的多表联合查询，需要大量与业务无关的代码逻辑来实现数据组合，特此拓展了数据查询增强注解。
+```java
+@Data
+@Table(comment = "角色信息")
+public class Rule {
 
-#### 三.一、单表数据绑定操作
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("角色名")
+    private String name;
+}
+```
+
+```java
+@Data
+@Table(comment = "用户信息")
+public class User {
+
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("用户名")
+    private String username;
+
+    @ColumnComment("密码")
+    private String password;
+
+    // 关键配置，声明了User想关联对应的Rule集合，中间表是UserRule
+    @BindEntityByMid(condition = @MidCondition(
+            midEntity = UserRule.class, selfMidField = "userId", joinMidField = "ruleId"
+    ))
+    private List<Rule> rules;
+}
+```
+
+```java
+@Data
+@Table(comment = "用户-角色关联关系")
+public class UserRule {
+
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("用户id")
+    private String userId;
+
+    @ColumnComment("角色id")
+    private String ruleId;
+}
+```
+
+```java
+/**
+ * 用户服务
+ */
+@Slf4j
+@Service
+public class UserService {
+
+    // UserRepository继承了BaseRepository<UserMapper, User>
+    @Resource
+    private UserRepository userRepository;
+
+    /**
+     * 根据用户的名字模糊查询所有用户的详细信息
+     */
+    @Transactional(readOnly = true)
+    public List<UserDetailWithRuleDto> searchUserByNameWithRule(String name) {
+
+        // MP的lambda查询方式
+        List<User> userList = this.lambdaQuery()
+               .eq(name != null, User::getUsername, name)
+               .list();
+        // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
+        Binder.bindOn(userList, User::getRules);
+        // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
+        
+        return UserMapping.MAPPER.toDto5(userList);
+    }
+
+    /**
+     * 根据用户的名字模糊查询所有用户的详细信息，等价于上一个查询方式
+     */
+    @Transactional(readOnly = true)
+    public List<UserDetailWithRuleDto> searchUserByNameWithRule2(String name) {
+
+        // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
+        // 显然这是一种更加简便的查询方式
+        List<User> userList = this.lambdaQueryPlus()
+               .eq(name != null, User::getUsername, name)
+               .bindList(User::getRules);
+        
+        return UserMapping.MAPPER.toDto5(userList);
+    }
+}
+```
+
+### 数据冗余
+
+> 当其他表的数据需要作为当前表的查询条件的时候，多数情况下会使用sql的join语法，另一种方案是做数据冗余，讲其他表的字段作为当前表的字段，但是牵扯一个数据修改后同步的问题，本框架可以解决。
+>
+> 假设用户评论的场景，评论上需要冗余用户名和头像，如果用户的名字和头像有改动，则需要同步新的改动，代码如下：
+
+```java
+@Data
+@Table(comment = "用户信息")
+public class User {
+
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("用户名")
+    private String username;
+
+    @ColumnComment("头像")
+    private String icon;
+    
+    // 省略其他属性
+    ......
+}
+```
+
+```java
+@Data
+@Table(comment = "评论")
+public class Comment {
+
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("评论内容")
+    private String content;
+
+    @ColumnComment("评论人id")
+    private String userId;
+
+    // 基于该注解，框架会自动注册监听EntityUpdateEvent事件，User的updateById和updateBatchById两个方法会自动发布EntityUpdateEvent事件
+    @DataSource(source = User.class, field = "username", condition = @Condition(selfField = "userId"))
+    @ColumnComment("评论人名称")
+    private String userName;
+
+    @DataSource(source = User.class, field = "icon", condition = @Condition(selfField = "userId"))
+    @ColumnComment("评论人头像")
+    private String userIcon;
+}
+```
+
+### 固定条件
+
+> 使用场景比较少，之所以添加这样一个注解是因为平时工作中当针对Entity做充血模型的设计的时候，会出现一个表对应多个实体的情况，每个实体必然有一个固定值的字段，类似类型，对应表中的一个类型区分不同的实体，此时可以使用该方案。
+>
+> 假设一个场景，设备表，里面有个字段标记了设备类型（大、中、小），然后不同类型设备存在不同的行为，比如，大型设备在充血模型设计下，有一个定期保养行为，此时就可以如下设计表与Entity的关系
+
+```java
+@Data
+@TableName("device")
+@TableComment("大型设备")
+public class BigDevice {
+
+    @ColumnComment("主键")
+    private String id;
+
+    @ColumnComment("设备名")
+    private String score;
+
+    // 只要是通过BigDevice的Mapper对数据进行更新和查询，都会自动带上条件type='BIG'
+    // DeviceTypeEnum(BIG, MEDIUM, TINY)
+    @FixedCondition("BIG")
+    @ColumnComment("设备类型")
+    private DeviceTypeEnum type;
+    
+    @ColumnComment("保养日期")
+    private Date maintainTime;
+
+    /**
+     * 维修保养
+     */
+    public void maintain() {
+        // 省略其他逻辑
+        this.maintainTime = new Date();
+    }
+}
+```
+
+### BaseEntity使用
+
+> 通常的表设计中，都会要求添加一些审计数据，比如创建人、创建时间、最后修改人、最后修改时间，但是这些属性又不应该属于业务的，更多的是为了数据管理使用的。如果业务需要使用的话，建议起一个有意义的业务名称与上述的创建时间区分开，比如用户的注册时间。为了简化数据审计字段的工作量，框架内部集成了BaseEntity
+
+```java
+@Getter
+@Setter
+public class BaseEntity<ID_TYPE extends Serializable, TIME_TYPE> {
+
+    // 这里就是数据填充样例那里提到的IOptionByAutoFillHandler接口
+    @InsertOptionUser(IOptionByAutoFillHandler.class)
+    @ColumnComment("创建人")
+    protected ID_TYPE createBy;
+    @InsertUpdateOptionUser(IOptionByAutoFillHandler.class)
+    @ColumnComment("最后更新人")
+    protected ID_TYPE updateBy;
+    @InsertOptionDate
+    @ColumnComment("创建时间")
+    protected TIME_TYPE createTime;
+    @InsertUpdateOptionDate
+    @ColumnComment("最后更新时间")
+    protected TIME_TYPE updateTime;
+}
+```
+
+> 还存在某些情况下数据表要求设计成逻辑删除（逻辑删除存在很多弊端，不建议无脑所有表都设计为逻辑删除），所以框架同时提供了一个BaseLogicEntity
+
+```java
+@Getter
+@Setter
+public class BaseLogicEntity<ID_TYPE extends Serializable, TIME_TYPE> extends BaseEntity<ID_TYPE, TIME_TYPE> {
+
+    // 使用了MP支持的逻辑删除注解
+    @TableLogic
+    @DefaultValue("0")
+    @ColumnComment("逻辑删除标志")
+    protected Integer deleted;
+}
+```
+
+### BaseRepository使用
+
+> 建议以此为数据基本操作类，而不是以Mapper为基础操作类，该service可以直接通过getMapper()取得Entity对应的Mapper类，此类与Mapper类相比做了很多的增强功能，尤其是其lambda语法，非常高效便捷。
+
+```java
+// 集成了MP的ServiceImpl，实现了IBaseRepository接口（内部拓展了lambda查询操作）
+public abstract class BaseRepository<M extends BaseMapper<E>, E> extends ServiceImpl<M, E> implements IBaseRepository<E> {
+
+    @Override
+    public boolean updateById(E entity) {
+        boolean result = super.updateById(entity);
+        if(result) {
+            // 数据自动更新@DataSource注解的配合逻辑，
+            SpringContextUtil.getApplicationContext()
+                .publishEvent(EntityUpdateEvent.create(entity));
+        }
+        return result;
+    }
+
+    @Override
+    public boolean updateBatchById(Collection<E> entityList, int batchSize) {
+        boolean result = super.updateBatchById(entityList, batchSize);
+        if(result) {
+            for (E entity : entityList) {
+                SpringContextUtil.getApplicationContext().publishEvent(EntityUpdateEvent.create(entity));
+            }
+        }
+        return result;
+    }
+}
+```
+
+## 注解详细介绍
+
+### 自动建表注解
+
+所有注解均是通用的，详细教程可以直接参考A.CTable官方。
+
+---
+
+### 数据填充类注解
+
+#### `@OptionDate`
+
+**描述：**
+
+> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+>
+> 被标注的字段，在可允许的类型范围（`String`、`Long`、`long`、`Date`、`LocalDate`、`LocalDateTime`）内，数据被操作的情况下，会自动被赋值上当前时间。
+>
+> ***如果使用String的话需要同时指明`format`参，用以确认格式化后的样式。***
+
+**字段：**
+
+| 属性     | 类型    | 必需   | 默认值              | 描述                                     |
+| -------- | ------- | ------ | ------------------- | ---------------------------------------- |
+| format   | String  | 非必需 | yyyy-MM-dd HH:mm:ss | 如果字段类型为String，需要制定字符串格式 |
+| override | boolean | 非必需 | true                | 若对象上存在值，是否覆盖                 |
+
+**扩展注解：**
+
+| 注解                      | 描述                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值数据操作时间。 |
+| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+
+#### `@OptionUser`
+
+**描述：**
+
+> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+>
+> 被标注的字段，会根据`@OptionUser`中`AuditHandler`的实现来返回对应的值。
+>
+> 通常的实现方案都是用户信息（id、name等）放入header中，全局定义函数来获取。
+
+**字段：**
+
+| 属性     | 类型                             | 必需   | 默认值 | 描述                     |
+| -------- | -------------------------------- | ------ | ------ | ------------------------ |
+| value    | Class<? extends AuditHandler<?>> | 必需   |        | 自定义用户信息生成方式   |
+| override | boolean                          | 非必需 | true   | 若对象上存在值，是否覆盖 |
+
+**扩展注解：**
+
+| 注解                      | 描述                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值操作人信息。 |
+| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+
+#### `@DefaultValue`
+
+**描述：**
+
+> 数据插入的时候字段的默认值，支持类型：String, Integer, int, Long, long, Boolean, boolean, Double, double, Float, float, BigDecimal, Date, LocalDate, LocalDateTime，枚举（仅支持枚举的名字作为默认值）
+
+**字段：**
+
+| 属性   | 类型    | 必需   | 默认值              | 描述                                                         |
+| ------ | ------- | ------ | ------------------- | ------------------------------------------------------------ |
+| value  | String  | 必需   |                     | 默认值                                                       |
+| format | boolean | 非必需 | yyyy-MM-dd HH:mm:ss | 如果字段类型为时间类型（Date,LocalDateTime等），需要制定字符串格式 |
+
+---
+
+### 关联查询类注解
 
 ### `@BindField`
 
 **描述：**
 
-> 绑定其他表的某个字段，可实现一对一、一对多的绑定查询。
+> 绑定其他Entity的某个字段，可实现一对一、一对多的绑定查询。
+>
+> 注意：所有Bind注解底层均依赖相关Entity的Mapper，且Mapper必须继承MybatisPlus的BaseMapper<Entity, ID>
 
 **字段：**
 
@@ -185,7 +534,9 @@ public class UserNameAutoFillHandler implements AutoFillHandler<String> {
 
 **描述：**
 
-> 绑定其他表的整体Entity，可实现一对一、一对多的绑定查询。
+> 绑定其他Entity，可实现一对一、一对多的绑定查询。
+>
+> 注意：所有Bind注解底层均依赖相关Entity的Mapper，且Mapper必须继承MybatisPlus的BaseMapper<Entity, ID>
 
 **字段：**
 
@@ -226,147 +577,13 @@ public class UserNameAutoFillHandler implements AutoFillHandler<String> {
 | field | String  | 是   |        | 被关联的Entity中结果集排序字段 |
 | isAsc | boolean | 否   | false  | 排序，true:正序，false:倒序    |
 
-### `例子`
-
-> 身份证实体，对应数据库Identity_card表
-
-```java
-@Data
-@Accessors(chain = true)
-public class IdentityCard {
-    /**
-     * 主键
-     */
-    private String id;
-    /**
-     * 身份证号
-     */
-    private String number;
-    /**
-     * 姓名
-     */
-    private String name;
-    /**
-     * 照片地址
-     */
-    private String photo;
-    /**
-     * 用户id
-     */
-    private String userId;
-}
-```
-
-> 账号实体，对应数据库account表
-
-```java
-@Data
-@Accessors(chain = true)
-public class Account {
-    /**
-     * 主键
-     */
-    private String id;
-    /**
-     * 用户名
-     */
-    private String username;
-    /**
-     * 密码
-     */
-    private String password;
-    /**
-     * 用户id
-     */
-    private String userId;
-    /**
-     * 状态
-     */
-    private ActiveStatus status;
-    
-    /**
-     * 绑定身份证号码
-     */
-    @BindField(
-        entity = IdentityCard.class,
-        field = "number",
-        condition = {@JoinCondition(selfField = "userId", joinField = "userId")}
-    )
-    private String cardNumber;
-}
-```
-
-> 用户实体，对应数据库user表，需要绑定account表及Identity_card表的信息
-
-```java
-@Data
-@Accessors(chain = true)
-public class User {
-    /**
-     * 主键
-     */
-    private String id;
-    /**
-     * 姓名
-     */
-    private String name;
-    /**
-     * 性别
-     */
-    private SexType sex;
-    /**
-     * 年龄
-     */
-    private Integer age;
-    /**
-     * 根据userId绑定账户实体，同时增加限制条件status='ACTIVE'（账户必须是激活状态）
-     */
-    @BindEntity(
-            condition = @JoinCondition(selfField = "id", joinField = "userId"),
-            customCondition = "status='ACTIVE'"
-    )
-    private Account account;
-	/**
-     * 根据多个条件值绑定身份证号码，同时增加限制条件，其中{age}在执行时会被替换为当前对象内的age属性值
-     * PS：此处的绑定条件都是编造的，不含实际业务场景
-     */
-    @BindField(
-            entity = IdentityCard.class,
-            field = "number",
-            condition = {@JoinCondition(selfField = "id", joinField = "userId"),
-                    @JoinCondition(selfField = "name", joinField = "name")},
-            customCondition = "number like '{age}%'")
-    )
-    private String cardNumber;
-}
-```
-
-> 绑定数据的操作
-
-```java
-// 查询User列表
-List<User> users = innerService.lambdaQuery().list();
-// 普通绑定：绑定User中的Account和cardNumber属性
-Binder.bindOn(users, User::getAccount, User::getCardNumber);
-// 深度绑定：绑定User中的Account中的cardNumber属性
-Binder.bindOn(Deeper.with(users).in(User::getAccount), Account::getCardNumber);
-// 绑定方法中，还可以使用Binder.bind(users)，该绑定方法默认绑定所有字段
-```
-
-感兴趣的可以查看下sql执行情况，会生成4条sql，分别是：
-
-1. 第二行，查询所有user信息
-2. 第四行，查询指定的user集合，对应的account信息
-3. 第四行，查询指定的user集合，对应的cardNumber信息
-4. 第六行，查询指定的account集合，对应的cardNumber信息
-
-#### 三.二、中间表数据绑定操作
-
 #### `@BindFieldByMid`
 
 **描述：**
 
-> 通过中间表的形式绑定其他表的某个字段，可实现一对一、一对多的绑定查询。
+> 通过中间关系Entity的形式绑定其他Entity的某个字段，可实现一对一、一对多、多对多的绑定查询。
+>
+> 注意：所有Bind注解底层均依赖相关Entity的Mapper，且Mapper必须继承MybatisPlus的BaseMapper<Entity, ID>
 
 **字段：**
 
@@ -382,7 +599,9 @@ Binder.bindOn(Deeper.with(users).in(User::getAccount), Account::getCardNumber);
 
 **描述：**
 
-> 通过中间表的形式绑定其他表的某个字段，可实现一对一、一对多的绑定查询。
+> 通过中间关系Entity的形式绑定其他Entity，可实现一对一、一对多、多对多的绑定查询。
+>
+> 注意：所有Bind注解底层均依赖相关Entity的Mapper，且Mapper必须继承MybatisPlus的BaseMapper<Entity, ID>
 
 **字段：**
 
@@ -410,60 +629,55 @@ Binder.bindOn(Deeper.with(users).in(User::getAccount), Account::getCardNumber);
 | orderBy         | @JoinOrderBy[] | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 | deepBind        | boolean        | 否   | false  | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
 
-### 四、数据绑定自动更新增强注解
+---
+
+### 数据同步注解
 
 #### `@DataSource`
 
 **描述：**
 
-> 数据源绑定注解，绑定指定的数据源字段后，框架会自动监听数据源表的updateById方法和updateBatchById方法，当数据源调用上述两个方法进行数据变更，对应字段会自动更新最新数据。
+> 通过注解指定数据来源，底层框架自动通过Spring中的事件机制监听EntityUpdateEvent事件，完成数据自动更新。在BaseRepository<Mapper, Entity>的基类中，默认实现了updateById、updateBatchById两个方法自动发布EntityUpdateEvent事件，所以只要对应Entity的Repository继承了BaseRepository<Mapper, Entity>便具备了通过ID更新数据的自动同步数据的功能。
+>
+> **拓展**：分布式情况下如何同步其他服务的数据^_^？不妨先想一想。其实sourceName属性就是为此情况预留的，引入外部MQ，监听Spring下的EntityUpdateEvent事件，然后推送至MQ，另一边消费MQ中的事件，再还原出EntityUpdateEvent事件广播到各个系统即可，这其中还需要考虑和解决时序和事务的问题。
 
 **字段：**
 
-| 属性       | 类型       | 必需                     | 默认值     | 描述                                      |
-| ---------- | ---------- | ------------------------ | ---------- | ----------------------------------------- |
-| source     | Class<?>   | 是（与sourceName二选一） | Void.class | 需要监听数据来源的Entity                  |
-| sourceName | String     | 是（与source二选一）     | ""         | 需要监听数据来源的Entity全名称（包.类名） |
-| field      | String     | 是                       |            | 需要监听数据来源的Entity的具体字段        |
-| condition  | @Condition | 是                       |            | 关联数据变化的Entity所需要的条件          |
+| 属性       | 类型        | 必需                     | 默认值     | 描述                                             |
+| ---------- | ----------- | ------------------------ | ---------- | ------------------------------------------------ |
+| source     | Class<?>    | 否，与`sourceName`二选一 | Void.class | 数据来源的Entity class                           |
+| sourceName | String      | 否，与`source`二选一     | ""         | 数据来源的Entity class 的全路径名称（包名.类名） |
+| field      | String      | 是                       |            | 数据来源的Entity对应的属性                       |
+| condition  | Condition[] | 是                       |            | 被关联的Entity所需要的条件                       |
 
-### 五、固定条件增强注解
+#### `@Condition`
+
+**描述：**
+
+> 数据来源的关联条件
+
+**字段：**
+
+| 属性        | 类型   | 必需 | 默认值 | 描述                             |
+| ----------- | ------ | ---- | ------ | -------------------------------- |
+| selfField   | String | 是   |        | 关联数据来源Entity所需的自身字段 |
+| sourceField | String | 是   | "id"   | 数据来源的Entity的字段，默认为id |
+
+---
+
+### 固定条件注解
 
 #### `@FixedCondition`
 
 **描述：**
 
-> 固定条件注解，常用于一表对应多实体的场景，比如一张表记录了所有用户的信息，其中分为管理员用户和普通用户，业务模型中管理员与普通用户分别为两个实体，此种情况下，可以在不同的实体声明固定类型条件，后续所有的更新、查询、删除操作，均会自动以等于的条件表达式追加该固定条件。
+> 固定查询条件，自带DefaultValue特性。
+>
+> 该注解主要用于某些特殊场景，例如多个Entity对应一张数据库表。@FixedCondition就可以自动在数据插入的时候自动填充指定的值（主要是DefaultValue的作用），数据更新和数据查询的时候，自动添加固定条件过滤数据。
 
 **字段：**
 
-| 属性  | 类型   | 必需 | 默认值 | 描述                     |
-| ----- | ------ | ---- | ------ | ------------------------ |
-| value | String | 是   |        | 需要监听数据来源的Entity |
-
-### 六、service 增强
-
-> 框架内部提供了一个BaseService，该类基于Mybatis-Plus的[ServiceImpl](https://mybatis.plus/guide/crud-interface.html#service-crud-接口) 做了拓展，主要拓展目的是为了结合前面增强功能做的优化，其中涉及几个方面：
-
-1. 提供了新的MyLambdaQueryChainWrapper类，用于在做级联查询的时候拓展了新的lambda语法。
-
-   > 比如User对象上绑定了Account的信息，需要查询User信息的时候一并级联出来。
-
-   ```java
-   Page<User> page = new Page<>(1, 10);
-   
-   // 默认UserService继承ServiceImpl的情况下
-   Page<User> pageResult = userService.lambdaQuery()
-                   .like(userName != null, User::getName, userName)
-                   .page(page);
-   Binder.bind(pageResult);
-   
-   // UserService继承BaseService的情况下。该继承类兼容上面的用法
-   Page<User> pageResult = userService.lambdaQueryPlus()
-                   .like(userName != null, User::getName, userName)
-                   .bindPage(page);
-   ```
-
-2. 提供了数据更新（@DataSource）功能自动化，拦截了updateById和updateBatchById，自动发送spring的事件通知。
-
+| 属性  | 类型   | 必需 | 默认值 | 描述   |
+| ----- | ------ | ---- | ------ | ------ |
+| value | String | 是   |        | 固定值 |
 
