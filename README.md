@@ -512,7 +512,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 ### 关联查询类注解
 
-### `@BindField`
+#### `@BindField`
 
 **描述：**
 
@@ -530,7 +530,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | customCondition | String           | 否   |        | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
 | orderBy         | @JoinOrderBy[]   | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 
-### `@BindEntity`
+#### `@BindEntity`
 
 **描述：**
 
@@ -548,7 +548,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | orderBy         | @JoinOrderBy[]   | 否   |              | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 | deepBind        | boolean          | 否   | false        | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
 
-### `@JoinCondition`
+#### `@JoinCondition`
 
 **描述：**
 
@@ -564,7 +564,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | orderBy         | @JoinOrderBy[]   | 否   |              | 被关联的Entity的结果集，排序条件                             |
 | deepBind        | boolean          | 否   | false        | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
 
-### `@JoinOrderBy`
+#### `@JoinOrderBy`
 
 **描述：**
 
