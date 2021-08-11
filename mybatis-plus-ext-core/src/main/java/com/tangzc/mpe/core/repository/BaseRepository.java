@@ -1,4 +1,4 @@
-package com.tangzc.mpe.core.service;
+package com.tangzc.mpe.core.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,7 +12,7 @@ import java.util.Collection;
  * @param <E> Entity
  * @author don
  */
-public class BaseService<M extends BaseMapper<E>, E> extends ServiceImpl<M, E> implements IBaseService<E> {
+public abstract class BaseRepository<M extends BaseMapper<E>, E> extends ServiceImpl<M, E> implements IBaseRepository<E> {
 
     @Override
     public boolean updateById(E entity) {
