@@ -11,9 +11,9 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tangzc</groupId>
-    <artifactId>mybatis-plus-ext-parent</artifactId>
+    <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
 
     <properties>
 
@@ -71,7 +71,7 @@
     </distributionManagement>
 
     <modules>
-        <module>mybatis-plus-ext</module>
+        <module>mybatis-plus-ext-boot-starter</module>
         <module>mybatis-plus-ext-actable</module>
         <module>mybatis-plus-ext-annotation</module>
         <module>mybatis-plus-ext-bind</module>

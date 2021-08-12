@@ -58,8 +58,7 @@ public class BeanClassUtil {
 
     public static <T> Class<?> getFieldRealClass(Class<T> clazz, SFunction<T, ?> sFunction) {
 
-        LambdaMeta lambda = LambdaUtils.extract(sFunction);
-        String fieldName = PropertyNamer.methodToProperty(lambda.getImplMethodName());
+        String fieldName = getFieldName(sFunction);
         Field field;
         try {
             field = clazz.getField(fieldName);
