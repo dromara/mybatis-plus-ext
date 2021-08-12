@@ -33,4 +33,15 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
         }
         return result;
     }
+
+    // MP的bug，待修复
+    @Override
+    protected Class<E> currentMapperClass() {
+        return (Class<E>) this.getResolvableType().as(BaseRepository.class).getGeneric(0).getType();
+    }
+
+    @Override
+    protected Class<E> currentModelClass() {
+        return (Class<E>) this.getResolvableType().as(BaseRepository.class).getGeneric(1).getType();
+    }
 }

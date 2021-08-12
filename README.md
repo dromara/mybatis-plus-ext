@@ -2,7 +2,7 @@
 
 ## 简介
 
-​		本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus)做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance)框架上的集成优化，部分优化也会反馈回原框架，绝大部分功能均是通用的，详细教程可以直接参考A.CTable官方。
+      本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus)做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance)框架上的集成优化，部分优化也会反馈回原框架，绝大部分功能均是通用的，详细教程可以直接参考A.CTable官方。
 
 ## 快速开始
 
