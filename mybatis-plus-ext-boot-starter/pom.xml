@@ -14,17 +14,12 @@
     <dependencies>
         <dependency>
             <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-annotation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -40,6 +35,17 @@
         <dependency>
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-fixcondition</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-actable-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

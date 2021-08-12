@@ -73,11 +73,7 @@
     <modules>
         <module>mybatis-plus-ext-boot-starter</module>
         <module>mybatis-plus-ext-actable</module>
-        <module>mybatis-plus-ext-annotation</module>
-        <module>mybatis-plus-ext-bind</module>
         <module>mybatis-plus-ext-core</module>
-        <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-fixcondition</module>
     </modules>
 
     <dependencies>
