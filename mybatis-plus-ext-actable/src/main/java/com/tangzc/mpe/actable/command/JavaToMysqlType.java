@@ -53,10 +53,10 @@ public class JavaToMysqlType {
             String typeName = field.getGenericType().getTypeName();
             switch (typeName) {
                 case "ID_TYPE":
-                    fieldType = ReflectionKit.getSuperClassGenericType(clazz, 0);
+                    fieldType = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 0);
                     break;
                 case "TIME_TYPE":
-                    fieldType = ReflectionKit.getSuperClassGenericType(clazz, 1);
+                    fieldType = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 1);
                     break;
                 default:
             }

@@ -1,5 +1,7 @@
 package com.tangzc.mpe.annotation.actable;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,11 +10,10 @@ import java.lang.annotation.Target;
 
 
 /**
- * 标志该字段需要设置自增
- * 也可通过注解：com.tangzc.mpe.actable.annotation.Column的isAutoIncrement属性实现
+ * 字段的备注
  *
  * @author sunchenbin
- * @version 2020年5月26日 下午6:13:15
+ * @version 2020年11月09日 下午6:13:37
  */
 // 该注解用于方法声明
 @Target(ElementType.FIELD)
@@ -20,7 +21,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
-@Column(isAutoIncrement = true)
-public @interface IsAutoIncrement {
+@Column
+public @interface ColumnLength {
 
+    /**
+     * 字段备注
+     *
+     * @return 字段备注
+     */
+    @AliasFor(annotation = Column.class, attribute = "length")
+    int value();
 }

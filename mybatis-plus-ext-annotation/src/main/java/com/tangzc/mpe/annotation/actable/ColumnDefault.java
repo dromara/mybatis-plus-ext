@@ -1,5 +1,7 @@
 package com.tangzc.mpe.annotation.actable;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,13 +21,15 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
-public @interface Default {
+@Column
+public @interface ColumnDefault {
 
     /**
      * 字段的默认值
      *
      * @return 字段的默认值
      */
+    @AliasFor(annotation = Column.class, attribute = "defaultValue")
     String value();
 
 //	/**

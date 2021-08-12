@@ -1,6 +1,8 @@
 package com.tangzc.mpe.annotation.actable;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.tangzc.mpe.annotation.constants.MySqlTypeConstant;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -15,34 +17,25 @@ import java.lang.annotation.Target;
  * @version 2019/07/06
  */
 // 该注解用于方法声明
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 // VM将在运行期也保留注释，因此可以通过反射机制读取注解的信息
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
+@TableField
 public @interface Column {
 
     /**
      * 字段名
-     * 1.4.0版本支持，类同javax.persistence.Column.name
-     *
      * @return 字段名：不填默认使用属性名作为表字段名
      */
+    @AliasFor(annotation = TableField.class, attribute = "value")
     String value() default "";
-
-    /**
-     * 字段名
-     * 1.3.0版本支持，类同javax.persistence.Column.name
-     *
-     * @return 字段名：不填默认使用属性名作为表字段名
-     */
-    String name() default "";
 
     /**
      * 字段类型：不填默认使用属性的数据类型进行转换，转换失败的字段不会添加
      * 仅支持com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant中的枚举数据类型
      * 不填默认转换类：com.tangzc.mpe.actable.command.JavaToMysqlType
-     * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.ColumnType
      *
      * @return 字段类型
      */
@@ -51,7 +44,6 @@ public @interface Column {
     /**
      * 字段长度，默认是255
      * 类型默认长度参考：com.tangzc.mpe.actable.constants.MySqlTypeConstant
-     * 1.3.0版本支持，类同javax.persistence.Column.length
      *
      * @return 默认字段长度，默认是255
      */
@@ -60,7 +52,6 @@ public @interface Column {
     /**
      * 小数点长度，默认是0
      * 类型默认长度参考：com.tangzc.mpe.actable.constants.MySqlTypeConstant
-     * 1.3.0版本支持，类同javax.persistence.Column.scale
      *
      * @return 小数点长度，默认是0
      */
@@ -69,7 +60,6 @@ public @interface Column {
     /**
      * 是否为可以为null，true是可以，false是不可以，默认为true
      * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsNotNull
-     * 1.3.0版本支持，类同javax.persistence.Column.nullable
      *
      * @return 是否为可以为null，true是可以，false是不可以，默认为true
      */
@@ -78,7 +68,6 @@ public @interface Column {
     /**
      * 是否是主键，默认false
      * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsKey
-     * 1.3.0版本支持，类同javax.persistence.Id
      *
      * @return 是否是主键，默认false
      */
@@ -94,7 +83,7 @@ public @interface Column {
 
     /**
      * 默认值，默认为null
-     * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.Default
+     * 也可通过注解实现：com.tangzc.mpe.actable.annotation.ColumnDefault
      *
      * @return 默认值
      */
@@ -102,7 +91,7 @@ public @interface Column {
 
     /**
      * 数据表字段备注
-     * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.Comment
+     * 也可通过注解实现：com.tangzc.mpe.actable.annotation.Comment
      *
      * @return 默认值，默认为空
      */

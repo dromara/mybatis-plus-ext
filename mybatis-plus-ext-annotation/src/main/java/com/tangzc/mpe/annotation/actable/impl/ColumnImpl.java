@@ -8,23 +8,11 @@ import java.lang.annotation.Annotation;
 public class ColumnImpl implements Column {
     /**
      * 字段名
-     * 1.4.0版本支持，类同javax.persistence.Column.name
      *
      * @return 字段名：不填默认使用属性名作为表字段名
      */
     @Override
     public String value() {
-        return "";
-    }
-
-    /**
-     * 字段名
-     * 1.3.0版本支持，类同javax.persistence.Column.name
-     *
-     * @return 字段名：不填默认使用属性名作为表字段名
-     */
-    @Override
-    public String name() {
         return "";
     }
 
@@ -44,7 +32,6 @@ public class ColumnImpl implements Column {
     /**
      * 字段长度，默认是255
      * 类型默认长度参考：com.tangzc.mpe.actable.constants.MySqlTypeConstant
-     * 1.3.0版本支持，类同javax.persistence.Column.length
      *
      * @return 默认字段长度，默认是255
      */
@@ -56,7 +43,6 @@ public class ColumnImpl implements Column {
     /**
      * 小数点长度，默认是0
      * 类型默认长度参考：com.tangzc.mpe.actable.constants.MySqlTypeConstant
-     * 1.3.0版本支持，类同javax.persistence.Column.scale
      *
      * @return 小数点长度，默认是0
      */
@@ -68,7 +54,6 @@ public class ColumnImpl implements Column {
     /**
      * 是否为可以为null，true是可以，false是不可以，默认为true
      * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsNotNull
-     * 1.3.0版本支持，类同javax.persistence.Column.nullable
      *
      * @return 是否为可以为null，true是可以，false是不可以，默认为true
      */
@@ -80,7 +65,6 @@ public class ColumnImpl implements Column {
     /**
      * 是否是主键，默认false
      * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsKey
-     * 1.3.0版本支持，类同javax.persistence.Id
      *
      * @return 是否是主键，默认false
      */
@@ -102,7 +86,7 @@ public class ColumnImpl implements Column {
 
     /**
      * 默认值，默认为null
-     * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.Default
+     * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.ColumnDefault
      *
      * @return 默认值
      */

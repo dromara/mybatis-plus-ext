@@ -2,6 +2,7 @@ package com.tangzc.mpe.annotation.actable;
 
 
 import com.tangzc.mpe.annotation.constants.MySqlTypeConstant;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
+@Column
 public @interface ColumnType {
 
     /**
@@ -30,6 +32,7 @@ public @interface ColumnType {
      *
      * @return 字段的类型
      */
+    @AliasFor(annotation = Column.class, attribute = "type")
     MySqlTypeConstant value() default MySqlTypeConstant.DEFAULT;
 
     /**
@@ -38,6 +41,7 @@ public @interface ColumnType {
      *
      * @return 字段长度，默认是255
      */
+    @AliasFor(annotation = Column.class, attribute = "length")
     int length() default 255;
 
     /**
@@ -46,5 +50,6 @@ public @interface ColumnType {
      *
      * @return 小数点长度，默认是0
      */
+    @AliasFor(annotation = Column.class, attribute = "decimalLength")
     int decimalLength() default 0;
 }

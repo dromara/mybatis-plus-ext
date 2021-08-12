@@ -2,6 +2,7 @@ package com.tangzc.mpe.annotation.actable;
 
 
 import com.tangzc.mpe.annotation.constants.MySqlCharsetConstant;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 //将此注解包含在javadoc中
 @Documented
+@Table
 public @interface TableCharset {
 
     /**
@@ -30,5 +32,6 @@ public @interface TableCharset {
      *
      * @return
      */
+    @AliasFor(annotation = Table.class, attribute = "charset")
     MySqlCharsetConstant value();
 }

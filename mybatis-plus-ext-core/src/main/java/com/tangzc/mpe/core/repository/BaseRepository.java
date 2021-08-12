@@ -1,6 +1,7 @@
 package com.tangzc.mpe.core.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tangzc.mpe.core.event.EntityUpdateEvent;
 import com.tangzc.mpe.core.util.SpringContextUtil;
@@ -34,14 +35,13 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
         return result;
     }
 
-    // MP的bug，待修复
     @Override
-    protected Class<E> currentMapperClass() {
-        return (Class<E>) this.getResolvableType().as(BaseRepository.class).getGeneric(0).getType();
+    protected Class<M> currentMapperClass() {
+        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 0);
     }
 
     @Override
     protected Class<E> currentModelClass() {
-        return (Class<E>) this.getResolvableType().as(BaseRepository.class).getGeneric(1).getType();
+        return (Class<E>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 1);
     }
 }

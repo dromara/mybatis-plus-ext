@@ -2,6 +2,7 @@ package com.tangzc.mpe.annotation.actable;
 
 
 import com.tangzc.mpe.annotation.constants.MySqlEngineConstant;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 //将此注解包含在javadoc中
 @Documented
+@Table
 public @interface TableEngine {
 
     /**
@@ -30,5 +32,6 @@ public @interface TableEngine {
      *
      * @return
      */
+    @AliasFor(annotation = Table.class, attribute = "engine")
     MySqlEngineConstant value();
 }

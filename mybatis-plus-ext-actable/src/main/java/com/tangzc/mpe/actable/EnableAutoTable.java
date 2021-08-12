@@ -1,7 +1,7 @@
 package com.tangzc.mpe.actable;
 
 import com.tangzc.mpe.actable.manager.handler.StartUpHandlerImpl;
-import com.tangzc.mpe.actable.manager.system.SysMysqlCreateTableManagerImpl;
+import com.tangzc.mpe.actable.manager.system.SysMysqlCreateTableManager;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Documented
 @Import({
         StartUpHandlerImpl.class,
-        SysMysqlCreateTableManagerImpl.class,
+        SysMysqlCreateTableManager.class,
         com.tangzc.mpe.actable.MapperScannerConfig.class,
 })
 public @interface EnableAutoTable {

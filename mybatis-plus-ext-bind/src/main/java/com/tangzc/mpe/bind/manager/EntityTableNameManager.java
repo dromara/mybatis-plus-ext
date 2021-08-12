@@ -1,7 +1,7 @@
 package com.tangzc.mpe.bind.manager;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +20,7 @@ public class EntityTableNameManager {
 
     private static String initTableName(Class<?> entityClass) {
 
-        TableName tableNameAnno = AnnotationUtils.findAnnotation(entityClass, TableName.class);
+        TableName tableNameAnno = AnnotatedElementUtils.findMergedAnnotation(entityClass, TableName.class);
         if (tableNameAnno != null) {
             return tableNameAnno.value();
         } else {

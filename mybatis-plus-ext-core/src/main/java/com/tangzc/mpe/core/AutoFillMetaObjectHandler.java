@@ -171,10 +171,10 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
                     String typeName = field.getGenericType().getTypeName();
                     switch (typeName) {
                         case "ID_TYPE":
-                            type = ReflectionKit.getSuperClassGenericType(clazz, 0);
+                            type = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 0);
                             break;
                         case "TIME_TYPE":
-                            type = ReflectionKit.getSuperClassGenericType(clazz, 1);
+                            type = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 1);
                             break;
                         default:
                     }

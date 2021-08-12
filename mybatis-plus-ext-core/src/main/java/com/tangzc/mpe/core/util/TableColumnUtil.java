@@ -3,7 +3,7 @@ package com.tangzc.mpe.core.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import net.sf.jsqlparser.schema.Table;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -24,7 +24,7 @@ public class TableColumnUtil {
 
     public static String getTableName(Class<?> entityClass) {
         String tableName;
-        TableName tableNameAnno = AnnotationUtils.findAnnotation(entityClass, TableName.class);
+        TableName tableNameAnno = AnnotatedElementUtils.findMergedAnnotation(entityClass, TableName.class);
         if (tableNameAnno != null) {
             tableName = tableNameAnno.value();
         } else {
@@ -33,10 +33,10 @@ public class TableColumnUtil {
         return tableName.replaceAll("`", "");
     }
 
-    public static String getColumnName(Field field){
+    public static String getColumnName(Field field) {
         String columnName;
-        TableField annotation = AnnotationUtils.findAnnotation(field, TableField.class);
-        if(annotation != null && !annotation.value().isEmpty()) {
+        TableField annotation = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+        if (annotation != null && !annotation.value().isEmpty()) {
             columnName = annotation.value();
         } else {
             columnName = humpToLine(field.getName());

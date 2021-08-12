@@ -20,5 +20,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
+@Column(isNull = false)
 public @interface IsNotNull {
 }

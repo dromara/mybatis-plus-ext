@@ -1,5 +1,7 @@
 package com.tangzc.mpe.annotation.actable;
 
+import org.springframework.core.annotation.AliasFor;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,6 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 //将此注解包含在javadoc中
 @Documented
+@Table
 public @interface TableComment {
 
     /**
@@ -26,5 +29,6 @@ public @interface TableComment {
      *
      * @return
      */
+    @AliasFor(annotation = Table.class, attribute = "comment")
     String value();
 }

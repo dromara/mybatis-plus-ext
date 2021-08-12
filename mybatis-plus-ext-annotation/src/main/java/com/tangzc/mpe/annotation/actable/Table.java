@@ -1,8 +1,10 @@
 package com.tangzc.mpe.annotation.actable;
 
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.mpe.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.annotation.constants.MySqlEngineConstant;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,6 +25,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 //将此注解包含在javadoc中
 @Documented
+@TableName
 public @interface Table {
 
     /**
@@ -30,13 +33,7 @@ public @interface Table {
      *
      * @return 表名
      */
-    String name() default "";
-
-    /**
-     * 表名
-     *
-     * @return 表名
-     */
+    @AliasFor(annotation = TableName.class, attribute = "value")
     String value() default "";
 
     /**
