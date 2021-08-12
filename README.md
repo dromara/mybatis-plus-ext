@@ -13,16 +13,19 @@
 > 官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
 
 ```java
+import javax.persistence.Column;
+
 @Data
 // @Table、@Entity、@TableName均可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-	
+
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能）
     @IsAutoIncrement
     // 字段注释
     @ColumnComment("主键")
+    @Column(length = 32)
     private Long id;
 
     // 索引
@@ -30,14 +33,15 @@ public class User {
     // 非空
     @IsNotNull
     @ColumnComment("名字")
+    @Column(length = 100)
     private String name;
-    
+
     // 唯一索引
     @Unique
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-    
+
     // 省略其他属性
     ......
 }
