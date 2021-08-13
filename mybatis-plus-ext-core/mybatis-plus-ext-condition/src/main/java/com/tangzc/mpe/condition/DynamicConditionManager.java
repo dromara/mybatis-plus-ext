@@ -1,11 +1,13 @@
-package com.tangzc.mpe.fixcondition;
+package com.tangzc.mpe.condition;
 
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
+import com.tangzc.mpe.base.util.SpringContextUtil;
 import com.tangzc.mpe.base.util.TableColumnUtil;
-import com.tangzc.mpe.fixcondition.metadata.FixedConditionDescription;
-import com.tangzc.mpe.fixcondition.metadata.annotation.FixedCondition;
+import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
+import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
+import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
@@ -37,21 +39,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author don
  */
 @Slf4j
-public class FixedConditionManager extends JsqlParserSupport implements InnerInterceptor {
+public class DynamicConditionManager extends JsqlParserSupport implements InnerInterceptor {
 
-    private static final Map<String, List<FixedConditionDescription>> ENTITY_LIST_MAP = new HashMap<>();
+    private static final Map<String, List<DynamicConditionDescription>> ENTITY_LIST_MAP = new HashMap<>();
 
-    public static void add(Class<?> entityClass, Field field, FixedCondition fixedCondition) {
+    public static void add(Class<?> entityClass, Field field, DynamicCondition dynamicCondition) {
 
         String tableName = TableColumnUtil.getTableName(entityClass);
 
         ENTITY_LIST_MAP.computeIfAbsent(tableName, k -> new ArrayList<>())
-                .add(new FixedConditionDescription(entityClass, field, fixedCondition));
+                .add(new DynamicConditionDescription(entityClass, field, dynamicCondition));
     }
 
     @Override
@@ -91,7 +94,7 @@ public class FixedConditionManager extends JsqlParserSupport implements InnerInt
 
         String tableName = TableColumnUtil.getTableName(delete.getTable());
 
-        List<FixedConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
+        List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
         if (descriptions == null) {
             return;
         }
@@ -105,7 +108,7 @@ public class FixedConditionManager extends JsqlParserSupport implements InnerInt
 
         String tableName = TableColumnUtil.getTableName(update.getTable());
 
-        List<FixedConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
+        List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
         if (descriptions == null) {
             return;
         }
@@ -129,7 +132,7 @@ public class FixedConditionManager extends JsqlParserSupport implements InnerInt
             }
         } else {
             SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && operationList.getSelects().size() > 0) {
+            if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
                 operationList.getSelects().forEach(this::processSelectBody);
             }
         }
@@ -140,7 +143,7 @@ public class FixedConditionManager extends JsqlParserSupport implements InnerInt
         if (fromItem instanceof Table) {
             String tableName = TableColumnUtil.getTableName((Table) fromItem);
 
-            List<FixedConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
+            List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
             if (descriptions == null) {
                 return;
             }
@@ -149,17 +152,41 @@ public class FixedConditionManager extends JsqlParserSupport implements InnerInt
         }
     }
 
-    private Expression getExpression(List<FixedConditionDescription> descriptions, Expression where) {
+    private Expression getExpression(List<DynamicConditionDescription> descriptions, Expression where) {
         try {
-            for (FixedConditionDescription description : descriptions) {
+            for (DynamicConditionDescription description : descriptions) {
                 Field entityField = description.getEntityField();
-                String value = description.getFixedCondition().value();
-                Class<?> type = entityField.getType();
-                if (type == String.class) {
-                    value = "'" + value + "'";
+                Class<? extends IDynamicConditionHandler> handlerClass = description.getDynamicCondition().value();
+                IDynamicConditionHandler conditionHandler = SpringContextUtil.getApplicationContext().getBean(handlerClass);
+
+                // 表示该条件跳过，不参与过滤
+                if (!conditionHandler.enable()) {
+                    continue;
                 }
-                Expression envCondition = CCJSqlParserUtil.parseCondExpression(TableColumnUtil.getColumnName(entityField) + "=" + value);
-                where = new AndExpression(where, envCondition);
+
+                String condExpr;
+                List<Object> values = conditionHandler.values();
+                if (values == null || values.isEmpty()) {
+                    condExpr = TableColumnUtil.getColumnName(entityField) + " is null";
+                } else {
+                    // 字符串的话，两边追加'
+                    if (entityField.getType() == String.class) {
+                        values = values.stream()
+                                .map(value -> "'" + value.toString() + "'")
+                                .collect(Collectors.toList());
+                    }
+                    if (values.size() == 1) {
+                        condExpr = TableColumnUtil.getColumnName(entityField) + "=" + values.get(0) + "";
+                    } else {
+                        condExpr = TableColumnUtil.getColumnName(entityField) + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
+                    }
+                }
+                Expression envCondition = CCJSqlParserUtil.parseCondExpression(condExpr);
+                if(where == null) {
+                    where = envCondition;
+                } else {
+                    where = new AndExpression(where, envCondition);
+                }
             }
         } catch (JSQLParserException e) {
             e.printStackTrace();

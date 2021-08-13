@@ -25,12 +25,12 @@ public class TableColumnUtil {
     public static String getTableName(Class<?> entityClass) {
         String tableName;
         TableName tableNameAnno = AnnotatedElementUtils.findMergedAnnotation(entityClass, TableName.class);
-        if (tableNameAnno != null) {
+        if (tableNameAnno != null && !tableNameAnno.value().isEmpty()) {
             tableName = tableNameAnno.value();
         } else {
             tableName = TableColumnUtil.humpToLine(entityClass.getSimpleName());
         }
-        return tableName.replaceAll("`", "");
+        return tableName.replace("`", "");
     }
 
     public static String getColumnName(Field field) {
@@ -70,6 +70,10 @@ public class TableColumnUtil {
             matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
         }
         matcher.appendTail(sb);
-        return sb.toString();
+        String newStr = sb.toString();
+        if(newStr.startsWith("_")) {
+            return newStr.substring(1);
+        }
+        return newStr;
     }
 }

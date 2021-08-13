@@ -1,6 +1,6 @@
-package com.tangzc.mpe.fixcondition.metadata;
+package com.tangzc.mpe.condition.metadata;
 
-import com.tangzc.mpe.fixcondition.metadata.annotation.FixedCondition;
+import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,11 +11,11 @@ import java.lang.reflect.Field;
  */
 @Data
 @AllArgsConstructor
-public class FixedConditionDescription {
+public class DynamicConditionDescription {
 
     private Class<?> entityClass;
 
     private Field entityField;
 
-    private FixedCondition fixedCondition;
+    private DynamicCondition dynamicCondition;
 }

@@ -1,7 +1,6 @@
-package com.tangzc.mpe.fixcondition.metadata.annotation;
+package com.tangzc.mpe.condition.metadata.annotation;
 
-import com.tangzc.mpe.annotation.DefaultValue;
-import org.springframework.core.annotation.AliasFor;
+import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -11,18 +10,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 固定查询条件
+ * 动态查询条件
+ * @author don
  */
 @Inherited
 @Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@DefaultValue("")
-public @interface FixedCondition {
+public @interface DynamicCondition {
 
     /**
-     * 固定值
+     * 动态值
      */
-    @AliasFor(annotation = DefaultValue.class, attribute = "value")
-    String value();
+    Class<? extends IDynamicConditionHandler> value();
 }

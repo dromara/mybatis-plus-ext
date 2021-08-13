@@ -26,6 +26,7 @@ import java.lang.annotation.Target;
 //将此注解包含在javadoc中
 @Documented
 @TableName
+@TablePrimary
 @TableComment
 @TableCharset
 @TableEngine
@@ -38,6 +39,13 @@ public @interface Table {
      */
     @AliasFor(annotation = TableName.class, attribute = "value")
     String value() default "";
+
+    /**
+     * 是否主表
+     * @return 表名
+     */
+    @AliasFor(annotation = TablePrimary.class, attribute = "value")
+    boolean primary() default false;
 
     /**
      * 表注释，也可以使用@TableComment注解代替

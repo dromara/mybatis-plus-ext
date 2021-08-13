@@ -1,10 +1,10 @@
-package com.tangzc.mpe.fixcondition;
+package com.tangzc.mpe.condition;
 
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.base.util.BeanClassUtil;
-import com.tangzc.mpe.fixcondition.metadata.annotation.FixedCondition;
+import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author don
  */
 //@Component
-public class FixConditionInitScanEntityEventListener implements ApplicationListener<InitScanEntityEvent> {
+public class ConditionInitScanEntityEventListener implements ApplicationListener<InitScanEntityEvent> {
     @Override
     public void onApplicationEvent(InitScanEntityEvent event) {
 
@@ -22,9 +22,9 @@ public class FixConditionInitScanEntityEventListener implements ApplicationListe
         for (Field field : allDeclaredFields) {
 
             // 扫描所有的Entity中的DataSource注解
-            FixedCondition fixedCondition = AnnotationUtils.findAnnotation(field, FixedCondition.class);
-            if (fixedCondition != null) {
-                FixedConditionManager.add(entityClass, field, fixedCondition);
+            DynamicCondition dynamicCondition = AnnotatedElementUtils.findMergedAnnotation(field, DynamicCondition.class);
+            if (dynamicCondition != null) {
+                DynamicConditionManager.add(entityClass, field, dynamicCondition);
             }
         }
     }

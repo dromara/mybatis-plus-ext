@@ -3,19 +3,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
+        <groupId>com.tangzc</groupId>
         <version>1.2.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mybatis-plus-ext-core</artifactId>
+    <artifactId>mybatis-plus-ext-demo</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>mybatis-plus-ext-base</module>
-        <module>mybatis-plus-ext-annotation</module>
-        <module>mybatis-plus-ext-bind</module>
-        <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-condition</module>
+        <module>mybatis-plus-ext-demo-condition</module>
+        <module>mybatis-plus-ext-demo-common</module>
     </modules>
+
 </project>

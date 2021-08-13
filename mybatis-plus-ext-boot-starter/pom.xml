@@ -34,7 +34,7 @@
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-fixcondition</artifactId>
+            <artifactId>mybatis-plus-ext-condition</artifactId>
             <version>${project.version}</version>
         </dependency>
 

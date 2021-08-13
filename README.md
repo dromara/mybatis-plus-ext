@@ -2,7 +2,7 @@
 
 ## 简介
 
-> 本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的集成优化，部分优化也会反馈回原框架，绝大部分功能均是通用的，详细教程可以直接参考A.CTable官方。
+> 本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`固定条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不与原框架兼容。
 
 ## 快速开始
 
@@ -11,19 +11,23 @@
 > 根据实体上的注解及字段注解自动创建、更新数据库表。
 >
 > 官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
+>
+> 另外A.CTable框架内部集成了类似MP的功能，不如MP完善，所以我也剔除掉了，顺带解决了不兼容和bug。同时像DefaultValue注解重名了，也给它改名为ColumnDefault了，另外整理了一遍内部的注解利用spring的AliasFor做了关联，更方便管理。
+>
+> 其中还有一点，@Table里面加了一个primary属性，表示是否为主表，为了支持多个Entity对应一个数据库表（正常用不到请忽略^_^）
 
 ```java
 @Data
 // @Table、@Entity、@TableName均可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-
+	
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能）
     @IsAutoIncrement
     // 字段注释
     @ColumnComment("主键")
-    @Column(length = 32)
+    @ColumnLength(32)
     private Long id;
 
     // 索引
@@ -31,15 +35,14 @@ public class User {
     // 非空
     @IsNotNull
     @ColumnComment("名字")
-    @Column(length = 100)
     private String name;
-
+    
     // 唯一索引
     @Unique
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-
+    
     // 省略其他属性
     ......
 }
@@ -328,42 +331,62 @@ public class Comment {
 }
 ```
 
-### 固定条件
+### 动态条件
 
-> 使用场景比较少，之所以添加这样一个注解是因为平时工作中当针对Entity做充血模型的设计的时候，会出现一个表对应多个实体的情况，每个实体必然有一个固定值的字段，类似类型，对应表中的一个类型区分不同的实体，此时可以使用该方案。
+> 适用场景：数据筛选，比如根据不同权限获取不同数据，用户只能看到自己的数据，管理员能看到所有人的数据。
 >
-> 假设一个场景，设备表，里面有个字段标记了设备类型（大、中、小），然后不同类型设备存在不同的行为，比如，大型设备在充血模型设计下，有一个定期保养行为，此时就可以如下设计表与Entity的关系
+> 此种场景，我们通常需要在每一个查询、更新、删除的sql操作上都追加上某个条件，很容易忘记，但是可以抽象成注解直接配置到Entity上，就省去了每个数据操作关心这个特殊条件了。
 
 ```java
 @Data
-@TableName("device")
-@TableComment("大型设备")
-public class BigDevice {
+@Table(comment = "文章")
+public class Article {
 
     @ColumnComment("主键")
     private String id;
 
-    @ColumnComment("设备名")
-    private String score;
-
-    // 只要是通过BigDevice的Mapper对数据进行更新和查询，都会自动带上条件type='BIG'
-    // DeviceTypeEnum(BIG, MEDIUM, TINY)
-    @FixedCondition("BIG")
-    @ColumnComment("设备类型")
-    private DeviceTypeEnum type;
+    @ColumnComment("标题")
+    private String title;
     
-    @ColumnComment("保养日期")
-    private Date maintainTime;
+    @ColumnComment("内容")
+    private String content;
 
-    /**
-     * 维修保养
-     */
-    public void maintain() {
-        // 省略其他逻辑
-        this.maintainTime = new Date();
+    @ColumnComment("发布人")
+    @InsertOptionUser(UserIdAutoFillHandler.class)
+    // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=或者in的添加
+    @DynamicCondition(ArticleDynamicConditionHandler.class)
+    private String publishedUserId;
+    
+    // 省略其他字段
+    ......
+}
+```
+
+```java
+@Component
+public class ArticleDynamicConditionHandler implements IDynamicConditionHandler {
+
+    @Resource
+    private HttpServletRequest request;
+
+    @Override
+    public List<Object> values() {
+		// 只有当enable()返回true的时候 本动态条件才 生效
+        // 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
+        String userId = request.getHeader("USER_ID");
+        return Collections.singletonList(userId);
+    }
+
+    @Override
+    public boolean enable() {
+        // 简单例子：header中取用户权限，如果是管理员 返回false，意思就是本动态条件失效
+        String userRule = request.getHeader("USER_RULE");
+        return !"ADMIN".equals(userRule);
     }
 }
 ```
+
+
 
 ### BaseEntity使用
 
@@ -441,7 +464,49 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 ### 自动建表注解
 
-所有注解均是通用的，详细教程可以直接参考A.CTable官方。
+> 只有小部分注解，进行了轻微改动，基本所有注解均是通用的，详细教程可以直接参考A.CTable官方。
+
+#### `@Table`
+
+> 新增一个primary属性，isNull属性为了一致性改为了isNotNull属性默认false
+
+#### `@TableCharset`
+
+#### `@TableComment`
+
+#### `@TableEngine`
+
+#### `@TablePrimary`
+
+> 新增注解，同步@Table中的primary属性，在多个Entity映射一张表的情况下，确定主Entity是哪个，数据表生成的时候根据主表来生成。
+
+#### `@IgnoreTable`
+
+#### `@EnableTimeSuffix`
+
+#### `@Column`
+
+#### `@ColumnComment`
+
+#### `@ColumnDefault`
+
+> 原@DefaultValue，跟本框架中的数据插入的时候指定默认值的注解重名了，因此把这里改名字了
+
+#### `@ColumnType`
+
+#### `@IsAutoIncrement`
+
+#### `@IsKey`
+
+#### `@IsNotNull`
+
+#### `@IsNativeDefValue`
+
+#### `@Unique`
+
+#### `@Index`
+
+#### `@IgnoreUpdate`
 
 ---
 
@@ -451,7 +516,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 **描述：**
 
-> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+> 自动赋值数据操作时间。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
 >
 > 被标注的字段，在可允许的类型范围（`String`、`Long`、`long`、`Date`、`LocalDate`、`LocalDateTime`）内，数据被操作的情况下，会自动被赋值上当前时间。
 >
@@ -468,15 +533,15 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 | 注解                      | 描述                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值数据操作时间。 |
-| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
-| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+| `@InsertOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值数据操作时间。 |
+| `@UpdateOptionDate`       | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
+| `@InsertUpdateOptionDate` | 基于`@OptionDate`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值数据操作时间。 |
 
 #### `@OptionUser`
 
 **描述：**
 
-> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)（该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
+> 指定实现方式，自动赋值数据操作人员信息。需结合mybatis-plus原框架注解[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) （该注解的使用请查看官方文档，懒得看的话，请往下读，有惊喜）一并使用才有效。
 >
 > 被标注的字段，会根据`@OptionUser`中`AuditHandler`的实现来返回对应的值。
 >
@@ -493,9 +558,9 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 | 注解                      | 描述                                                         |
 | ------------------------- | ------------------------------------------------------------ |
-| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**的时候，自动赋值操作人信息。 |
-| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
-| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield)，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+| `@InsertOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**的时候，自动赋值操作人信息。 |
+| `@UpdateOptionUser`       | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
+| `@InsertUpdateOptionUser` | 基于`@OptionUser`的拓展，无需结合[`@TableField`](https://mybatis.plus/guide/annotation.html#tablefield) ，数据**插入**、**更新**（***注意：update(Wrapper<T> updateWrapper)方法除外***）的时候，自动赋值操作人信息。 |
 
 #### `@DefaultValue`
 

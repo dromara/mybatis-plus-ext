@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.tangzc.mpe.actable.annotation.IgnoreUpdate;
 import com.tangzc.mpe.actable.annotation.Index;
 import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.actable.annotation.TablePrimary;
 import com.tangzc.mpe.actable.annotation.Unique;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
@@ -100,16 +101,11 @@ public class SysMysqlCreateTableManager {
         // 初始化用于存储各种操作表结构的容器
         Map<String, Map<String, TableConfig>> baseTableMap = initTableMap();
 
-        // 禁止出现重名表
-        Set<String> needCreateTable = classes.stream().map(ColumnUtils::getTableName).collect(Collectors.toSet());
-        if (needCreateTable.size() < classes.size()) {
-            List<String> allTables = classes.stream().map(ColumnUtils::getTableName).collect(Collectors.toList());
-            allTables.removeAll(needCreateTable);
-            throw new RuntimeException("表名[" + String.join(",", allTables) + "]出现重复，禁止创建！");
-        }
+        // 处理重名表
+        Set<Class<?>> needCreateTable = filterRepeatTable(classes);
 
         // 循环全部的model
-        for (Class<?> clas : classes) {
+        for (Class<?> clas : needCreateTable) {
 
             // 配置了忽略建表的注解 不需要创建表
             if (ColumnUtils.hasIgnoreTableAnnotation(clas)) {
@@ -122,6 +118,33 @@ public class SysMysqlCreateTableManager {
 
         // 根据传入的map，分别去创建或修改表结构
         createOrModifyTableConstruct(baseTableMap);
+    }
+
+    /**
+     * 处理重名表
+     */
+    private Set<Class<?>> filterRepeatTable(Set<Class<?>> classes) {
+
+        Map<String, List<Class<?>>> classMap = classes.stream().collect(Collectors.groupingBy(ColumnUtils::getTableName));
+        Set<Class<?>> needCreateTable = new HashSet<>();
+        classMap.forEach((tableName, sameClasses) -> {
+            // 挑选出重名的表，找到其中标记primary的，用作生成数据表的依据
+            if (sameClasses.size() > 1) {
+                List<Class<?>> primaryClasses = sameClasses.stream()
+                        .filter(clazz -> AnnotatedElementUtils.findMergedAnnotation(clazz, TablePrimary.class).value())
+                        .collect(Collectors.toList());
+                if (primaryClasses.isEmpty()) {
+                    throw new RuntimeException("表名[" + tableName + "]出现重复，必须指定一个为@TablePrimary！");
+                }
+                if (primaryClasses.size() > 1) {
+                    throw new RuntimeException("表名[" + tableName + "]出现重复，有且只能有一个为@TablePrimary！");
+                }
+                needCreateTable.add(primaryClasses.get(0));
+            } else {
+                needCreateTable.add(sameClasses.get(0));
+            }
+        });
+        return needCreateTable;
     }
 
     /**

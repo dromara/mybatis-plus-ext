@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Import({
         StartUpHandlerImpl.class,
         SysMysqlCreateTableManager.class,
-        com.tangzc.mpe.actable.MapperScannerConfig.class,
+        MapperScannerConfig.class,
 })
 public @interface EnableAutoTable {
 }
