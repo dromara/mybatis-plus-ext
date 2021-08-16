@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.base.event.InitScanMapperEvent;
 import com.tangzc.mpe.base.util.ReflectionUtil;
-import com.tangzc.mpe.base.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -26,12 +26,16 @@ public class MapperScanner implements ApplicationListener<ContextRefreshedEvent>
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired(required = false)
+    private List<BaseMapper<?>> proxyMapperList;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         // 初始化所有的Entity和Mapper
-        List<BaseMapper> proxyMapperList = SpringContextUtil.getBeansOfTypeList(BaseMapper.class);
+        if (proxyMapperList == null) {
+            return;
+        }
         for (BaseMapper<?> proxyMapper : proxyMapperList) {
             Class<?> entityClass = ReflectionUtil.getEntityClass(proxyMapper);
             applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));

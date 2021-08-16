@@ -19,7 +19,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
     public boolean updateById(E entity) {
         boolean result = super.updateById(entity);
         if(result) {
-            SpringContextUtil.getApplicationContext().publishEvent(EntityUpdateEvent.create(entity));
+            SpringContextUtil.publishEvent(EntityUpdateEvent.create(entity));
         }
         return result;
     }
@@ -29,7 +29,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
         boolean result = super.updateBatchById(entityList, batchSize);
         if(result) {
             for (E entity : entityList) {
-                SpringContextUtil.getApplicationContext().publishEvent(EntityUpdateEvent.create(entity));
+                SpringContextUtil.publishEvent(EntityUpdateEvent.create(entity));
             }
         }
         return result;
