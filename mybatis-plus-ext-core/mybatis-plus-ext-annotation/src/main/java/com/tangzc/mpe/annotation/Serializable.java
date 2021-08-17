@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 
 /**
  * 表示字段可被序列化
+ *
  * @author don
  */
 @Documented
@@ -21,6 +22,11 @@ import java.lang.annotation.Target;
 @TableField
 public @interface Serializable {
 
+    /**
+     * 需要配合 @TableName(autoResultMap = true)
+     *
+     * @return
+     */
     @AliasFor(annotation = TableField.class, attribute = "typeHandler")
     Class<? extends TypeHandler> typeHandler() default JacksonTypeHandler.class;
 }
