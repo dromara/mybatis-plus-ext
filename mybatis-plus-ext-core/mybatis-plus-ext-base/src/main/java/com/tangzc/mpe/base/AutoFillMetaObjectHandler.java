@@ -15,7 +15,6 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.core.annotation.AnnotationUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -72,7 +71,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         List<Field> fieldList = fields.stream()
                 .filter(field -> metaObject.hasSetter(field.getName()))
                 .filter(field -> {
-                    TableField annotation = AnnotationUtils.findAnnotation(field, TableField.class);
+                    TableField annotation = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
 
                     return annotation != null &&
                             (annotation.fill() == option || annotation.fill() == FieldFill.INSERT_UPDATE);

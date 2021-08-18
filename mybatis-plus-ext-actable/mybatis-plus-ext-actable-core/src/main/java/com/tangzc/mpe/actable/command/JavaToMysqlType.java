@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
 import com.tangzc.mpe.actable.annotation.constants.MySqlTypeConstant;
 import com.tangzc.mpe.base.base.BaseEntity;
-import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class JavaToMysqlType {
             return MySqlTypeConstant.VARCHAR;
         }
         // 这种情况下，使用了mybatis-plus的数据序列化，默认设置为字符串类型
-        TableField tableField = AnnotationUtils.findAnnotation(field, TableField.class);
+        TableField tableField = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
         if (tableField != null && AbstractJsonTypeHandler.class.isAssignableFrom(tableField.typeHandler())) {
             return MySqlTypeConstant.VARCHAR;
         }
