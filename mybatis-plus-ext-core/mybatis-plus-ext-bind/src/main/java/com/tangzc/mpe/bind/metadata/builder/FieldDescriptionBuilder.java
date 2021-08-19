@@ -43,7 +43,7 @@ public class FieldDescriptionBuilder {
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
         Method readMethod = BeanClassUtil.getReadMethod(entityClass, bindField.field());
-        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindField.condition());
+        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindField.conditions());
         List<OrderByDescription> orderByList = getOrderByList(bindField.orderBy());
         return new BindFieldDescription(fieldName, fieldClass, setMethod, isCollection, bindField,
                 entityClass, conditionList, orderByList, readMethod);
@@ -61,7 +61,7 @@ public class FieldDescriptionBuilder {
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
         String fieldName = field.getName();
-        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindEntity.condition());
+        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindEntity.conditions());
         List<OrderByDescription> orderByList = getOrderByList(bindEntity.orderBy());
         return new BindEntityDescription(fieldName, fieldClass, setMethod, isCollection, bindEntity,
                 entityClass, conditionList, orderByList);
@@ -80,7 +80,7 @@ public class FieldDescriptionBuilder {
         Method bindFieldGetMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldByMid.field());
 
         String fieldName = field.getName();
-        MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindFieldByMid.condition());
+        MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindFieldByMid.conditions());
         List<OrderByDescription> orderByList = getOrderByList(bindFieldByMid.orderBy());
         return new BindFieldByMidDescription(fieldName, fieldClass, setMethod, isCollection, bindFieldByMid,
                 entityClass, conditionList, orderByList, bindFieldGetMethod);
@@ -99,7 +99,7 @@ public class FieldDescriptionBuilder {
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
         String fieldName = field.getName();
-        MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindEntity.condition());
+        MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindEntity.conditions());
         List<OrderByDescription> orderByList = getOrderByList(bindEntity.orderBy());
         return new BindEntityByMidDescription(fieldName, fieldClass, setMethod, isCollection, bindEntity,
                 entityClass, conditionList, orderByList);

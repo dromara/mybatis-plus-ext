@@ -34,7 +34,7 @@ public @interface BindFieldByMid {
     /**
      * 中间表关联条件
      */
-    MidCondition condition();
+    MidCondition conditions();
 
     /**
      * 被关联的Entity所需要的额外条件

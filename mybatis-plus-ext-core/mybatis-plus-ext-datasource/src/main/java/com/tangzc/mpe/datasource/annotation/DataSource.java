@@ -33,5 +33,5 @@ public @interface DataSource {
     /**
      * 数据来源
      */
-    Condition[] condition();
+    Condition[] conditions();
 }

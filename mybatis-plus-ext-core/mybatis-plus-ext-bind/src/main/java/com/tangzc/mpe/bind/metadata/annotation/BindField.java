@@ -34,7 +34,7 @@ public @interface BindField {
     /**
      * 关联Entity所需要的条件
      */
-    JoinCondition[] condition();
+    JoinCondition[] conditions();
 
     /**
      * 被关联的Entity所需要的额外条件

@@ -21,7 +21,7 @@
 // @Table、@Entity、@TableName均可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-	
+
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能）
     @IsAutoIncrement
@@ -36,13 +36,13 @@ public class User {
     @IsNotNull
     @ColumnComment("名字")
     private String name;
-    
+
     // 唯一索引
     @Unique
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-    
+
     // 省略其他属性
     ......
 }
@@ -81,17 +81,17 @@ actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默
 @Data
 @Table(comment = "文章")
 public class Article {
-	
+
     // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
     @ColumnComment("主键")
     private String id;
 
     @ColumnComment("标题")
     private String title;
-    
+
     @ColumnComment("内容")
     private String content;
-    
+
     // 文章默认激活状态
     @DefaultValue("ACTIVE")
     @ColumnComment("内容")
@@ -147,7 +147,7 @@ public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
      */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
-      	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
         // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
@@ -212,7 +212,7 @@ public class User {
     private String password;
 
     // 关键配置，声明了User想关联对应的Rule集合，中间表是UserRule
-    @BindEntityByMid(condition = @MidCondition(
+    @BindEntityByMid(conditions = @MidCondition(
             midEntity = UserRule.class, selfMidField = "userId", joinMidField = "ruleId"
     ))
     private List<Rule> rules;
@@ -321,7 +321,7 @@ public class Comment {
     private String userId;
 
     // 基于该注解，框架会自动注册监听EntityUpdateEvent事件，User的updateById和updateBatchById两个方法会自动发布EntityUpdateEvent事件
-    @DataSource(source = User.class, field = "username", condition = @Condition(selfField = "userId"))
+    @DataSource(source = User.class, field = "username", conditions = @Condition(selfField = "userId"))
     @ColumnComment("评论人名称")
     private String userName;
 
@@ -398,6 +398,7 @@ public class ArticleDynamicConditionHandler implements IDynamicConditionHandler 
 public class BaseEntity<ID_TYPE extends Serializable, TIME_TYPE> {
 
     // 这里就是数据填充样例那里提到的IOptionByAutoFillHandler接口
+    // 此处单独指定一个标记性的接口是为了区别用户其他数据的自动填充，例如用户名、用户电话等都会实现AutoFillHandler接口，框架上根据该接口无法拿到唯一的实现，因此同样IOptionByAutoFillHandler在整个系统中也只能有一个实现，不然会报错。
     @InsertOptionUser(IOptionByAutoFillHandler.class)
     @ColumnComment("创建人")
     protected ID_TYPE createBy;
@@ -593,7 +594,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | --------------- | ---------------- | ---- | ------ | ------------------------------------------------------------ |
 | entity          | Class<?>         | 是   |        | 被关联的Entity                                               |
 | field           | String           | 是   |        | 被关联的Entity的具体字段                                     |
-| condition       | @JoinCondition[] | 是   |        | 关联Entity所需要的条件                                       |
+| conditions      | @JoinCondition[] | 是   |        | 关联Entity所需要的条件                                       |
 | customCondition | String           | 否   |        | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
 | orderBy         | @JoinOrderBy[]   | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 
@@ -610,7 +611,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | 属性            | 类型             | 必需 | 默认值       | 描述                                                         |
 | --------------- | ---------------- | ---- | ------------ | ------------------------------------------------------------ |
 | entity          | Class<?>         | 否   | 字段声明类型 | 被关联的Entity，不再需要显示的指明，默认取字段上的声明类型   |
-| condition       | @JoinCondition[] | 是   |              | 关联Entity所需要的条件                                       |
+| conditions      | @JoinCondition[] | 是   |              | 关联Entity所需要的条件                                       |
 | customCondition | String           | 否   |              | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
 | orderBy         | @JoinOrderBy[]   | 否   |              | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 | deepBind        | boolean          | 否   | false        | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
@@ -623,13 +624,10 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 **字段：**
 
-| 属性            | 类型             | 必需 | 默认值       | 描述                                                         |
-| --------------- | ---------------- | ---- | ------------ | ------------------------------------------------------------ |
-| entity          | Class<?>         | 否   | 字段声明类型 | 被关联的Entity，不再需要显示的指明，默认取字段上的声明类型   |
-| condition       | @JoinCondition[] | 是   |              | 关联Entity所需要的条件                                       |
-| customCondition | String           | 否   |              | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0，同时该属性中可以使用`{当前对象属性名}`的形式，引用当前对象的属性值 |
-| orderBy         | @JoinOrderBy[]   | 否   |              | 被关联的Entity的结果集，排序条件                             |
-| deepBind        | boolean          | 否   | false        | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
+| 属性      | 类型   | 必需 | 默认值 | 描述                                         |
+| --------- | ------ | ---- | ------ | -------------------------------------------- |
+| selfField | String | 是   |        | 关联Entity所需的自身字段                     |
+| joinField | String | 是   | "id"   | 被关联Entity的关联字段，默认为关联Entity的id |
 
 #### `@JoinOrderBy`
 
@@ -658,7 +656,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | --------------- | -------------- | ---- | ------ | ------------------------------------------------------------ |
 | entity          | Class<?>       | 是   |        | 被关联的Entity                                               |
 | field           | String         | 是   |        | 被关联的Entity的具体字段                                     |
-| condition       | @MidCondition  | 是   |        | 中间表关联条件                                               |
+| conditions      | @MidCondition  | 是   |        | 中间表关联条件                                               |
 | customCondition | String         | 否   |        | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
 | orderBy         | @JoinOrderBy[] | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 
@@ -675,7 +673,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | 属性            | 类型           | 必需 | 默认值 | 描述                                                         |
 | --------------- | -------------- | ---- | ------ | ------------------------------------------------------------ |
 | entity          | Class<?>       | 是   |        | 被关联的Entity                                               |
-| condition       | @MidCondition  | 是   |        | 中间表关联条件                                               |
+| conditions      | @MidCondition  | 是   |        | 中间表关联条件                                               |
 | customCondition | String         | 否   |        | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
 | orderBy         | @JoinOrderBy[] | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
 | deepBind        | boolean        | 否   | false  | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
@@ -688,13 +686,13 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 **字段：**
 
-| 属性            | 类型           | 必需 | 默认值 | 描述                                                         |
-| --------------- | -------------- | ---- | ------ | ------------------------------------------------------------ |
-| entity          | Class<?>       | 是   |        | 被关联的Entity                                               |
-| condition       | @MidCondition  | 是   |        | 中间表关联条件                                               |
-| customCondition | String         | 否   |        | 被关联的Entity所需要的额外条件，通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0 |
-| orderBy         | @JoinOrderBy[] | 否   |        | 排序条件，被关联的Entity或者字段为结果集的时候生效           |
-| deepBind        | boolean        | 否   | false  | 深度绑定，列表数据的情况下会产生性能问题。（不熟悉的，不建议使用） |
+| 属性         | 类型     | 必需 | 默认值 | 描述                                   |
+| ------------ | -------- | ---- | ------ | -------------------------------------- |
+| midEntity    | Class<?> | 是   |        | 中间表Entity，需要对应创建其Mapper     |
+| selfField    | String   | 是   | "Id"   | 关联Entity所需的自身字段               |
+| selfMidField | String   | 是   |        | 关联Entity所需的自身字段，中间表字段名 |
+| joinField    | String   | 是   | "id"   | 被关联Entity的关联字段                 |
+| joinMidField | String   | 是   |        | 被关联Entity的关联字段，中间表字段名   |
 
 ---
 
@@ -715,7 +713,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | source     | Class<?>    | 否，与`sourceName`二选一 | Void.class | 数据来源的Entity class                           |
 | sourceName | String      | 否，与`source`二选一     | ""         | 数据来源的Entity class 的全路径名称（包名.类名） |
 | field      | String      | 是                       |            | 数据来源的Entity对应的属性                       |
-| condition  | Condition[] | 是                       |            | 被关联的Entity所需要的条件                       |
+| conditions | Condition[] | 是                       |            | 被关联的Entity所需要的条件                       |
 
 #### `@Condition`
 
@@ -732,19 +730,19 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 ---
 
-### 固定条件注解
+### 动态条件注解
 
-#### `@FixedCondition`
+#### `@DynamicCondition`
 
 **描述：**
 
-> 固定查询条件，自带DefaultValue特性。
+> 适用场景：数据筛选，比如根据不同权限获取不同数据，用户只能看到自己的数据，管理员能看到所有人的数据。
 >
-> 该注解主要用于某些特殊场景，例如多个Entity对应一张数据库表。@FixedCondition就可以自动在数据插入的时候自动填充指定的值（主要是DefaultValue的作用），数据更新和数据查询的时候，自动添加固定条件过滤数据。
+> 具体demo移步快速开始的例子。
 
 **字段：**
 
-| 属性  | 类型   | 必需 | 默认值 | 描述   |
-| ----- | ------ | ---- | ------ | ------ |
-| value | String | 是   |        | 固定值 |
+| 属性  | 类型                                      | 必需 | 默认值 | 描述                                                         |
+| ----- | ----------------------------------------- | ---- | ------ | ------------------------------------------------------------ |
+| value | Class<? extends IDynamicConditionHandler> | 是   |        | IDynamicConditionHandler接口有两个方法，enable()决定了该条件是否生效，values()是条件匹配的值。 |
 
