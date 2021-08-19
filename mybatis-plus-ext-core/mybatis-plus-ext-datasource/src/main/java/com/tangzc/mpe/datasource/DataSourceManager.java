@@ -129,7 +129,7 @@ public class DataSourceManager implements ApplicationListener<EntityUpdateEvent<
     private DescriptionSignature groupBy(DataSourceDescription desc) {
         return new DescriptionSignature(
                 desc.getEntityClass(),
-                Arrays.stream(desc.getDataSource().condition())
+                Arrays.stream(desc.getDataSource().conditions())
                         .map(con -> new ConditionSignature(con.selfField(), con.sourceField()))
                         .collect(Collectors.toList()));
     }
