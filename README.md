@@ -2,7 +2,7 @@
 
 ## 简介
 
-> 本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`数据绑定（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`动态条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不与原框架兼容。
+> 本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`关联查询（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`动态条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不与原框架兼容。
 
 ## 快速开始
 
@@ -18,17 +18,18 @@
 
 ```java
 @Data
-// @Table、@Entity、@TableName均可被识别为需要自动创建表的Entity
+// @Table标记的可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-
+	
     // 自动识别id属性名为主键
-    // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能）
+    // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能），推荐默认便于后期的数据分布式存储等处理。
     @IsAutoIncrement
     // 字段注释
     @ColumnComment("主键")
+    // 字段长度
     @ColumnLength(32)
-    private Long id;
+    private String id;
 
     // 索引
     @Index
@@ -36,13 +37,14 @@ public class User {
     @IsNotNull
     @ColumnComment("名字")
     private String name;
-
+    
     // 唯一索引
     @Unique
+    // 非空
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-
+    
     // 省略其他属性
     ......
 }
@@ -81,17 +83,17 @@ actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默
 @Data
 @Table(comment = "文章")
 public class Article {
-
+	
     // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
     @ColumnComment("主键")
     private String id;
 
     @ColumnComment("标题")
     private String title;
-
+    
     @ColumnComment("内容")
     private String content;
-
+    
     // 文章默认激活状态
     @DefaultValue("ACTIVE")
     @ColumnComment("内容")
@@ -147,7 +149,7 @@ public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
      */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
-        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+      	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
         // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
@@ -178,7 +180,7 @@ public class UsernameAutoFillHandler implements AutoFillHandler<String> {
 }
 ```
 
-### 数据绑定
+### 关联查询
 
 > 数据关联查询的解决方案，替代sql中的join方式，通过注解关联多表之间的关系，查询某实体的时候，自动带出其关联性的数据实体。
 >
@@ -255,12 +257,12 @@ public class UserService {
 
         // MP的lambda查询方式
         List<User> userList = this.lambdaQuery()
-               .eq(name != null, User::getUsername, name)
-               .list();
+                .eq(name != null, User::getUsername, name)
+                .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
         Binder.bindOn(userList, User::getRules);
         // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
-        
+
         return UserMapping.MAPPER.toDto5(userList);
     }
 
@@ -273,9 +275,9 @@ public class UserService {
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式
         List<User> userList = this.lambdaQueryPlus()
-               .eq(name != null, User::getUsername, name)
-               .bindList(User::getRules);
-        
+                .eq(name != null, User::getUsername, name)
+                .bindList(User::getRules);
+
         return UserMapping.MAPPER.toDto5(userList);
     }
 }
@@ -300,7 +302,7 @@ public class User {
 
     @ColumnComment("头像")
     private String icon;
-    
+
     // 省略其他属性
     ......
 }
@@ -347,7 +349,7 @@ public class Article {
 
     @ColumnComment("标题")
     private String title;
-    
+
     @ColumnComment("内容")
     private String content;
 
@@ -356,7 +358,7 @@ public class Article {
     // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=或者in的添加
     @DynamicCondition(ArticleDynamicConditionHandler.class)
     private String publishedUserId;
-    
+
     // 省略其他字段
     ......
 }
@@ -371,7 +373,7 @@ public class ArticleDynamicConditionHandler implements IDynamicConditionHandler 
 
     @Override
     public List<Object> values() {
-		// 只有当enable()返回true的时候 本动态条件才 生效
+        // 只有当enable()返回true的时候 本动态条件才 生效
         // 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
         String userId = request.getHeader("USER_ID");
         return Collections.singletonList(userId);
@@ -443,7 +445,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
         if(result) {
             // 数据自动更新@DataSource注解的配合逻辑，
             SpringContextUtil.getApplicationContext()
-                .publishEvent(EntityUpdateEvent.create(entity));
+                    .publishEvent(EntityUpdateEvent.create(entity));
         }
         return result;
     }
