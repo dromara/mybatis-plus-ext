@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-actable</artifactId>
-       <version>1.2.5</version>
+        <version>1.2.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,11 +17,13 @@
             <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-base</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>${mybatis-spring-boot-starter.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>

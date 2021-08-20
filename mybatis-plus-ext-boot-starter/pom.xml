@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-       <version>1.2.5</version>
+        <version>1.2.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -47,6 +47,13 @@
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!-- 为了获取spring的上下文，进而获取bean管理 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 

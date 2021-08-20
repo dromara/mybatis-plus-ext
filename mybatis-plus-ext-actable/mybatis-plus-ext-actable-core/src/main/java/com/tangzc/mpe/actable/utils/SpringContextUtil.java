@@ -1,4 +1,4 @@
-package com.tangzc.mpe.base.util;
+package com.tangzc.mpe.actable.utils;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

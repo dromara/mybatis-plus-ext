@@ -4,7 +4,7 @@ import com.tangzc.mpe.actable.annotation.ColumnComment;
 import com.tangzc.mpe.actable.annotation.Table;
 import com.tangzc.mpe.annotation.InsertOptionUser;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
-import com.tangzc.mpe.demo.condition.DailyDynamicConditionHandler;
+import com.tangzc.mpe.demo.condition.FilterByCurrentUser;
 import com.tangzc.mpe.demo.condition.UserIdAutoFillHandler;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -18,7 +18,7 @@ public class Daily {
     private String id;
     @ColumnComment("内容")
     private String content;
-    @DynamicCondition(DailyDynamicConditionHandler.class)
+    @DynamicCondition(FilterByCurrentUser.class)
     @InsertOptionUser(UserIdAutoFillHandler.class)
     @ColumnComment("提交人")
     private String submitter;

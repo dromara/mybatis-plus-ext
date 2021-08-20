@@ -1,19 +1,11 @@
 package com.tangzc.mpe.actable.manager.system;
 
 import com.google.common.collect.Sets;
-import com.tangzc.mpe.actable.annotation.IgnoreUpdate;
-import com.tangzc.mpe.actable.annotation.Index;
-import com.tangzc.mpe.actable.annotation.Table;
-import com.tangzc.mpe.actable.annotation.TablePrimary;
-import com.tangzc.mpe.actable.annotation.Unique;
+import com.tangzc.mpe.actable.annotation.*;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlTypeConstant;
-import com.tangzc.mpe.actable.command.CreateTableParam;
-import com.tangzc.mpe.actable.command.MySqlTypeAndLength;
-import com.tangzc.mpe.actable.command.SysMysqlColumns;
-import com.tangzc.mpe.actable.command.SysMysqlTable;
-import com.tangzc.mpe.actable.command.TableConfig;
+import com.tangzc.mpe.actable.command.*;
 import com.tangzc.mpe.actable.constants.Constants;
 import com.tangzc.mpe.actable.mapper.CreateMysqlTablesMapper;
 import com.tangzc.mpe.actable.utils.ClassScanner;
@@ -28,15 +20,8 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

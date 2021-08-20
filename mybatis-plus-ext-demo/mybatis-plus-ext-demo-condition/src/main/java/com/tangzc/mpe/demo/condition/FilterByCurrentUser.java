@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
-public class DailyDynamicConditionHandler implements IDynamicConditionHandler {
+public class FilterByCurrentUser implements IDynamicConditionHandler {
 
     @Resource
     private HttpServletRequest request;

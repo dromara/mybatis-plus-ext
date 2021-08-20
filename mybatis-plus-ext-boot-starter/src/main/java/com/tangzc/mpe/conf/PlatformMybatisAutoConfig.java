@@ -3,6 +3,7 @@ package com.tangzc.mpe.conf;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.tangzc.mpe.BaseEntityFieldTypeHandler;
 import com.tangzc.mpe.base.AutoFillMetaObjectHandler;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.util.SpringContextUtil;
@@ -29,6 +30,7 @@ import org.springframework.context.annotation.Import;
         BindEventListeners.BindEventListener.class,
         BindEventListeners.BindListEventListener.class,
         BindEventListeners.BindIPageEventListener.class,
+        BaseEntityFieldTypeHandler.class,
 })
 public class PlatformMybatisAutoConfig {
 
