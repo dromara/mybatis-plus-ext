@@ -6,6 +6,18 @@
 
 ## 快速开始
 
+### 引入jar包
+
+> starter内自带了MybatisPlus3.4.3.1版本及spring-boot-dependencies2.3.10的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了TableInfoHelper，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
+
+```xml
+<dependency>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext-boot-starter</artifactId>
+    <version>1.2.5</version>
+</dependency>
+```
+
 ### 自动建表
 
 > 根据实体上的注解及字段注解自动创建、更新数据库表。
@@ -70,8 +82,6 @@ actable.database.type=mysql
 actable.index.prefix=自己定义的索引前缀#该配置项不设置默认使用actable_idx_
 actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默认使用actable_uni_
 ```
-
-
 
 ### 数据填充
 
@@ -257,12 +267,12 @@ public class UserService {
 
         // MP的lambda查询方式
         List<User> userList = this.lambdaQuery()
-                .eq(name != null, User::getUsername, name)
-                .list();
+               .eq(name != null, User::getUsername, name)
+               .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
         Binder.bindOn(userList, User::getRules);
         // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
-
+        
         return UserMapping.MAPPER.toDto5(userList);
     }
 
@@ -275,9 +285,9 @@ public class UserService {
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式
         List<User> userList = this.lambdaQueryPlus()
-                .eq(name != null, User::getUsername, name)
-                .bindList(User::getRules);
-
+               .eq(name != null, User::getUsername, name)
+               .bindList(User::getRules);
+        
         return UserMapping.MAPPER.toDto5(userList);
     }
 }
@@ -302,7 +312,7 @@ public class User {
 
     @ColumnComment("头像")
     private String icon;
-
+    
     // 省略其他属性
     ......
 }
@@ -349,16 +359,16 @@ public class Article {
 
     @ColumnComment("标题")
     private String title;
-
+    
     @ColumnComment("内容")
     private String content;
 
     @ColumnComment("发布人")
     @InsertOptionUser(UserIdAutoFillHandler.class)
     // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=或者in的添加
-    @DynamicCondition(ArticleDynamicConditionHandler.class)
+    @DynamicCondition(CurrentUserDynamicConditionHandler.class)
     private String publishedUserId;
-
+    
     // 省略其他字段
     ......
 }
@@ -366,14 +376,14 @@ public class Article {
 
 ```java
 @Component
-public class ArticleDynamicConditionHandler implements IDynamicConditionHandler {
+public class CurrentUserDynamicConditionHandler implements IDynamicConditionHandler {
 
     @Resource
     private HttpServletRequest request;
 
     @Override
     public List<Object> values() {
-        // 只有当enable()返回true的时候 本动态条件才 生效
+		// 只有当enable()返回true的时候 本动态条件才 生效
         // 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
         String userId = request.getHeader("USER_ID");
         return Collections.singletonList(userId);
