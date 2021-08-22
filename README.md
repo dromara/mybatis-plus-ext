@@ -14,7 +14,7 @@
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 
