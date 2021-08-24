@@ -266,7 +266,7 @@ public class UserService {
     public List<UserDetailWithRuleDto> searchUserByNameWithRule(String name) {
 
         // MP的lambda查询方式
-        List<User> userList = this.lambdaQuery()
+        List<User> userList = userRepository.lambdaQuery()
                .eq(name != null, User::getUsername, name)
                .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
@@ -284,7 +284,7 @@ public class UserService {
 
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式
-        List<User> userList = this.lambdaQueryPlus()
+        List<User> userList = userRepository.lambdaQueryPlus()
                .eq(name != null, User::getUsername, name)
                .bindList(User::getRules);
         
