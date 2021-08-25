@@ -9,14 +9,7 @@ import com.tangzc.mpe.bind.metadata.MidConditionDescription;
 import lombok.AllArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -108,6 +101,11 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        if(joinMidFieldVals.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         QueryWrapper<ENTITY> queryWrapper = new QueryWrapper<>();
         // 查询某些列值
         String[] selectColumns = fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions);
@@ -125,10 +123,7 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
     private <MID> List<MID> listMidData() {
 
         MidConditionDescription midConditionDescription = conditionSign.getConditions().get(0);
-        QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
-        // 查询某些列值
-        queryWrapper.select(TableColumnUtil.humpToLine(midConditionDescription.getJoinMidField()),
-                TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()));
+
         List<Object> selfFieldVals = new ArrayList<>();
         try {
             for (BEAN bean : beans) {
@@ -137,6 +132,16 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        if(selfFieldVals.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
+        // 查询某些列值
+        queryWrapper.select(TableColumnUtil.humpToLine(midConditionDescription.getJoinMidField()),
+                TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()));
+
         queryWrapper.in(TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()), selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
