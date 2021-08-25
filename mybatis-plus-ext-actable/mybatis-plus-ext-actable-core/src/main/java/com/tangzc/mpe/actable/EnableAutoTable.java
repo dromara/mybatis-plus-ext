@@ -16,9 +16,9 @@ import java.lang.annotation.*;
 @Import({
         // 该类需要排在第一个
         SpringContextUtil.class,
-        StartUpHandlerImpl.class,
-        SysMysqlCreateTableManager.class,
         MapperScannerConfig.class,
+        SysMysqlCreateTableManager.class,
+        StartUpHandlerImpl.class,
 })
 public @interface EnableAutoTable {
 }
