@@ -14,7 +14,7 @@
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.2.6</version>
+    <version>1.2.5</version>
 </dependency>
 ```
 
@@ -255,7 +255,7 @@ public class UserRule {
 @Service
 public class UserService {
 
-    // UserRepository继承了BaseRepository<UserMapper, User>
+    // UserRepository继承了BaseRepository<UserMapper, User>，后面会讲BaseRepository
     @Resource
     private UserRepository userRepository;
 
@@ -283,7 +283,7 @@ public class UserService {
     public List<UserDetailWithRuleDto> searchUserByNameWithRule2(String name) {
 
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
-        // 显然这是一种更加简便的查询方式
+        // 显然这是一种更加简便的查询方式，但是如果存在多级深度的关联关系，此种方法就不适用了，还需要借助Binder
         List<User> userList = userRepository.lambdaQueryPlus()
                .eq(name != null, User::getUsername, name)
                .bindList(User::getRules);
@@ -292,6 +292,20 @@ public class UserService {
     }
 }
 ```
+
+==提示==[^小技巧]: 假如存在此种场景：`User`、`Role`、`Menu`三个实体，他们之间的关系是：`User` 多对多 `Role`、`Role` 多对多`Menu`，当我查询出User的集合后，如何获取Role和Menu的数据呢？
+
+```java
+// 数据库查询出了用户列表 【1】
+List<User> userList = userRepository.list();
+// 为所有用户关联角色信息 【2】
+Binder.bindOn(userList, User::getRules);
+// 为所有角色信息关联菜单信息 【3】
+// Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
+Binder.bindOn(Deeper.with(userList).inList(User::getRoles), User::getRules);
+```
+
+###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
 
 ### 数据冗余
 
