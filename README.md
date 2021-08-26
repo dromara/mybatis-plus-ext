@@ -10,13 +10,13 @@
 
 ### 引入jar包
 
-> starter内自带了MybatisPlus3.4.3.1版本及spring-boot-dependencies2.3.10的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了TableInfoHelper，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
+> starter内自带了MybatisPlus3.4.3.2版本及spring-boot2.3.12的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了TableInfoHelper，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
 
 ```xml
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.2.7</version>
+    <version>1.2.8</version>
 </dependency>
 ```
 
