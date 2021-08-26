@@ -1,8 +1,10 @@
-# Mybatis-Plus-Ext
-
 ## 简介
 
 > 本框架结合公司日常业务场景，对[Mybatis-Plus](https://gitee.com/baomidou/mybatis-plus) 做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在`数据自动填充（类似JPA中的审计）`、`关联查询（类似sql中的join）`、`自动建表（仅支持mysql）`、`冗余数据自动更新`、`动态条件`等功能做了补充完善。其中`自动建表`，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不与原框架兼容。
+
+## 前言
+
+##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png)
 
 ## 快速开始
 
@@ -293,7 +295,7 @@ public class UserService {
 }
 ```
 
-==提示==[^小技巧]: 假如存在此种场景：`User`、`Role`、`Menu`三个实体，他们之间的关系是：`User` 多对多 `Role`、`Role` 多对多`Menu`，当我查询出User的集合后，如何获取Role和Menu的数据呢？
+==提示==: 假如存在此种场景：`User`、`Role`、`Menu`三个实体，他们之间的关系是：`User` 多对多 `Role`、`Role` 多对多`Menu`，当我查询出User的集合后，如何获取Role和Menu的数据呢？
 
 ```java
 // 数据库查询出了用户列表 【1】
