@@ -35,7 +35,7 @@
 // @Table标记的可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-	
+
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能），推荐默认便于后期的数据分布式存储等处理。
     @IsAutoIncrement
@@ -51,14 +51,14 @@ public class User {
     @IsNotNull
     @ColumnComment("名字")
     private String name;
-    
+
     // 唯一索引
     @Unique
     // 非空
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-    
+
     // 省略其他属性
     ......
 }
@@ -95,17 +95,17 @@ actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默
 @Data
 @Table(comment = "文章")
 public class Article {
-	
+
     // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
     @ColumnComment("主键")
     private String id;
 
     @ColumnComment("标题")
     private String title;
-    
+
     @ColumnComment("内容")
     private String content;
-    
+
     // 文章默认激活状态
     @DefaultValue("ACTIVE")
     @ColumnComment("内容")
@@ -161,7 +161,7 @@ public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
      */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
-      	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
         // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
@@ -201,7 +201,7 @@ public class UsernameAutoFillHandler implements AutoFillHandler<String> {
 ```java
 @Data
 @Table(comment = "角色信息")
-public class Rule {
+public class Role {
 
     @ColumnComment("主键")
     private String id;
@@ -227,16 +227,16 @@ public class User {
 
     // 关键配置，声明了User想关联对应的Rule集合，中间表是UserRule
     @BindEntityByMid(conditions = @MidCondition(
-            midEntity = UserRule.class, selfMidField = "userId", joinMidField = "ruleId"
+            midEntity = UserRole.class, selfMidField = "userId", joinMidField = "roleId"
     ))
-    private List<Rule> rules;
+    private List<Role> roles;
 }
 ```
 
 ```java
 @Data
 @Table(comment = "用户-角色关联关系")
-public class UserRule {
+public class UserRole {
 
     @ColumnComment("主键")
     private String id;
@@ -245,7 +245,7 @@ public class UserRule {
     private String userId;
 
     @ColumnComment("角色id")
-    private String ruleId;
+    private String roleId;
 }
 ```
 
@@ -265,14 +265,14 @@ public class UserService {
      * 根据用户的名字模糊查询所有用户的详细信息
      */
     @Transactional(readOnly = true)
-    public List<UserDetailWithRuleDto> searchUserByNameWithRule(String name) {
+    public List<UserDetailWithRoleDto> searchUserByNameWithRule(String name) {
 
         // MP的lambda查询方式
         List<User> userList = userRepository.lambdaQuery()
                .eq(name != null, User::getUsername, name)
                .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
-        Binder.bindOn(userList, User::getRules);
+        Binder.bindOn(userList, User::getRoles);
         // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
         
         return UserMapping.MAPPER.toDto5(userList);
@@ -282,13 +282,13 @@ public class UserService {
      * 根据用户的名字模糊查询所有用户的详细信息，等价于上一个查询方式
      */
     @Transactional(readOnly = true)
-    public List<UserDetailWithRuleDto> searchUserByNameWithRule2(String name) {
+    public List<UserDetailWithRoleDto> searchUserByNameWithRule2(String name) {
 
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式，但是如果存在多级深度的关联关系，此种方法就不适用了，还需要借助Binder
         List<User> userList = userRepository.lambdaQueryPlus()
                .eq(name != null, User::getUsername, name)
-               .bindList(User::getRules);
+               .bindList(User::getRoles);
         
         return UserMapping.MAPPER.toDto5(userList);
     }
@@ -301,10 +301,10 @@ public class UserService {
 // 数据库查询出了用户列表 【1】
 List<User> userList = userRepository.list();
 // 为所有用户关联角色信息 【2】
-Binder.bindOn(userList, User::getRules);
+Binder.bindOn(userList, User::getRoles);
 // 为所有角色信息关联菜单信息 【3】
 // Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
-Binder.bindOn(Deeper.with(userList).inList(User::getRoles), User::getRules);
+Binder.bindOn(Deeper.with(userList).inList(User::getRoles), User::getMenus);
 ```
 
 ###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
@@ -407,8 +407,8 @@ public class CurrentUserDynamicConditionHandler implements IDynamicConditionHand
 
     @Override
     public boolean enable() {
-        // 简单例子：header中取用户权限，如果是管理员 返回false，意思就是本动态条件失效
-        String userRule = request.getHeader("USER_RULE");
+        // 简单例子：header中取用户权限，如果是非管理员则执行该过滤条件，如果是管理员默认查全部，返回false，本动态条件失效
+        String userRule = request.getHeader("USER_ROLE");
         return !"ADMIN".equals(userRule);
     }
 }
@@ -418,7 +418,7 @@ public class CurrentUserDynamicConditionHandler implements IDynamicConditionHand
 
 ### BaseEntity使用
 
-> 通常的表设计中，都会要求添加一些审计数据，比如创建人、创建时间、最后修改人、最后修改时间，但是这些属性又不应该属于业务的，更多的是为了数据管理使用的。如果业务需要使用的话，建议起一个有意义的业务名称与上述的创建时间区分开，比如用户的注册时间。为了简化数据审计字段的工作量，框架内部集成了BaseEntity
+> 通常的表设计中，都会要求添加一些审计数据，比如创建人、创建时间、最后修改人、最后修改时间，但是这些属性又不应该属于业务的，更多的是为了数据管理使用的。如果业务需要使用的话，建议起一个有意义的业务名称与上述的创建时间区分开，比如用户的注册时间（registrationTime）。为了简化数据审计字段的工作量，框架内部集成了BaseEntity
 
 ```java
 @Getter
@@ -442,7 +442,7 @@ public class BaseEntity<ID_TYPE extends Serializable, TIME_TYPE> {
 }
 ```
 
-> 还存在某些情况下数据表要求设计成逻辑删除（逻辑删除存在很多弊端，不建议无脑所有表都设计为逻辑删除），所以框架同时提供了一个BaseLogicEntity
+> 还存在某些情况下数据表要求设计成逻辑删除（逻辑删除存在很多弊端，不建议无脑所有表都设计为逻辑删除），所以框架同时提供了一个BaseLogicEntity，该实现方式利用的是MP本身自带的逻辑删除策略。
 
 ```java
 @Getter
@@ -459,7 +459,7 @@ public class BaseLogicEntity<ID_TYPE extends Serializable, TIME_TYPE> extends Ba
 
 ### BaseRepository使用
 
-> 建议以此为数据基本操作类，而不是以Mapper为基础操作类，该service可以直接通过getMapper()取得Entity对应的Mapper类，此类与Mapper类相比做了很多的增强功能，尤其是其lambda语法，非常高效便捷。
+> 建议开发中以此为数据基本操作类，而不是以\*Mapper为基础操作类，如果需要使用\*Mapper中的方法，可以直接通过getMapper()取得Entity对应的\*Mapper类，此类与\*Mapper类相比做了很多的增强功能，尤其是其lambda语法，非常高效便捷。
 
 ```java
 // 集成了MP的ServiceImpl，实现了IBaseRepository接口（内部拓展了lambda查询操作）
@@ -469,7 +469,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
     public boolean updateById(E entity) {
         boolean result = super.updateById(entity);
         if(result) {
-            // 数据自动更新@DataSource注解的配合逻辑，
+            // 数据自动更新@DataSource注解的配合逻辑
             SpringContextUtil.getApplicationContext()
                     .publishEvent(EntityUpdateEvent.create(entity));
         }
@@ -480,11 +480,22 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
     public boolean updateBatchById(Collection<E> entityList, int batchSize) {
         boolean result = super.updateBatchById(entityList, batchSize);
         if(result) {
+            // 数据自动更新@DataSource注解的配合逻辑
             for (E entity : entityList) {
                 SpringContextUtil.getApplicationContext().publishEvent(EntityUpdateEvent.create(entity));
             }
         }
         return result;
+    }
+
+    @Override
+    protected Class<M> currentMapperClass() {
+        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 0);
+    }
+
+    @Override
+    protected Class<E> currentModelClass() {
+        return (Class<E>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 1);
     }
 }
 ```
