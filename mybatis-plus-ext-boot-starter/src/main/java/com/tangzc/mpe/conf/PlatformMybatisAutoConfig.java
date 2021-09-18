@@ -9,7 +9,7 @@ import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.util.SpringContextUtil;
 import com.tangzc.mpe.bind.BindEventListeners;
 import com.tangzc.mpe.condition.ConditionInitScanEntityEventListener;
-import com.tangzc.mpe.condition.DynamicConditionManager;
+import com.tangzc.mpe.condition.DynamicConditionInterceptor;
 import com.tangzc.mpe.datasource.DataSourceInitScanEntityEventListener;
 import com.tangzc.mpe.datasource.DataSourceManager;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +39,7 @@ public class PlatformMybatisAutoConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
-        interceptor.addInnerInterceptor(new DynamicConditionManager());
+        interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
         return interceptor;
     }
 }

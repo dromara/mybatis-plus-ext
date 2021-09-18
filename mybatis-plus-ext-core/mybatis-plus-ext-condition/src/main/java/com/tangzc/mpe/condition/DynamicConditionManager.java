@@ -1,196 +1,94 @@
 package com.tangzc.mpe.condition;
 
-import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
-import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
-import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.FromItem;
-import net.sf.jsqlparser.statement.select.PlainSelect;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
-import net.sf.jsqlparser.statement.select.SetOperationList;
-import net.sf.jsqlparser.statement.select.WithItem;
-import net.sf.jsqlparser.statement.update.Update;
-import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.executor.statement.StatementHandler;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.mapping.SqlCommandType;
-import org.apache.ibatis.session.ResultHandler;
-import org.apache.ibatis.session.RowBounds;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author don
  */
 @Slf4j
-public class DynamicConditionManager extends JsqlParserSupport implements InnerInterceptor {
+public class DynamicConditionManager {
 
-    private static final Map<String, List<DynamicConditionDescription>> ENTITY_LIST_MAP = new HashMap<>();
+    private static final Table<String, String, List<DynamicConditionDescription>> DYN_CON_CACHE = HashBasedTable.create();
 
     public static void add(Class<?> entityClass, Field field, DynamicCondition dynamicCondition) {
 
         String tableName = TableColumnUtil.getTableName(entityClass);
 
-        ENTITY_LIST_MAP.computeIfAbsent(tableName, k -> new ArrayList<>())
-                .add(new DynamicConditionDescription(entityClass, field, dynamicCondition));
+        List<DynamicConditionDescription> dynamicConditionDescriptions = DYN_CON_CACHE.get(tableName, entityClass);
+        if (dynamicConditionDescriptions == null) {
+            dynamicConditionDescriptions = new ArrayList<>();
+            DYN_CON_CACHE.put(tableName, entityClass.getName(), dynamicConditionDescriptions);
+        }
+        dynamicConditionDescriptions.add(new DynamicConditionDescription(entityClass, field, dynamicCondition));
     }
 
-    @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
-        PluginUtils.MPBoundSql mpBs = PluginUtils.mpBoundSql(boundSql);
-        mpBs.sql(this.changeSql(mpBs.sql()));
-    }
+    public static List<DynamicConditionDescription> getDynamicCondition(String tableName) {
 
-    @Override
-    public void beforePrepare(StatementHandler sh, Connection connection, Integer transactionTimeout) {
-        PluginUtils.MPStatementHandler mpSh = PluginUtils.mpStatementHandler(sh);
-        MappedStatement ms = mpSh.mappedStatement();
-        SqlCommandType sct = ms.getSqlCommandType();
-        if (sct == SqlCommandType.UPDATE || sct == SqlCommandType.DELETE) {
-            PluginUtils.MPBoundSql mpBs = mpSh.mPBoundSql();
-            mpBs.sql(this.changeSql(mpBs.sql()));
+        Map<String, List<DynamicConditionDescription>> row = DYN_CON_CACHE.row(tableName);
+
+        // 不存在，直接返回
+        if (row.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 只有一个表实体
+        if (row.size() == 1) {
+            return row.values().stream().findFirst().get();
+        }
+
+        // 多个表实体的情况（多个实体对应一个表）
+        try {
+            StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
+            String mapperProxyClassName = null;
+            for (int i = 0; i < stackTrace.length; i++) {
+                // 找到MP的代理类，下一个就是Mapper的代理类
+                if ("com.baomidou.mybatisplus.core.override.MybatisMapperProxy".equals(stackTrace[i].getClassName())) {
+                    mapperProxyClassName = stackTrace[i + 1].getClassName();
+                    break;
+                }
+            }
+            if (StringUtils.isEmpty(mapperProxyClassName)) {
+                throw new RuntimeException("未找到执行操作的Mapper类。");
+            }
+            Class<?> mapperClass = ((Class<?>) Class.forName(mapperProxyClassName).getGenericInterfaces()[0]);
+            String entityClass = getEntityClass(mapperClass);
+            if (entityClass == null) {
+                throw new RuntimeException("找到了Mapper但是未找到Mapper上的实体。");
+            }
+            return row.get(entityClass);
+        } catch (Exception e) {
+            throw new RuntimeException("动态条件，多个实体映射一个表的情况下，未找到当前查询的实体。", e);
         }
     }
 
-    protected String changeSql(String sql) {
+    private static <ENTITY> String getEntityClass(Class<ENTITY> mapperClass) {
 
         try {
-            Statement statement = CCJSqlParserUtil.parse(sql);
-            return processParser(statement, 0, sql, null);
-        } catch (JSQLParserException ignore) {
-        }
-        return sql;
-    }
-
-    @Override
-    protected void processInsert(Insert insert, int index, String sql, Object obj) {
-        // 无需操作
-    }
-
-    @Override
-    protected void processDelete(Delete delete, int index, String sql, Object obj) {
-
-        String tableName = TableColumnUtil.getTableName(delete.getTable());
-
-        List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
-        if (descriptions == null) {
-            return;
-        }
-
-        Expression where = getExpression(descriptions, delete.getWhere());
-        delete.setWhere(where);
-    }
-
-    @Override
-    protected void processUpdate(Update update, int index, String sql, Object obj) {
-
-        String tableName = TableColumnUtil.getTableName(update.getTable());
-
-        List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
-        if (descriptions == null) {
-            return;
-        }
-
-        Expression where = getExpression(descriptions, update.getWhere());
-        update.setWhere(where);
-    }
-
-    @Override
-    protected void processSelect(Select select, int index, String sql, Object obj) {
-        processSelectBody(select.getSelectBody());
-    }
-
-    private void processSelectBody(SelectBody selectBody) {
-        if (selectBody instanceof PlainSelect) {
-            processPlainSelect((PlainSelect) selectBody);
-        } else if (selectBody instanceof WithItem) {
-            WithItem withItem = (WithItem) selectBody;
-            if (withItem.getSubSelect().getSelectBody() != null) {
-                processSelectBody(withItem.getSubSelect().getSelectBody());
-            }
-        } else {
-            SetOperationList operationList = (SetOperationList) selectBody;
-            if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
-                operationList.getSelects().forEach(this::processSelectBody);
-            }
-        }
-    }
-
-    private void processPlainSelect(PlainSelect plainSelect) {
-        FromItem fromItem = plainSelect.getFromItem();
-        if (fromItem instanceof Table) {
-            String tableName = TableColumnUtil.getTableName((Table) fromItem);
-
-            List<DynamicConditionDescription> descriptions = ENTITY_LIST_MAP.get(tableName);
-            if (descriptions == null) {
-                return;
-            }
-            Expression where = getExpression(descriptions, plainSelect.getWhere());
-            plainSelect.setWhere(where);
-        }
-    }
-
-    private Expression getExpression(List<DynamicConditionDescription> descriptions, Expression where) {
-        try {
-            for (DynamicConditionDescription description : descriptions) {
-                Field entityField = description.getEntityField();
-                Class<? extends IDynamicConditionHandler> handlerClass = description.getDynamicCondition().value();
-                IDynamicConditionHandler conditionHandler = SpringContextUtil.getApplicationContext().getBean(handlerClass);
-
-                // 表示该条件跳过，不参与过滤
-                if (!conditionHandler.enable()) {
-                    continue;
-                }
-
-                String condExpr;
-                List<Object> values = conditionHandler.values();
-                if (values == null || values.isEmpty()) {
-                    condExpr = TableColumnUtil.getColumnName(entityField) + " is null";
-                } else {
-                    // 字符串的话，两边追加'
-                    if (entityField.getType() == String.class) {
-                        values = values.stream()
-                                .map(value -> "'" + value.toString() + "'")
-                                .collect(Collectors.toList());
-                    }
-                    if (values.size() == 1) {
-                        condExpr = TableColumnUtil.getColumnName(entityField) + "=" + values.get(0) + "";
-                    } else {
-                        condExpr = TableColumnUtil.getColumnName(entityField) + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
-                    }
-                }
-                Expression envCondition = CCJSqlParserUtil.parseCondExpression(condExpr);
-                if(where == null) {
-                    where = envCondition;
-                } else {
-                    where = new AndExpression(where, envCondition);
+            Type[] types = mapperClass.getGenericInterfaces();
+            if (types.length > 0 && types[0] != null) {
+                ParameterizedType genericType = (ParameterizedType) types[0];
+                Type[] superTypes = genericType.getActualTypeArguments();
+                if (superTypes != null && superTypes.length > 0 && superTypes[0] != null) {
+                    return superTypes[0].getTypeName();
                 }
             }
-        } catch (JSQLParserException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.warn("解析Mapper({})泛型上的Entity出错", mapperClass);
         }
-        return where;
+        return null;
     }
 }
