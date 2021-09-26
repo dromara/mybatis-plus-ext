@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.condition.daily;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tangzc.mpe.demo.condition.daily2.Daily2;
 import com.tangzc.mpe.demo.condition.daily2.DailyRepository2;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,12 @@ public class DailyService {
     @GetMapping("list")
     public List<Daily> list(String id) {
         return dailyRepository.list();
+    }
+
+    @GetMapping("page")
+    public Page<Daily> page(String id, Integer pageNum, Integer pageSize) {
+        Page<Daily> page = new Page<>(pageNum, pageSize);
+        return dailyRepository.page(page);
     }
 
     @GetMapping("list2")

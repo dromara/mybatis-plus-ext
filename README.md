@@ -20,7 +20,7 @@
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.2.11</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -368,6 +368,19 @@ public class Comment {
 > 适用场景：数据筛选，比如根据不同权限获取不同数据，用户只能看到自己的数据，管理员能看到所有人的数据。
 >
 > 此种场景，我们通常需要在每一个查询、更新、删除的sql操作上都追加上某个条件，很容易忘记，但是可以抽象成注解直接配置到Entity上，就省去了每个数据操作关心这个特殊条件了。
+
+```java
+/**
+ * congfig中注册动态条件拦截器【1.3.0之前的版本（不包括1.3.0）可以忽略，不注册该Bean】
+ */
+@Bean
+public MybatisPlusInterceptor mybatisPlusInterceptor() {
+    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+    // 添加动态条件，若同时添加了其他的拦截器，继续添加即可
+    interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
+    return interceptor;
+}
+```
 
 ```java
 @Data
