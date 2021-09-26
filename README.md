@@ -6,17 +6,21 @@
 
 ##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png)
 
+## 原理介绍
+
+​		基于注解的形式，将日常工作中重复的模板式代码进行了封装，底层实现完全调用的Mybatis-Plus的框架，全都是走的单表查询的方式，所以不用担心数据库兼容问题（自动建表功能除外，只支持mysql），同样也不需要担心性能问题（前提是正确使用[捂脸]），因为框架内部会自动做查询整合。
+
 ## 快速开始
 
 ### 引入jar包
 
-> starter内自带了MybatisPlus3.4.3.2版本及spring-boot2.3.12的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了TableInfoHelper，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
+> starter内自带了MybatisPlus及spring-boot的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了MP中的TableInfoHelper类，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
 
 ```xml
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.2.9</version>
+    <version>1.2.11</version>
 </dependency>
 ```
 
@@ -35,7 +39,7 @@
 // @Table标记的可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-
+	
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能），推荐默认便于后期的数据分布式存储等处理。
     @IsAutoIncrement
@@ -51,14 +55,14 @@ public class User {
     @IsNotNull
     @ColumnComment("名字")
     private String name;
-
+    
     // 唯一索引
     @Unique
     // 非空
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-
+    
     // 省略其他属性
     ......
 }
@@ -95,17 +99,17 @@ actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默
 @Data
 @Table(comment = "文章")
 public class Article {
-
+	
     // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
     @ColumnComment("主键")
     private String id;
 
     @ColumnComment("标题")
     private String title;
-
+    
     @ColumnComment("内容")
     private String content;
-
+    
     // 文章默认激活状态
     @DefaultValue("ACTIVE")
     @ColumnComment("内容")
@@ -161,7 +165,7 @@ public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
      */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
-        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+      	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
         // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
