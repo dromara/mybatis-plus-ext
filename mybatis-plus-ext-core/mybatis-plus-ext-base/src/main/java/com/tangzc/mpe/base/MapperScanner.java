@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 //@Component
 public class MapperScanner implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final Map<Class<?>, BaseMapper<?>> ENTITY_MAPPER_CACHE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, BaseMapper<?>> ENTITY_MAPPER_CACHE_MAP = new ConcurrentHashMap<>();
 
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
@@ -40,15 +40,16 @@ public class MapperScanner implements ApplicationListener<ContextRefreshedEvent>
             Class<?> entityClass = ReflectionUtil.getEntityClass(proxyMapper);
             applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));
             applicationEventPublisher.publishEvent(new InitScanEntityEvent(entityClass));
-            ENTITY_MAPPER_CACHE_MAP.put(entityClass, proxyMapper);
+            ENTITY_MAPPER_CACHE_MAP.put(entityClass.getName(), proxyMapper);
         }
     }
 
     public static <ENTITY> BaseMapper<ENTITY> getMapper(Class<ENTITY> entityClass) {
 
-        BaseMapper<?> baseMapper = ENTITY_MAPPER_CACHE_MAP.get(entityClass);
+        String entityClassName = entityClass.getName();
+        BaseMapper<?> baseMapper = ENTITY_MAPPER_CACHE_MAP.get(entityClassName);
         if (baseMapper == null) {
-            throw new RuntimeException("未发现" + entityClass.getName() + "的BaseMapper实现");
+            throw new RuntimeException("未发现" + entityClassName + "的BaseMapper实现");
         }
         return (BaseMapper<ENTITY>) baseMapper;
     }

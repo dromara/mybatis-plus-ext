@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroLongTimeBehavior=convertToNull
+    url: jdbc:mysql://127.0.0.1:3306/mybatis-plus-ext?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroLongTimeBehavior=convertToNull
     username: root
-    password: TzC370682
+    password: 12345678
 
 mybatis-plus:
   configuration:

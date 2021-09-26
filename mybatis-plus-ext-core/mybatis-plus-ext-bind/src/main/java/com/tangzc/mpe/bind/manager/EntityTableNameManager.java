@@ -11,11 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EntityTableNameManager {
 
-    public static final Map<Class<?>, String> ENTITY_TABLE_NAME_CACHE_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, String> ENTITY_TABLE_NAME_CACHE_MAP = new ConcurrentHashMap<>();
 
     public static <ENTITY> String getTableName(Class<ENTITY> entityClass) {
 
-        return ENTITY_TABLE_NAME_CACHE_MAP.computeIfAbsent(entityClass, EntityTableNameManager::initTableName);
+        return ENTITY_TABLE_NAME_CACHE_MAP.computeIfAbsent(entityClass.getName(), k -> EntityTableNameManager.initTableName(entityClass));
     }
 
     private static String initTableName(Class<?> entityClass) {
