@@ -13,7 +13,7 @@
 
     <properties>
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
-        <mybatis-plus.version>3.4.3.3</mybatis-plus.version>
+        <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
         <guava.version>30.0-jre</guava.version>
 
         <!-- java版本 -->
