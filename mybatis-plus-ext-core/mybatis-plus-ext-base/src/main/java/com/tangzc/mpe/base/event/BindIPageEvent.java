@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 初始化扫描实体事件
+ * 数据绑定操作事件
  * @author don
  */
 @Getter

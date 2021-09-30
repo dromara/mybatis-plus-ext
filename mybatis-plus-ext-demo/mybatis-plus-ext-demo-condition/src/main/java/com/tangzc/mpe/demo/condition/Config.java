@@ -1,4 +1,4 @@
-package com.tangzc.mpe.demo.common;
+package com.tangzc.mpe.demo.condition;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.tangzc.mpe.condition.DynamicConditionInterceptor;

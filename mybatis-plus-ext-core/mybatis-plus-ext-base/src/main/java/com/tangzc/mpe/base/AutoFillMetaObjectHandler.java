@@ -3,12 +3,10 @@ package com.tangzc.mpe.base;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
-import com.tangzc.mpe.base.base.BaseEntity;
 import com.tangzc.mpe.base.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
@@ -24,14 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -163,21 +154,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
                     || optionDate.override();
 
             if (canSet) {
-                Class<?> type = field.getType();
-
-                // 针对BaseEntity的泛型日期类型
-                if (BaseEntity.class.isAssignableFrom(clazz)) {
-                    String typeName = field.getGenericType().getTypeName();
-                    switch (typeName) {
-                        case "ID_TYPE":
-                            type = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 0);
-                            break;
-                        case "TIME_TYPE":
-                            type = ReflectionKit.getSuperClassGenericType(clazz, BaseEntity.class, 1);
-                            break;
-                        default:
-                    }
-                }
+                Class<?> type = getDateType(clazz, field);
 
                 Object nowDate = Optional.ofNullable(now.now(type, optionDate.format()))
                         .orElseThrow(() -> new RuntimeException("类：" + clazz.toString() + "的字段：" + field.getName()
@@ -186,6 +163,23 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
                 this.setFieldValByName(field.getName(), nowDate, metaObject);
             }
         }
+    }
+
+    /**
+     * 获取日期类字段的类型
+     */
+    private Class<?> getDateType(Class<?> clazz, Field field) {
+
+        List<FieldDateTypeHandler> fieldTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldDateTypeHandler.class);
+        Class<?> type = fieldTypeHandlers.stream()
+                .map(handler -> handler.getDateType(clazz, field))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+        if (type == null) {
+            type = field.getType();
+        }
+        return type;
     }
 
     /**
@@ -288,5 +282,10 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
             return null;
         }
+    }
+
+    @FunctionalInterface
+    public static interface FieldDateTypeHandler {
+        Class<?> getDateType(Class<?> clazz, Field field);
     }
 }

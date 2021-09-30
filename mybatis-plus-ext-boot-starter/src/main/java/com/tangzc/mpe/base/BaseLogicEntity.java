@@ -1,4 +1,4 @@
-package com.tangzc.mpe.base.base;
+package com.tangzc.mpe.base;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.tangzc.mpe.actable.annotation.ColumnComment;

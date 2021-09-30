@@ -3,7 +3,7 @@ package com.tangzc.mpe.datasource;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.base.util.BeanClassUtil;
 import com.tangzc.mpe.datasource.annotation.DataSource;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
@@ -11,9 +11,11 @@ import java.util.List;
 
 /**
  * @author don
- */ //@Component
-public class DataSourceInitScanEntityEventListener implements ApplicationListener<InitScanEntityEvent> {
-    @Override
+ */
+//@Component
+public class DataSourceInitScanEntityEventListener {
+
+    @EventListener
     public void onApplicationEvent(InitScanEntityEvent event) {
 
         Class<?> entityClass = event.getEntityClass();

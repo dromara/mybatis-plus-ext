@@ -3,7 +3,7 @@ package com.tangzc.mpe.condition;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.base.util.BeanClassUtil;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
@@ -13,8 +13,9 @@ import java.util.List;
  * @author don
  */
 //@Component
-public class ConditionInitScanEntityEventListener implements ApplicationListener<InitScanEntityEvent> {
-    @Override
+public class ConditionInitScanEntityEventListener {
+
+    @EventListener
     public void onApplicationEvent(InitScanEntityEvent event) {
 
         Class<?> entityClass = event.getEntityClass();

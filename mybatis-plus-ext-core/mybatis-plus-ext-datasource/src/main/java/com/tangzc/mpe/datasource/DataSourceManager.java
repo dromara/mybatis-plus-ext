@@ -11,17 +11,12 @@ import com.tangzc.mpe.datasource.annotation.DataSource;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.EventListener;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 //@Component
-public class DataSourceManager implements ApplicationListener<EntityUpdateEvent<?>> {
+public class DataSourceManager {
 
     private static final Map<String, List<DataSourceDescription>> ENTITY_LIST_MAP = new HashMap<>();
     /**
@@ -58,7 +53,7 @@ public class DataSourceManager implements ApplicationListener<EntityUpdateEvent<
                 .add(new DataSourceDescription(entityClass, field, dataSource));
     }
 
-    @Override
+    @EventListener
     public void onApplicationEvent(EntityUpdateEvent<?> entityUpdateEvent) {
 
         String entityName = entityUpdateEvent.getEntityName();

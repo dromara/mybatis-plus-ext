@@ -57,11 +57,13 @@ public class BeanDescription<BEAN> {
         if (annotation instanceof BindEntity) {
             BindEntityDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindEntity) annotation);
             this.bindEntityAnnotations.add(fieldDescription);
+            return;
         }
 
         if (annotation instanceof BindFieldByMid) {
             BindFieldByMidDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindFieldByMid) annotation);
             this.bindFieldByMidDescriptions.add(fieldDescription);
+            return;
         }
 
         if (annotation instanceof BindEntityByMid) {

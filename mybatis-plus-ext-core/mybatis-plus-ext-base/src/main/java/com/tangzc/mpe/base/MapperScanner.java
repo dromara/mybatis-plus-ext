@@ -7,8 +7,8 @@ import com.tangzc.mpe.base.util.ReflectionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 //@Component
-public class MapperScanner implements ApplicationListener<ContextRefreshedEvent> {
+public class MapperScanner {
 
     private static final Map<String, BaseMapper<?>> ENTITY_MAPPER_CACHE_MAP = new ConcurrentHashMap<>();
 
@@ -29,7 +29,7 @@ public class MapperScanner implements ApplicationListener<ContextRefreshedEvent>
     @Autowired(required = false)
     private List<BaseMapper<?>> proxyMapperList;
 
-    @Override
+    @EventListener
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
         // 初始化所有的Entity和Mapper

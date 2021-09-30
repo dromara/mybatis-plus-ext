@@ -18,10 +18,17 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- 只引入bind功能 -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-bind</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- mybatis plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
 

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * 自定义ChainQuery，拓展了关于Bind的相关方法
  * @author don
  */
 public interface BindChainQuery<T> extends ChainQuery<T> {

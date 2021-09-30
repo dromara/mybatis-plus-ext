@@ -1,6 +1,5 @@
-package com.tangzc.mpe.conf;
+package com.tangzc.mpe.bind;
 
-import com.tangzc.mpe.BaseEntityFieldTypeHandler;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -9,8 +8,8 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        BaseEntityFieldTypeHandler.class
+        BindEventListeners.class
 })
-public class PlatformMybatisAutoConfig {
+public class BindAutoConfig {
 
 }

@@ -4,7 +4,7 @@ import com.tangzc.mpe.actable.annotation.Column;
 import com.tangzc.mpe.actable.annotation.ColumnComment;
 import com.tangzc.mpe.actable.annotation.Table;
 import com.tangzc.mpe.annotation.InsertOptionDate;
-import com.tangzc.mpe.base.base.BaseLogicEntity;
+import com.tangzc.mpe.base.BaseLogicEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

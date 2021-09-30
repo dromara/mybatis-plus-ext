@@ -17,10 +17,5 @@
             <artifactId>mybatis-plus-ext-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>
