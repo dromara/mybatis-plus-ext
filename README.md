@@ -15,11 +15,38 @@
 ### 引入jar包
 
 > starter内自带了MybatisPlus及spring-boot的依赖管理，如果要更改springboot的版本，可以排除掉，但是如果要变更MybatisPlus的版本，请注意了，框架中重写了MP中的TableInfoHelper类，不同版本的MP该类有所变动，同时框架内也采用了MP的部分工具类，例如LambdaUtils、ReflectionKit等在不同的版本也有所变动，需要小心，哈哈哈哈，可以联系我帮你改~~
+>
+> 框架在设计上，尽量以拓展的功能为单位做了模块拆分，所有功能均能独立引入也可以合并引入，大家视情况选用吧。
 
 ```xml
+<!-- 全功能整体引入 -->
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- 如果想只引入自动建表 -->
+<dependency>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext-actable-core</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- 如果想只引入关联查询 -->
+<dependency>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext-bind</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- 如果想只引入数据冗余（关联更新） -->
+<dependency>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext-datasource</artifactId>
+    <version>1.3.0</version>
+</dependency>
+<!-- 如果想只引入动态条件 -->
+<dependency>
+    <groupId>com.tangzc</groupId>
+    <artifactId>mybatis-plus-ext-condition</artifactId>
     <version>1.3.0</version>
 </dependency>
 ```
