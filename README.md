@@ -332,10 +332,10 @@ public class UserService {
 // 数据库查询出了用户列表 【1】
 List<User> userList = userRepository.list();
 // 为所有用户关联角色信息 【2】
-        Binder.bindOn(userList, User::getRoles);
+Binder.bindOn(userList, User::getRoles);
 // 为所有角色信息关联菜单信息 【3】
 // Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
-        Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
+Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
 ```
 
 ###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
