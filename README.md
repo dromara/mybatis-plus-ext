@@ -66,7 +66,7 @@
 // @Table标记的可被识别为需要自动创建表的Entity
 @Table(comment = "用户")
 public class User {
-	
+
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能），推荐默认便于后期的数据分布式存储等处理。
     @IsAutoIncrement
@@ -82,14 +82,14 @@ public class User {
     @IsNotNull
     @ColumnComment("名字")
     private String name;
-    
+
     // 唯一索引
     @Unique
     // 非空
     @IsNotNull
     @ColumnComment("手机号")
     private String phone;
-    
+
     // 省略其他属性
     ......
 }
@@ -126,17 +126,17 @@ actable.unique.prefix=自己定义的唯一约束前缀#该配置项不设置默
 @Data
 @Table(comment = "文章")
 public class Article {
-	
+
     // 字符串类型的ID，默认也是雪花算法的一串数字（MP的默认功能）
     @ColumnComment("主键")
     private String id;
 
     @ColumnComment("标题")
     private String title;
-    
+
     @ColumnComment("内容")
     private String content;
-    
+
     // 文章默认激活状态
     @DefaultValue("ACTIVE")
     @ColumnComment("内容")
@@ -192,7 +192,7 @@ public class UserIdAutoFillHandler implements IOptionByAutoFillHandler<String> {
      */
     @Override
     public String getVal(Object object, Class<?> clazz, Field field) {
-      	RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+        RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
         // 配合网关或者过滤器，token校验成功后就把用户信息塞到header中
         return request.getHeader("user-id");
@@ -300,12 +300,12 @@ public class UserService {
 
         // MP的lambda查询方式
         List<User> userList = userRepository.lambdaQuery()
-               .eq(name != null, User::getUsername, name)
-               .list();
+                .eq(name != null, User::getUsername, name)
+                .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
         Binder.bindOn(userList, User::getRoles);
         // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
-        
+
         return UserMapping.MAPPER.toDto5(userList);
     }
 
@@ -318,9 +318,9 @@ public class UserService {
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式，但是如果存在多级深度的关联关系，此种方法就不适用了，还需要借助Binder
         List<User> userList = userRepository.lambdaQueryPlus()
-               .eq(name != null, User::getUsername, name)
-               .bindList(User::getRoles);
-        
+                .eq(name != null, User::getUsername, name)
+                .bindList(User::getRoles);
+
         return UserMapping.MAPPER.toDto5(userList);
     }
 }
@@ -332,10 +332,10 @@ public class UserService {
 // 数据库查询出了用户列表 【1】
 List<User> userList = userRepository.list();
 // 为所有用户关联角色信息 【2】
-Binder.bindOn(userList, User::getRoles);
+        Binder.bindOn(userList, User::getRoles);
 // 为所有角色信息关联菜单信息 【3】
 // Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
-Binder.bindOn(Deeper.with(userList).inList(User::getRoles), User::getMenus);
+        Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
 ```
 
 ###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
