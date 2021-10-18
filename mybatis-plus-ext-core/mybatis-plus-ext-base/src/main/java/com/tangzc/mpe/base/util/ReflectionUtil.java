@@ -30,8 +30,9 @@ public class ReflectionUtil {
                 }
             }
         } catch (Exception e) {
-            log.warn("解析Mapper({})泛型上的Entity出错", mapperClass);
+            log.error("解析Mapper({})泛型上的Entity出错", mapperClass);
         }
+        log.error("没有在Mapper({})上找到实体的泛型", mapperClass);
         return null;
     }
 }

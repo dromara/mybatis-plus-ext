@@ -19,7 +19,7 @@ public interface SqlTypeHandler {
         put("class java.lang.Short", MySqlTypeConstant.SMALLINT);
         put("class java.math.BigDecimal", MySqlTypeConstant.DECIMAL);
         put("class java.sql.Date", MySqlTypeConstant.DATE);
-        put("class java.util.Date", MySqlTypeConstant.DATE);
+        put("class java.util.Date", MySqlTypeConstant.DATETIME);
         put("class java.sql.Timestamp", MySqlTypeConstant.DATETIME);
         put("class java.sql.Time", MySqlTypeConstant.TIME);
         put("class java.time.LocalDateTime", MySqlTypeConstant.DATETIME);

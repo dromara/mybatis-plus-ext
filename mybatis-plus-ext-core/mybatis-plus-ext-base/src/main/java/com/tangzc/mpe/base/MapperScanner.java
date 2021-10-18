@@ -38,9 +38,11 @@ public class MapperScanner {
         }
         for (BaseMapper<?> proxyMapper : proxyMapperList) {
             Class<?> entityClass = ReflectionUtil.getEntityClass(proxyMapper);
-            applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));
-            applicationEventPublisher.publishEvent(new InitScanEntityEvent(entityClass));
-            ENTITY_MAPPER_CACHE_MAP.put(entityClass.getName(), proxyMapper);
+            if (entityClass != null) {
+                applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));
+                applicationEventPublisher.publishEvent(new InitScanEntityEvent(entityClass));
+                ENTITY_MAPPER_CACHE_MAP.put(entityClass.getName(), proxyMapper);
+            }
         }
     }
 
