@@ -4,7 +4,8 @@
 
 ## 前言
 
-##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png)
+##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png) 
+「二维码看不到的查看项目文档下"微信.png"」
 
 ## 原理介绍
 
