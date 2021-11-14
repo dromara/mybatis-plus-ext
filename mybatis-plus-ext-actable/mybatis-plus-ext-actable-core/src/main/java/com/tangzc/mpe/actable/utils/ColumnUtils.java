@@ -4,19 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.google.common.base.CaseFormat;
-import com.tangzc.mpe.actable.annotation.ColumnComment;
-import com.tangzc.mpe.actable.annotation.ColumnDefault;
-import com.tangzc.mpe.actable.annotation.ColumnType;
-import com.tangzc.mpe.actable.annotation.EnableTimeSuffix;
-import com.tangzc.mpe.actable.annotation.IgnoreTable;
-import com.tangzc.mpe.actable.annotation.IsAutoIncrement;
-import com.tangzc.mpe.actable.annotation.IsKey;
-import com.tangzc.mpe.actable.annotation.IsNativeDefValue;
-import com.tangzc.mpe.actable.annotation.IsNotNull;
-import com.tangzc.mpe.actable.annotation.Table;
-import com.tangzc.mpe.actable.annotation.TableCharset;
-import com.tangzc.mpe.actable.annotation.TableComment;
-import com.tangzc.mpe.actable.annotation.TableEngine;
+import com.tangzc.mpe.actable.annotation.*;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlTypeConstant;
@@ -177,26 +165,26 @@ public class ColumnUtils {
     public static MySqlTypeAndLength getMySqlTypeAndLength(Field field, Class<?> clasz) {
         ColumnType column = AnnotatedElementUtils.findMergedAnnotation(field, ColumnType.class);
         if (column != null && column.value() != MySqlTypeConstant.DEFAULT) {
-            return buildMySqlTypeAndLength(field, column.value().toString().toLowerCase(), column.length(), column.decimalLength());
+            return buildMySqlTypeAndLength(clasz, field, column.value().toString().toLowerCase(), column.length(), column.decimalLength());
         }
         // 类型为空根据字段类型去默认匹配类型
         MySqlTypeConstant mysqlType = JavaToMysqlType.getSqlType(field, clasz);
         if (mysqlType == null) {
-            throw new RuntimeException("字段名：" + field.getName() + "不支持" + field.getGenericType() + "类型转换到mysql类型，仅支持JavaToMysqlType类中的类型默认转换，异常抛出！");
+            throw new RuntimeException("字段名：" + clasz.getName() + ":" + field.getName() + "不支持" + field.getGenericType() + "类型转换到mysql类型，仅支持JavaToMysqlType类中的类型默认转换，异常抛出！");
         }
         String sqlType = mysqlType.toString().toLowerCase();
         // 默认类型可以使用column来设置长度
         if (column != null) {
-            return buildMySqlTypeAndLength(field, sqlType, column.length(), column.decimalLength());
+            return buildMySqlTypeAndLength(clasz, field, sqlType, column.length(), column.decimalLength());
         }
-        return buildMySqlTypeAndLength(field, sqlType, 255, 0);
+        return buildMySqlTypeAndLength(clasz, field, sqlType, 255, 0);
     }
 
-    private static MySqlTypeAndLength buildMySqlTypeAndLength(Field field, String type, int length, int decimalLength) {
+    private static MySqlTypeAndLength buildMySqlTypeAndLength(Class<?> clasz, Field field, String type, int length, int decimalLength) {
 
         MySqlTypeAndLength mySqlTypeAndLength = mySqlTypeAndLengthMap.get(type);
         if (mySqlTypeAndLength == null) {
-            throw new RuntimeException("字段名：" + field.getName() + "使用的" + type + "类型，没有配置对应的MySqlTypeConstant，只支持创建MySqlTypeConstant中类型的字段，异常抛出！");
+            throw new RuntimeException("字段名：" + clasz.getName() + ":" + field.getName() + "使用的" + type + "类型，没有配置对应的MySqlTypeConstant，只支持创建MySqlTypeConstant中类型的字段，异常抛出！");
         }
         MySqlTypeAndLength targetMySqlTypeAndLength = new MySqlTypeAndLength();
         BeanUtils.copyProperties(mySqlTypeAndLength, targetMySqlTypeAndLength);
