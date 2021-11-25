@@ -192,7 +192,7 @@ public class TableInfoHelper {
     private static String[] initTableName(Class<?> clazz, GlobalConfig globalConfig, TableInfo tableInfo) {
         /* 数据库全局配置 */
         GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
-        TableName table = AnnotatedElementUtils.findMergedAnnotation(clazz, TableName.class);
+        TableName table = AnnotatedElementUtilsPlus.findMergedAnnotation(clazz, TableName.class, TableNameImpl.class);
 
         String tableName = clazz.getSimpleName();
         String tablePrefix = dbConfig.getTablePrefix();
@@ -310,7 +310,7 @@ public class TableInfoHelper {
                     continue;
                 }
             }
-            final TableField tableField = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+            final TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
 
             /* 有 @TableField 注解的字段初始化 */
             if (tableField != null) {
@@ -382,7 +382,7 @@ public class TableInfoHelper {
                                                   Field field, TableId tableId, Reflector reflector) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
-        if (field.isAnnotationPresent(TableField.class)) {
+        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
             logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
                     property, tableInfo.getEntityType().getName()));
         }
@@ -433,7 +433,7 @@ public class TableInfoHelper {
                                                         Field field, Reflector reflector) {
         final String property = field.getName();
         if (DEFAULT_ID_NAME.equalsIgnoreCase(property)) {
-            if (field.isAnnotationPresent(TableField.class)) {
+            if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
                 logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
                         property, tableInfo.getEntityType().getName()));
             }
@@ -493,7 +493,7 @@ public class TableInfoHelper {
         return fieldList.stream()
                 .filter(field -> {
                     /* 过滤注解非表字段属性 */
-                    TableField tableField = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+                    final TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
                     return (tableField == null || tableField.exist());
                 }).collect(toList());
     }

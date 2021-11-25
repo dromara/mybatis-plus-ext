@@ -20,6 +20,6 @@ public class User extends BaseLogicEntity<String, LocalDateTime> {
     @Column(comment = "姓名", length = 300)
     private String name;
     @InsertOptionDate
-    @ColumnComment("注册时间")
+    @Column(value = "registered_date1", comment = "注册时间")
     private Long registeredDate;
 }

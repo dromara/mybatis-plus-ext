@@ -3,6 +3,9 @@ package com.tangzc.mpe.actable.utils;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
+import com.baomidou.mybatisplus.core.metadata.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.TableNameImpl;
 import com.google.common.base.CaseFormat;
 import com.tangzc.mpe.actable.annotation.*;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
@@ -38,7 +41,7 @@ public class ColumnUtils {
     }
 
     public static String getTableName(Class<?> clasz) {
-        TableName tableNamePlus = AnnotatedElementUtils.findMergedAnnotation(clasz, TableName.class);
+        TableName tableNamePlus = AnnotatedElementUtilsPlus.findMergedAnnotation(clasz, TableName.class, TableNameImpl.class);
         EnableTimeSuffix enableTimeSuffix = AnnotatedElementUtils.findMergedAnnotation(clasz, EnableTimeSuffix.class);
         String finalTableName = "";
         if (tableNamePlus != null && !StringUtils.isEmpty(tableNamePlus.value())) {
@@ -79,7 +82,7 @@ public class ColumnUtils {
     }
 
     public static String getColumnName(Field field) {
-        TableField tableField = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
         if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
             return tableField.value().toLowerCase().replace(SQL_ESCAPE_CHARACTER, "");
         }
@@ -204,7 +207,7 @@ public class ColumnUtils {
     public static boolean isIncloudField(Field field, Class<?> clasz) {
 
         // 追加逻辑，当TableField(exist=false)的注解修饰时，自动忽略该字段
-        TableField tableField = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
         if (tableField != null && !tableField.exist()) {
             return false;
         }
