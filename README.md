@@ -24,31 +24,31 @@
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-boot-starter</artifactId>
-    <version>1.3.1</version>
+    <version>{maven仓库搜索最新版}</version>
 </dependency>
 <!-- 如果想只引入自动建表 -->
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-actable-core</artifactId>
-    <version>1.3.1</version>
+    <version>{maven仓库搜索最新版}</version>
 </dependency>
 <!-- 如果想只引入关联查询 -->
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-bind</artifactId>
-    <version>1.3.1</version>
+    <version>{maven仓库搜索最新版}</version>
 </dependency>
 <!-- 如果想只引入数据冗余（关联更新） -->
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-datasource</artifactId>
-    <version>1.3.1</version>
+    <version>{maven仓库搜索最新版}</version>
 </dependency>
 <!-- 如果想只引入动态条件 -->
 <dependency>
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext-condition</artifactId>
-    <version>1.3.1</version>
+    <version>{maven仓库搜索最新版}</version>
 </dependency>
 ```
 
