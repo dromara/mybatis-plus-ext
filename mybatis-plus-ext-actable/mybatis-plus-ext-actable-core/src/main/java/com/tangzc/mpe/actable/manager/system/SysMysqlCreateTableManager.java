@@ -458,30 +458,45 @@ public class SysMysqlCreateTableManager {
                     continue;
                 }
                 // 6.验证默认值
-                if (sysColumn.getColumn_default() == null || sysColumn.getColumn_default().equals("")) {
+                String fieldDefaultValue = createTableParam.getFieldDefaultValue();
+                if (sysColumn.getColumn_default() == null || "".equals(sysColumn.getColumn_default())) {
                     // 数据库默认值是null，model中注解设置的默认值不为NULL时，那么需要更新该字段
-                    if (createTableParam.getFieldDefaultValue() != null && !"".equals(createTableParam.getFieldDefaultValue())) {
+                    if (fieldDefaultValue != null && !"".equals(fieldDefaultValue)) {
                         modifyFieldList.add(modifyTableParam);
                         continue;
                     }
-                } else if (!sysColumn.getColumn_default().equals(createTableParam.getFieldDefaultValue())) {
+                } else if (!sysColumn.getColumn_default().equals(fieldDefaultValue)) {
                     if (MySqlTypeConstant.BIT.toString().toLowerCase().equals(createTableParam.getFieldType()) && !createTableParam.isFieldDefaultValueNative()) {
-                        if (("true".equals(createTableParam.getFieldDefaultValue()) || "1".equals(createTableParam.getFieldDefaultValue()))
+                        if (("true".equals(fieldDefaultValue) || "1".equals(fieldDefaultValue))
                                 && !"b'1'".equals(sysColumn.getColumn_default())) {
                             // 两者不相等时，需要更新该字段
                             modifyFieldList.add(modifyTableParam);
                             continue;
                         }
-                        if (("false".equals(createTableParam.getFieldDefaultValue()) || "0".equals(createTableParam.getFieldDefaultValue()))
+                        if (("false".equals(fieldDefaultValue) || "0".equals(fieldDefaultValue))
                                 && !"b'0'".equals(sysColumn.getColumn_default())) {
                             // 两者不相等时，需要更新该字段
                             modifyFieldList.add(modifyTableParam);
                             continue;
                         }
                     } else {
-                        // 两者不相等时，需要更新该字段
-                        modifyFieldList.add(modifyTableParam);
-                        continue;
+
+                        // @tangzc 修改于2021-12-09 因为数据库获取到的默认值不带''，所以代码注释上的需要去掉再比对一次
+                        if(fieldDefaultValue != null && fieldDefaultValue.startsWith("'") && fieldDefaultValue.endsWith("'")) {
+                            fieldDefaultValue = fieldDefaultValue.substring(1, fieldDefaultValue.length() -1);
+                            // 仍然不相等，执行原逻辑
+                            if(!sysColumn.getColumn_default().equals(fieldDefaultValue)){
+                                // 两者不相等时，需要更新该字段
+                                modifyFieldList.add(modifyTableParam);
+                                continue;
+                            } else {
+                                
+                            }
+                        } else {
+                            // 两者不相等时，需要更新该字段
+                            modifyFieldList.add(modifyTableParam);
+                            continue;
+                        }
                     }
                 }
                 // 7.验证是否可以为null(主键不参与是否为null的更新)
