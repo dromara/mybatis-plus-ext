@@ -23,32 +23,32 @@ public class TableNameImpl implements TableName {
 
     @Override
     public String value() {
-        return "";
+        return value;
     }
 
     @Override
     public String schema() {
-        return "";
+        return schema;
     }
 
     @Override
     public boolean keepGlobalPrefix() {
-        return false;
+        return keepGlobalPrefix;
     }
 
     @Override
     public String resultMap() {
-        return "";
+        return resultMap;
     }
 
     @Override
     public boolean autoResultMap() {
-        return false;
+        return autoResultMap;
     }
 
     @Override
     public String[] excludeProperty() {
-        return new String[0];
+        return excludeProperty;
     }
 
     @Override
