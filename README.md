@@ -56,7 +56,7 @@
 
 > 根据实体上的注解及字段注解自动创建、更新数据库表。
 >
-> 官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
+> A.CTable官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
 >
 > 另外A.CTable框架内部集成了类似MP的功能，不如MP完善，所以我也剔除掉了，顺带解决了不兼容和bug。同时像DefaultValue注解重名了，也给它改名为ColumnDefault了，另外整理了一遍内部的注解利用spring的AliasFor做了关联，更方便管理。
 >
