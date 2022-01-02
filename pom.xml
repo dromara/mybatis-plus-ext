@@ -7,13 +7,13 @@
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.2</version>
+    <version>1.3.5</version>
     <name>Mybatis Plus Ext</name>
     <description>mybatis-plus框架的拓展包，基于spring boot、mybatis-plus，在框架原有基础上做了进一步的轻度封装，更加方便使用，针对数据自动填充（类似JPA中的审计）、关联查询（类似sql中的join）、自动建表（仅支持mysql）、冗余数据自动更新、固定条件等方面通过注解做了增强。</description>
 
     <properties>
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
-        <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
+        <mybatis-plus.version>3.5.0</mybatis-plus.version>
         <guava.version>30.0-jre</guava.version>
 
         <!-- java版本 -->
