@@ -6,11 +6,7 @@ import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 
 /**
@@ -27,6 +23,7 @@ import java.lang.annotation.Target;
 @Documented
 @TableName
 @TablePrimary
+@DsName("")
 @TableComment
 @TableCharset
 @TableEngine
@@ -42,10 +39,19 @@ public @interface Table {
 
     /**
      * 是否主表
+     *
      * @return 表名
      */
     @AliasFor(annotation = TablePrimary.class, attribute = "value")
     boolean primary() default false;
+
+    /**
+     * 数据源名称
+     *
+     * @return 数据源
+     */
+    @AliasFor(annotation = DsName.class, attribute = "value")
+    String dsName() default "";
 
     /**
      * 表注释，也可以使用@TableComment注解代替

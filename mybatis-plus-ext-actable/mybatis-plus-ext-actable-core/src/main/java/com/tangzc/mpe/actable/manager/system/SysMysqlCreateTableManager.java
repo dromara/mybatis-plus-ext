@@ -1,14 +1,15 @@
 package com.tangzc.mpe.actable.manager.system;
 
 import com.google.common.collect.Sets;
-import com.tangzc.mpe.actable.annotation.*;
+import com.tangzc.mpe.actable.annotation.IgnoreUpdate;
+import com.tangzc.mpe.actable.annotation.Index;
+import com.tangzc.mpe.actable.annotation.Unique;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlTypeConstant;
 import com.tangzc.mpe.actable.command.*;
 import com.tangzc.mpe.actable.constants.Constants;
 import com.tangzc.mpe.actable.mapper.CreateMysqlTablesMapper;
-import com.tangzc.mpe.actable.utils.ClassScanner;
 import com.tangzc.mpe.actable.utils.ClassTools;
 import com.tangzc.mpe.actable.utils.ColumnUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,10 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 /**
  * 项目启动时自动扫描配置的目录中的model，根据配置的规则自动创建或更新表 该逻辑只适用于mysql，其他数据库尚且需要另外扩展，因为sql的语法不同
@@ -31,17 +30,10 @@ import java.util.stream.Collectors;
  * @version 2019/07/06
  */
 @Slf4j
-@Transactional
 public class SysMysqlCreateTableManager {
 
     @Resource
     private CreateMysqlTablesMapper createMysqlTablesMapper;
-
-    /**
-     * 要扫描的model所在的pack
-     */
-    @Value(Constants.ACTABLE_MODEL_PACK_KEY_VALUE)
-    private String pack;
 
     /**
      * 自动创建模式：update表示更新，create表示删除原表重新创建
@@ -53,41 +45,11 @@ public class SysMysqlCreateTableManager {
     @Value(Constants.TABLE_INDEX_KEY_VALUE)
     private String idxPrefix;
 
-    @PostConstruct
-    public void initPack() {
-        if (StringUtils.isEmpty(pack)) {
-            pack = ClassTools.getBootPackage();
-        }
-    }
-
-    /**
-     * 读取配置文件的三种状态（创建表、更新表、不做任何事情）
-     */
-    public void createMysqlTable() {
-
-        // 不做任何事情
-        if (!"none".equals(tableAuto) && !"update".equals(tableAuto) && !"create".equals(tableAuto) && !"add".equals(tableAuto)) {
-            log.warn("配置mybatis.table.auto错误无法识别，当前配置只支持[none/update/create/add]三种类型!");
-            return;
-        }
-
-        // 不做任何事情
-        if ("none".equals(tableAuto)) {
-            log.info("配置mybatis.table.auto=none，不需要做任何事情");
-            return;
-        }
-
-        // 拆成多个pack，支持多个
-        String[] packs = pack.split(",|;");
-
-        // 从包package中获取所有的Class
-        Set<Class<?>> classes = ClassScanner.scan(packs, Table.class);
+    @Transactional(rollbackFor = Exception.class)
+    public void initTable(Set<Class<?>> needCreateTable) {
 
         // 初始化用于存储各种操作表结构的容器
         Map<String, Map<String, TableConfig>> baseTableMap = initTableMap();
-
-        // 处理重名表
-        Set<Class<?>> needCreateTable = filterRepeatTable(classes);
 
         // 循环全部的model
         for (Class<?> clas : needCreateTable) {
@@ -97,39 +59,13 @@ public class SysMysqlCreateTableManager {
                 log.warn("{}，配置了@IgnoreTable注解直接跳过", clas.getName());
                 continue;
             }
+
             // 构建出全部表的增删改的map
             buildTableMapConstruct(clas, baseTableMap);
         }
 
         // 根据传入的map，分别去创建或修改表结构
         createOrModifyTableConstruct(baseTableMap);
-    }
-
-    /**
-     * 处理重名表
-     */
-    private Set<Class<?>> filterRepeatTable(Set<Class<?>> classes) {
-
-        Map<String, List<Class<?>>> classMap = classes.stream().collect(Collectors.groupingBy(ColumnUtils::getTableName));
-        Set<Class<?>> needCreateTable = new HashSet<>();
-        classMap.forEach((tableName, sameClasses) -> {
-            // 挑选出重名的表，找到其中标记primary的，用作生成数据表的依据
-            if (sameClasses.size() > 1) {
-                List<Class<?>> primaryClasses = sameClasses.stream()
-                        .filter(clazz -> AnnotatedElementUtils.findMergedAnnotation(clazz, TablePrimary.class).value())
-                        .collect(Collectors.toList());
-                if (primaryClasses.isEmpty()) {
-                    throw new RuntimeException("表名[" + tableName + "]出现重复，必须指定一个为@TablePrimary！");
-                }
-                if (primaryClasses.size() > 1) {
-                    throw new RuntimeException("表名[" + tableName + "]出现重复，有且只能有一个为@TablePrimary！");
-                }
-                needCreateTable.add(primaryClasses.get(0));
-            } else {
-                needCreateTable.add(sameClasses.get(0));
-            }
-        });
-        return needCreateTable;
     }
 
     /**
@@ -482,15 +418,15 @@ public class SysMysqlCreateTableManager {
                     } else {
 
                         // @tangzc 修改于2021-12-09 因为数据库获取到的默认值不带''，所以代码注释上的需要去掉再比对一次
-                        if(fieldDefaultValue != null && fieldDefaultValue.startsWith("'") && fieldDefaultValue.endsWith("'")) {
-                            fieldDefaultValue = fieldDefaultValue.substring(1, fieldDefaultValue.length() -1);
+                        if (fieldDefaultValue != null && fieldDefaultValue.startsWith("'") && fieldDefaultValue.endsWith("'")) {
+                            fieldDefaultValue = fieldDefaultValue.substring(1, fieldDefaultValue.length() - 1);
                             // 仍然不相等，执行原逻辑
-                            if(!sysColumn.getColumn_default().equals(fieldDefaultValue)){
+                            if (!sysColumn.getColumn_default().equals(fieldDefaultValue)) {
                                 // 两者不相等时，需要更新该字段
                                 modifyFieldList.add(modifyTableParam);
                                 continue;
                             } else {
-                                
+
                             }
                         } else {
                             // 两者不相等时，需要更新该字段

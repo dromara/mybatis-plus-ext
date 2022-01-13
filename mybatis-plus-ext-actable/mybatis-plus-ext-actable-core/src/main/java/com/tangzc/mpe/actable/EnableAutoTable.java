@@ -1,6 +1,8 @@
 package com.tangzc.mpe.actable;
 
-import com.tangzc.mpe.actable.manager.handler.StartUpHandlerImpl;
+import com.tangzc.mpe.actable.manager.handler.DynamicDatasourceTableInitConfig;
+import com.tangzc.mpe.actable.manager.handler.DefaultTableInitConfig;
+import com.tangzc.mpe.actable.manager.handler.StartUpHandler;
 import com.tangzc.mpe.actable.manager.system.SysMysqlCreateTableManager;
 import com.tangzc.mpe.actable.utils.SpringContextUtil;
 import org.springframework.context.annotation.Import;
@@ -18,7 +20,11 @@ import java.lang.annotation.*;
         SpringContextUtil.class,
         MapperScannerConfig.class,
         SysMysqlCreateTableManager.class,
-        StartUpHandlerImpl.class,
+        StartUpHandler.class,
+        DynamicDatasourceTableInitConfig.class,
+        DefaultTableInitConfig.class,
 })
 public @interface EnableAutoTable {
+
+    boolean dynamicDataSources() default false;
 }

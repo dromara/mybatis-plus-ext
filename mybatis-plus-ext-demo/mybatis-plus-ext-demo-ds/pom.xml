@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-demo</artifactId>
+        <groupId>com.tangzc</groupId>
         <version>1.3.6</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mybatis-plus-ext-demo-condition</artifactId>
+    <artifactId>mybatis-plus-ext-demo-ds</artifactId>
 
     <dependencies>
         <dependency>
@@ -29,6 +29,31 @@
             <artifactId>mybatis-plus-ext-boot-starter</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- 注释掉该引用，即表示非多数据源 -->
+                <dependency>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                    <version>${dynamic-datasource.version}</version>
+                </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

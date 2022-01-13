@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:mysql://127.0.0.1:3306/mybatis-plus-ext?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: 12345678
+          driver-class-name: com.mysql.cj.jdbc.Driver
+        test:
+          url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: 12345678
+          driver-class-name: com.mysql.cj.jdbc.Driver
