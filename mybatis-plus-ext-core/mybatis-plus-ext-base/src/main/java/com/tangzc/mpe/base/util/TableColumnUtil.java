@@ -2,6 +2,8 @@ package com.tangzc.mpe.base.util;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
+import com.baomidou.mybatisplus.core.metadata.TableFieldImpl;
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -35,7 +37,7 @@ public class TableColumnUtil {
 
     public static String getColumnName(Field field) {
         String columnName;
-        TableField annotation = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+        TableField annotation = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
         if (annotation != null && !annotation.value().isEmpty()) {
             columnName = annotation.value();
         } else {
