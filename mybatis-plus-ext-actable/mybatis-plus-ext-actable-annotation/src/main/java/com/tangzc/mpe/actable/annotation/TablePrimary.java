@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 /**
  * 表字符集
  *
- * @author sunchenbin
+ * @author tangzc
  * @version 2020年11月11日 下午6:13:37
  */
 //表示注解加在接口、类、枚举等

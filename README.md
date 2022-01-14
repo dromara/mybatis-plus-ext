@@ -4,7 +4,7 @@
 
 ## 前言
 
-##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png) 
+##### 如果感觉框架对您有所帮助，请给个小星星⭐️，作者二线不知名小公司码农一枚，欢迎来撩共同进步。![image-20210826172002744](https://raw.githubusercontent.com/imtzc/pic-store/main/markdown/20210826172002.png)
 「二维码看不到的查看项目文档下"微信.png"」
 
 ## 原理介绍
@@ -56,11 +56,15 @@
 
 > 根据实体上的注解及字段注解自动创建、更新数据库表。
 >
-> A.CTable官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
+> 本模块核心代码采用了A.CTable框架，因该框架与本框架的需求不太符合，因此就对其进行了一版魔改，具体改动如下：
 >
-> 另外A.CTable框架内部集成了类似MP的功能，不如MP完善，所以我也剔除掉了，顺带解决了不兼容和bug。同时像DefaultValue注解重名了，也给它改名为ColumnDefault了，另外整理了一遍内部的注解利用spring的AliasFor做了关联，更方便管理。
->
-> 其中还有一点，@Table里面加了一个primary属性，表示是否为主表，为了支持多个Entity对应一个数据库表（正常用不到请忽略^_^）
+> 1. 官方的设计思路是默认Bean下的所有字段均不是表字段，需要手动通过@Column声明，我在引用过来之后，改为了默认所有字段均为表字段，只有被MP的@TableField(exist=false)修饰的才会被排除，具备@TableField(exist=false)功能的注解有：@Exclude、@Bind**系列，他们集成了@TableField，且内置exist属性为false了。
+> 2. A.CTable框架内部集成了类似MP的功能，不如MP完善，所以我也剔除掉了，顺带解决了不兼容和bug。
+> 3. 像DefaultValue注解与本框架内部注解重名了，因此改名为ColumnDefault。
+> 4. 整理了一遍内部的注解，利用spring的AliasFor做了关联，更方便管理。
+> 5. @Table里面加了一个primary属性（对应@TablePrimary），表示是否为主表，为了支持多个Entity对应一个数据库表（正常用不到请忽略^_^）。
+> 6. @Table里面加了一个dsName属性（对应@DsName），可以配合MP的多数据框架实现不同的表在不同数据源下创建。
+> 7. 数据库类型映射改动增加对MySQL8的支持，Double数据类型，自动保留2位小数，BigDecimal类型保留4位小数
 
 ```java
 @Data
@@ -553,7 +557,9 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 #### `@Table`
 
-> 新增一个primary属性，isNull属性为了一致性改为了isNotNull属性默认false
+> 1. 新增primary属性，对应@TablePrimary
+> 2. isNull属性为了一致性改为了isNotNull属性默认false
+> 3. 新增dsName属性，对应@DsName
 
 #### `@TableCharset`
 
@@ -563,7 +569,11 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 #### `@TablePrimary`
 
-> 新增注解，同步@Table中的primary属性，在多个Entity映射一张表的情况下，确定主Entity是哪个，数据表生成的时候根据主表来生成。
+> 新增注解，等同@Table中的primary属性，在多个Entity映射一张表的情况下，确定主Entity是哪个，数据表生成的时候根据主表来生成。
+
+#### `@TablePrimary`
+
+> 新增注解，等同@Table中的dsName属性，在多数据源场景下，指定某个表的数据源。
 
 #### `@IgnoreTable`
 
@@ -829,4 +839,5 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 | 属性  | 类型                                      | 必需 | 默认值 | 描述                                                         |
 | ----- | ----------------------------------------- | ---- | ------ | ------------------------------------------------------------ |
 | value | Class<? extends IDynamicConditionHandler> | 是   |        | IDynamicConditionHandler接口有两个方法，enable()决定了该条件是否生效，values()是条件匹配的值。 |
+
 
