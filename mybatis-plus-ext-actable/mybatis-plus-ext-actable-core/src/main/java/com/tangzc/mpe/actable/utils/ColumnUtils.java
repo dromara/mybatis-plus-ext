@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.baomidou.mybatisplus.core.metadata.TableFieldImpl;
 import com.baomidou.mybatisplus.core.metadata.TableNameImpl;
 import com.google.common.base.CaseFormat;
+import com.tangzc.mpe.actable.MybatisPlusProperties;
 import com.tangzc.mpe.actable.annotation.*;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;
@@ -48,8 +49,13 @@ public class ColumnUtils {
             finalTableName = tableNamePlus.value();
         }
         if (StringUtils.isEmpty(finalTableName)) {
-            // 都为空时采用类名按照驼峰格式转会为表名
-            finalTableName = getBuildLowerName(clasz.getSimpleName());
+            if(MybatisPlusProperties.tableUnderline) {
+                // 都为空时采用类名按照驼峰格式转会为表名
+                finalTableName = getBuildLowerName(clasz.getSimpleName());
+            } else {
+                // 禁止表名自动驼峰转下划线的情况下，全小写
+                finalTableName = clasz.getSimpleName().toLowerCase();
+            }
         }
         if (null != enableTimeSuffix && enableTimeSuffix.value()) {
             finalTableName = appendTimeSuffix(finalTableName, enableTimeSuffix.pattern());
@@ -90,7 +96,13 @@ public class ColumnUtils {
         if (tableId != null && !StringUtils.isEmpty(tableId.value())) {
             return tableId.value().replace(SQL_ESCAPE_CHARACTER, "");
         }
-        return getBuildLowerName(field.getName()).replace(SQL_ESCAPE_CHARACTER, "");
+
+        // 如果不需要字段自动驼峰转下划线
+        if(!MybatisPlusProperties.mapUnderscoreToCamelCase) {
+            return field.getName();
+        }
+
+        return getBuildLowerName(field.getName());
     }
 
     private static String getBuildLowerName(String name) {

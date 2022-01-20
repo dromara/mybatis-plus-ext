@@ -14,3 +14,11 @@ spring:
           username: root
           password: 12345678
           driver-class-name: com.mysql.cj.jdbc.Driver
+
+# 测试建表的时候会根据mybatis-plus的配置来创建
+#mybatis-plus:
+#  configuration:
+#    map-underscore-to-camel-case: false
+#  global-config:
+#    db-config:
+#      table-underline: false

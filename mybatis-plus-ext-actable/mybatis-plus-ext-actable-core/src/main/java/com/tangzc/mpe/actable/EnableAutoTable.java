@@ -18,6 +18,7 @@ import java.lang.annotation.*;
 @Import({
         // 该类需要排在第一个
         SpringContextUtil.class,
+        MybatisPlusProperties.class,
         MapperScannerConfig.class,
         SysMysqlCreateTableManager.class,
         StartUpHandler.class,

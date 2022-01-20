@@ -8,4 +8,7 @@ public class TestTable {
 
     @ColumnComment("id")
     private String id;
+
+    @ColumnComment("用户名")
+    private String userName;
 }
