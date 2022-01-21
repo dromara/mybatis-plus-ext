@@ -76,10 +76,8 @@ public class User {
     // 自动识别id属性名为主键
     // @IsAutoIncrement声明为自增主键，什么都不声明的话，默认为雪花算法的唯一主键（MP的自带功能），推荐默认便于后期的数据分布式存储等处理。
     @IsAutoIncrement
-    // 字段注释
-    @ColumnComment("主键")
-    // 字段长度
-    @ColumnLength(32)
+    // 字段注释、类型、长度。@Column的所有属性均有独立的注解对应，具体请参照后面的注解介绍
+    @Column(comment = "主键", type = MySqlTypeConstant.BIGINT, length = 32)
     private String id;
 
     // 索引
@@ -302,15 +300,17 @@ public class UserService {
      * 根据用户的名字模糊查询所有用户的详细信息
      */
     @Transactional(readOnly = true)
-    public List<UserDetailWithRoleDto> searchUserByNameWithRule(String name) {
+    public List<UserDetailWithRoleDto> searchUserWithRuleByName(String name) {
 
         // MP的lambda查询方式
         List<User> userList = userRepository.lambdaQuery()
                 .eq(name != null, User::getUsername, name)
                 .list();
         // 关键步骤，指定关联角色数据。如果你打开sql打印，会看到3条sql语句，第一条根据id去User表查询user信息，第二条根据userId去UserRule中间表查询所有的ruleId，第三条sql根据ruleId集合去Rule表查询全部的权限
+      	// 用法一、指定属性关联。
         Binder.bindOn(userList, User::getRoles);
-        // Binder.bind(userList); 此种用法默认关联user下所有声明需要绑定的元素
+      	// 用法二、全关联。此种用法默认关联user下所有声明需要绑定的属性
+        // Binder.bind(userList);
 
         return UserMapping.MAPPER.toDto5(userList);
     }
@@ -319,13 +319,16 @@ public class UserService {
      * 根据用户的名字模糊查询所有用户的详细信息，等价于上一个查询方式
      */
     @Transactional(readOnly = true)
-    public List<UserDetailWithRoleDto> searchUserByNameWithRule2(String name) {
+    public List<UserDetailWithRoleDto> searchUserWithRuleByName2(String name) {
 
         // 本框架拓展的lambda查询器lambdaQueryPlus，增加了bindOne、bindList、bindPage
         // 显然这是一种更加简便的查询方式，但是如果存在多级深度的关联关系，此种方法就不适用了，还需要借助Binder
         List<User> userList = userRepository.lambdaQueryPlus()
                 .eq(name != null, User::getUsername, name)
+          			// 用法一、指定属性关联。
                 .bindList(User::getRoles);
+      					// 用法二、全关联。
+      					// .bindList();
 
         return UserMapping.MAPPER.toDto5(userList);
     }
@@ -338,17 +341,17 @@ public class UserService {
 // 数据库查询出了用户列表 【1】
 List<User> userList = userRepository.list();
 // 为所有用户关联角色信息 【2】
-        Binder.bindOn(userList, User::getRoles);
+Binder.bindOn(userList, User::getRoles);
 // 为所有角色信息关联菜单信息 【3】
 // Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
-        Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
+Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
 ```
 
 ###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
 
 ### 数据冗余
 
-> 当其他表的数据需要作为当前表的查询条件的时候，多数情况下会使用sql的join语法，另一种方案是做数据冗余，讲其他表的字段作为当前表的字段，但是牵扯一个数据修改后同步的问题，本框架可以解决。
+> 当其他表的数据需要作为当前表的查询条件的时候，多数情况下会使用sql的join语法，另一种方案是做数据冗余，将其他表的字段冗余到当前表，但是牵扯一个数据修改后同步的问题，本框架可以解决。
 >
 > 假设用户评论的场景，评论上需要冗余用户名和头像，如果用户的名字和头像有改动，则需要同步新的改动，代码如下：
 
@@ -365,7 +368,7 @@ public class User {
 
     @ColumnComment("头像")
     private String icon;
-
+    
     // 省略其他属性
     ......
 }
@@ -385,7 +388,9 @@ public class Comment {
     @ColumnComment("评论人id")
     private String userId;
 
-    // 基于该注解，框架会自动注册监听EntityUpdateEvent事件，User的updateById和updateBatchById两个方法会自动发布EntityUpdateEvent事件
+    /* 基于该注解，框架会自动注册监听EntityUpdateEvent事件，User的updateById和updateBatchById两个方法会自动发布EntityUpdateEvent事件。
+     * 因此，除了mybatis-plus的updateById和updateBatchById两个更新方法外，其他数据更新方式（比如手动写sql的形式）不会触发数据自动更新，需要用户自己抛出EntityUpdateEvent事件，完成数据自动更新
+     */
     @DataSource(source = User.class, field = "username", conditions = @Condition(selfField = "userId"))
     @ColumnComment("评论人名称")
     private String userName;
@@ -408,11 +413,11 @@ public class Comment {
  */
 @Bean
 public MybatisPlusInterceptor mybatisPlusInterceptor() {
-        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 添加动态条件，若同时添加了其他的拦截器，继续添加即可
-        interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
-        return interceptor;
-        }
+    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+    // 添加动态条件，若同时添加了其他的拦截器，继续添加即可
+    interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
+    return interceptor;
+}
 ```
 
 ```java
@@ -425,16 +430,16 @@ public class Article {
 
     @ColumnComment("标题")
     private String title;
-
+    
     @ColumnComment("内容")
     private String content;
 
     @ColumnComment("发布人")
     @InsertOptionUser(UserIdAutoFillHandler.class)
-    // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=或者in的添加
+    // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=?或者published_user_id in (?)的条件，?值来自于CurrentUserDynamicConditionHandler的values()返回值
     @DynamicCondition(CurrentUserDynamicConditionHandler.class)
     private String publishedUserId;
-
+    
     // 省略其他字段
     ......
 }
@@ -449,8 +454,9 @@ public class CurrentUserDynamicConditionHandler implements IDynamicConditionHand
 
     @Override
     public List<Object> values() {
-        // 只有当enable()返回true的时候 本动态条件才 生效
-        // 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
+				/* 只有当enable()返回true的时候 本动态条件才生效。
+         * 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
+         */
         String userId = request.getHeader("USER_ID");
         return Collections.singletonList(userId);
     }
@@ -572,7 +578,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
 
 > 新增注解，等同@Table中的primary属性，在多个Entity映射一张表的情况下，确定主Entity是哪个，数据表生成的时候根据主表来生成。
 
-#### `@TablePrimary`
+#### `@DsName`
 
 > 新增注解，等同@Table中的dsName属性，在多数据源场景下，指定某个表的数据源。
 
