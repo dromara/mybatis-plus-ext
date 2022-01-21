@@ -64,7 +64,8 @@
 > 4. 整理了一遍内部的注解，利用spring的AliasFor做了关联，更方便管理。
 > 5. @Table里面加了一个primary属性（对应@TablePrimary），表示是否为主表，为了支持多个Entity对应一个数据库表（正常用不到请忽略^_^）。
 > 6. @Table里面加了一个dsName属性（对应@DsName），可以配合MP的多数据框架实现不同的表在不同数据源下创建。
-> 7. 数据库类型映射改动增加对MySQL8的支持，Double数据类型，自动保留2位小数，BigDecimal类型保留4位小数
+> 7. 数据库类型映射改动增加对MySQL8的支持，Double数据类型，自动保留2位小数，BigDecimal类型保留4位小数。
+> 7. 数据库表名和字段名的生成会参照mybatis-plus的配置：`mybatis-plus.global-config.db-config.table-underline`和`mybatis-plus.configuration.map-underscore-to-camel-case`决定是否自动驼峰转下划线，完成了跟mybatis-plus的一致性。
 
 ```java
 @Data
@@ -337,10 +338,10 @@ public class UserService {
 // 数据库查询出了用户列表 【1】
 List<User> userList = userRepository.list();
 // 为所有用户关联角色信息 【2】
-Binder.bindOn(userList, User::getRoles);
+        Binder.bindOn(userList, User::getRoles);
 // 为所有角色信息关联菜单信息 【3】
 // Deeper为一个深度遍历工具，可以深入到对象的多层属性内部，从而获取全局上该层级的所有对象同一属性
-Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
+        Binder.bindOn(Deeper.with(userList).inList(User::getRoles), Role::getMenus);
 ```
 
 ###### 注意📢：【2】和【3】存在顺序依赖，必须先执行【2】才能执行【3】
@@ -364,7 +365,7 @@ public class User {
 
     @ColumnComment("头像")
     private String icon;
-    
+
     // 省略其他属性
     ......
 }
@@ -407,11 +408,11 @@ public class Comment {
  */
 @Bean
 public MybatisPlusInterceptor mybatisPlusInterceptor() {
-    MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-    // 添加动态条件，若同时添加了其他的拦截器，继续添加即可
-    interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
-    return interceptor;
-}
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 添加动态条件，若同时添加了其他的拦截器，继续添加即可
+        interceptor.addInnerInterceptor(new DynamicConditionInterceptor());
+        return interceptor;
+        }
 ```
 
 ```java
@@ -424,7 +425,7 @@ public class Article {
 
     @ColumnComment("标题")
     private String title;
-    
+
     @ColumnComment("内容")
     private String content;
 
@@ -433,7 +434,7 @@ public class Article {
     // 添加了该注解后，针对文章的查询、修改、删除操作，均会被自动带上 published_user_id=或者in的添加
     @DynamicCondition(CurrentUserDynamicConditionHandler.class)
     private String publishedUserId;
-    
+
     // 省略其他字段
     ......
 }
@@ -448,7 +449,7 @@ public class CurrentUserDynamicConditionHandler implements IDynamicConditionHand
 
     @Override
     public List<Object> values() {
-		// 只有当enable()返回true的时候 本动态条件才 生效
+        // 只有当enable()返回true的时候 本动态条件才 生效
         // 返回空集合或者null的时候，sql上体现的是 [column] is null，只返回一个值的时候sql上体现的是 [column]=***，返回集合的时候，sql上体现的是 [column] in (***)
         String userId = request.getHeader("USER_ID");
         return Collections.singletonList(userId);
