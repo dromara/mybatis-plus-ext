@@ -3,7 +3,7 @@ package com.tangzc.mpe.base.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 

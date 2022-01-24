@@ -2,7 +2,7 @@ package com.tangzc.mpe;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.extension.handlers.AbstractJsonTypeHandler;
 import com.tangzc.mpe.actable.annotation.constants.MySqlTypeConstant;

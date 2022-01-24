@@ -18,6 +18,8 @@ package com.baomidou.mybatisplus.core.metadata;
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
+import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.builder.StaticSqlSource;

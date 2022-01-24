@@ -1,4 +1,4 @@
-package com.baomidou.mybatisplus.core.metadata;
+package com.baomidou.mybatisplus.core.metadata.impl;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.FieldStrategy;
@@ -11,6 +11,9 @@ import org.apache.ibatis.type.UnknownTypeHandler;
 
 import java.lang.annotation.Annotation;
 
+/**
+ * @author don
+ */
 @Getter
 @Setter
 public class TableFieldImpl implements TableField {

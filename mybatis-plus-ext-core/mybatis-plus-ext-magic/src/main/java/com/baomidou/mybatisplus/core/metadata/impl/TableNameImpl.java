@@ -1,4 +1,4 @@
-package com.baomidou.mybatisplus.core.metadata;
+package com.baomidou.mybatisplus.core.metadata.impl;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
