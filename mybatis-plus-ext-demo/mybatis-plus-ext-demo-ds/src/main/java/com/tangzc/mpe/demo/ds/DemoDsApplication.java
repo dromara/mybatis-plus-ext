@@ -23,12 +23,10 @@ public class DemoDsApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void test() {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("======================");
-        System.out.println("======================");
         testTableRepository.list();
     }
 }
