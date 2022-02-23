@@ -23,7 +23,7 @@ public class BeanAnnotationManager {
 
     public static <BEAN> BeanDescription<BEAN> getBeanAnnotation(Class<BEAN> beanClass, List<String> includeField, List<String> ignoreField) {
 
-        // 因为一个class可能存在多用关联用法，所以，用复核字符串作为key标识
+        // 因为一个class可能存在多用关联用法，所以，用复合字符串作为key标识
         String[] keys = {beanClass.getName(), String.join(",", includeField), String.join(",", ignoreField)};
         String key = String.join("#", keys);
 

@@ -31,8 +31,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.Reflector;
-import org.apache.ibatis.reflection.ReflectorFactory;
 import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.type.SimpleTypeRegistry;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
@@ -77,7 +77,7 @@ public class TableInfoHelper {
      * @return 数据库表反射信息
      */
     public static TableInfo getTableInfo(Class<?> clazz) {
-        if (clazz == null || ReflectionKit.isPrimitiveOrWrapper(clazz) || clazz == String.class || clazz.isInterface()) {
+        if (clazz == null || clazz.isPrimitive() || SimpleTypeRegistry.isSimpleType(clazz) || clazz.isInterface()) {
             return null;
         }
         // https://github.com/baomidou/mybatis-plus/issues/299
@@ -126,6 +126,15 @@ public class TableInfoHelper {
     }
 
     /**
+     * 清空实体表映射缓存信息
+     *
+     * @param entityClass 实体 Class
+     */
+    public static void remove(Class<?> entityClass) {
+        TABLE_INFO_CACHE.remove(entityClass);
+    }
+
+    /**
      * <p>
      * 实体类反射获取表信息【初始化】
      * </p>
@@ -157,9 +166,8 @@ public class TableInfoHelper {
      */
     private synchronized static TableInfo initTableInfo(Configuration configuration, String currentNamespace, Class<?> clazz) {
         /* 没有获取到缓存信息,则初始化 */
-        TableInfo tableInfo = new TableInfo(clazz);
+        TableInfo tableInfo = new TableInfo(configuration, clazz);
         tableInfo.setCurrentNamespace(currentNamespace);
-        tableInfo.setConfiguration(configuration);
         GlobalConfig globalConfig = GlobalConfigUtils.getGlobalConfig(configuration);
 
         /* 初始化表名相关 */
@@ -276,8 +284,7 @@ public class TableInfoHelper {
     private static void initTableFields(Class<?> clazz, GlobalConfig globalConfig, TableInfo tableInfo, List<String> excludeProperty) {
         /* 数据库全局配置 */
         GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
-        ReflectorFactory reflectorFactory = tableInfo.getConfiguration().getReflectorFactory();
-        Reflector reflector = reflectorFactory.findForClass(clazz);
+        Reflector reflector = tableInfo.getReflector();
         List<Field> list = getAllFields(clazz);
         // 标记是否读取到主键
         boolean isReadPK = false;
@@ -285,8 +292,6 @@ public class TableInfoHelper {
         boolean existTableId = isExistTableId(list);
         // 是否存在 @TableLogic 注解
         boolean existTableLogic = isExistTableLogic(list);
-        // 是否存在 @OrderBy 注解
-        boolean existOrderBy = isExistOrderBy(list);
 
         List<TableFieldInfo> fieldList = new ArrayList<>(list.size());
         for (Field field : list) {
@@ -294,34 +299,42 @@ public class TableInfoHelper {
                 continue;
             }
 
+            boolean isPK = false;
+            boolean isOrderBy = field.getAnnotation(OrderBy.class) != null;
+
             /* 主键ID 初始化 */
             if (existTableId) {
                 TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
                 if (tableId != null) {
                     if (isReadPK) {
                         throw ExceptionUtils.mpe("@TableId can't more than one in Class: \"%s\".", clazz.getName());
-                    } else {
-                        initTableIdWithAnnotation(dbConfig, tableInfo, field, tableId, reflector);
-                        isReadPK = true;
-                        continue;
                     }
+
+                    initTableIdWithAnnotation(dbConfig, tableInfo, field, tableId);
+                    isPK = isReadPK = true;
                 }
             } else if (!isReadPK) {
-                isReadPK = initTableIdWithoutAnnotation(dbConfig, tableInfo, field, reflector);
-                if (isReadPK) {
-                    continue;
-                }
+                isPK = isReadPK = initTableIdWithoutAnnotation(dbConfig, tableInfo, field);
+
             }
+
+            if (isPK) {
+                if (isOrderBy) {
+                    tableInfo.getOrderByFields().add(new TableFieldInfo(dbConfig, tableInfo, field, reflector, existTableLogic, true));
+                }
+                continue;
+            }
+
             final TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
 
             /* 有 @TableField 注解的字段初始化 */
             if (tableField != null) {
-                fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, tableField, reflector, existTableLogic, existOrderBy));
+                fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, tableField, reflector, existTableLogic, isOrderBy));
                 continue;
             }
 
             /* 无 @TableField  注解的字段初始化 */
-            fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, reflector, existTableLogic, existOrderBy));
+            fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, reflector, existTableLogic, isOrderBy));
         }
 
         /* 字段列表 */
@@ -339,7 +352,7 @@ public class TableInfoHelper {
      * </p>
      *
      * @param list 字段列表
-     * @return true 为存在 @TableId 注解;
+     * @return true 为存在 {@link TableId} 注解;
      */
     public static boolean isExistTableId(List<Field> list) {
         return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, TableId.class));
@@ -351,7 +364,7 @@ public class TableInfoHelper {
      * </p>
      *
      * @param list 字段列表
-     * @return true 为存在 @TableId 注解;
+     * @return true 为存在 {@link TableLogic} 注解;
      */
     public static boolean isExistTableLogic(List<Field> list) {
         return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, TableLogic.class));
@@ -363,7 +376,7 @@ public class TableInfoHelper {
      * </p>
      *
      * @param list 字段列表
-     * @return true 为存在 @TableId 注解;
+     * @return true 为存在 {@link OrderBy} 注解;
      */
     public static boolean isExistOrderBy(List<Field> list) {
         return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, OrderBy.class));
@@ -378,10 +391,8 @@ public class TableInfoHelper {
      * @param tableInfo 表信息
      * @param field     字段
      * @param tableId   注解
-     * @param reflector Reflector
      */
-    private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo,
-                                                  Field field, TableId tableId, Reflector reflector) {
+    private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableId tableId) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
         if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
@@ -410,7 +421,7 @@ public class TableInfoHelper {
                 column = column.toUpperCase();
             }
         }
-        final Class<?> keyType = reflector.getGetterType(property);
+        final Class<?> keyType = tableInfo.getReflector().getGetterType(property);
         if (keyType.isPrimitive()) {
             logger.warn(String.format("This primary key of \"%s\" is primitive !不建议如此请使用包装类 in Class: \"%s\"",
                     property, tableInfo.getEntityType().getName()));
@@ -428,11 +439,9 @@ public class TableInfoHelper {
      *
      * @param tableInfo 表信息
      * @param field     字段
-     * @param reflector Reflector
      * @return true 继续下一个属性判断，返回 continue;
      */
-    private static boolean initTableIdWithoutAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo,
-                                                        Field field, Reflector reflector) {
+    private static boolean initTableIdWithoutAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field) {
         final String property = field.getName();
         if (DEFAULT_ID_NAME.equalsIgnoreCase(property)) {
             if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
@@ -443,7 +452,7 @@ public class TableInfoHelper {
             if (dbConfig.isCapitalMode()) {
                 column = column.toUpperCase();
             }
-            final Class<?> keyType = reflector.getGetterType(property);
+            final Class<?> keyType = tableInfo.getReflector().getGetterType(property);
             if (keyType.isPrimitive()) {
                 logger.warn(String.format("This primary key of \"%s\" is primitive !不建议如此请使用包装类 in Class: \"%s\"",
                         property, tableInfo.getEntityType().getName()));

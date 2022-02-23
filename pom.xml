@@ -13,8 +13,8 @@
 
     <properties>
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
-        <mybatis-plus.version>3.5.0</mybatis-plus.version>
-        <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
+        <mybatis-plus.version>3.5.1</mybatis-plus.version>
+        <dynamic-datasource.version>3.5.1</dynamic-datasource.version>
         <guava.version>30.0-jre</guava.version>
 
         <!-- java版本 -->

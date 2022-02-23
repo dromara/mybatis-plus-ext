@@ -23,9 +23,9 @@ import java.lang.annotation.Target;
 public @interface Serializable {
 
     /**
-     * 需要配合 @TableName(autoResultMap = true)
-     *
-     * @return
+     * 注意：需要配合 @TableName(autoResultMap = true)
+     * 如果序列化的为【对象(非基本类型)集合】，请手动声明一个typeHandler，继承JacksonTypeHandler即可，
+     * 然后在类头上标注@MappedTypes({对象1.class,对象2.class})
      */
     @AliasFor(annotation = TableField.class, attribute = "typeHandler")
     Class<? extends TypeHandler> typeHandler() default JacksonTypeHandler.class;
