@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author sunchenbin
  */
-@InterceptorIgnore(tenantLine = "true")
+@InterceptorIgnore(tenantLine = "true", illegalSql = "true", blockAttack = "true")
 public interface CreateMysqlTablesMapper {
 
     /**
