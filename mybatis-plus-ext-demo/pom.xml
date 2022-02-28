@@ -16,6 +16,7 @@
         <module>mybatis-plus-ext-demo-common</module>
         <module>mybatis-plus-ext-demo-bind</module>
         <module>mybatis-plus-ext-demo-ds</module>
+        <module>mybatis-plus-ext-demo-autotable</module>
     </modules>
 
 </project>
