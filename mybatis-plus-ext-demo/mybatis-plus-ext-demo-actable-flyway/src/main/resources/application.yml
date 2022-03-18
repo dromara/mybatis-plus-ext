@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: demo
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/mybatis-plus-ext?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroLongTimeBehavior=convertToNull
+    username: root
+    password: 12345678
+
+  flyway:
+    table: flyway_schema_history
+    baseline-on-migrate: true
+    locations: classpath:/sql
+    encoding: UTF-8
+    clean-disabled: true # 禁用数据库清理
+    placeholders: # 定义 afterMigrateError.sql 要清理的元数据表表名
+      flyway-table: ${spring.flyway.table}
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
