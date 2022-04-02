@@ -1,10 +1,10 @@
-<div style="text-align: center;"><img src="https://s2.loli.net/2022/04/02/wibvoFgKym4NY57.png" alt="1648883788444-1068117e-f573-4b0b-bbb9-8a3208810860.png" /></div>
+<p style="text-align: center;"><img src="https://s2.loli.net/2022/04/02/wibvoFgKym4NY57.png" alt="1648883788444-1068117e-f573-4b0b-bbb9-8a3208810860.png" /></p>
 
 
 
-<div style="text-align: center;">借用MybatisPlus的口号：为简化开发工作、提高生产率而生</div>
+<p style="text-align: center;">借用MybatisPlus的口号：为简化开发工作、提高生产率而生</p>
 
-<div style="text-align: center;"><img src="https://img.shields.io/maven-central/v/com.baomidou/mybatis-plus.svg?style=for-the-badge" alt="img" /><img src="https://img.shields.io/badge/license-Apache 2-4EB1BA.svg?style=for-the-badge" alt="img" /></div>
+<p style="text-align: center;"><img src="https://img.shields.io/maven-central/v/com.baomidou/mybatis-plus.svg?style=for-the-badge" alt="img" /><img src="https://img.shields.io/badge/license-Apache 2-4EB1BA.svg?style=for-the-badge" alt="img" /></p>
 
 
 
@@ -14,7 +14,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果感觉本框架对您有所帮助，烦请去[Gitee](https://gitee.com/tangzc/mybatis-plus-ext) 给个小星星⭐️，作者二线不知名公司码农一枚，欢迎来撩共同进步。
 
-<div style="text-align: center;"><img src="https://s2.loli.net/2022/04/02/Sc6uMsaKNY9nWBE.png" alt="img" /></div>
+<p style="text-align: center;"><img src="https://s2.loli.net/2022/04/02/Sc6uMsaKNY9nWBE.png" alt="img" /></p>
 
 ## 教程地址
 
