@@ -18,4 +18,4 @@
 
 ## 教程地址
 
-[Mybatis-Plus-Ext教程 · 语雀 (yuque.com)](https://www.yuque.com/dontang/codewiki/gzqgd8)
+<a href="https://www.yuque.com/dontang/codewiki/gzqgd8" target="_blank">Mybatis-Plus-Ext教程 · 语雀 (yuque.com)</a>
