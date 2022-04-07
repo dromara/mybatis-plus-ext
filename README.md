@@ -15,7 +15,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MPE对MP做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在自动建表（仅支持mysql）、数据自动填充（类似JPA中的审计）、关联查询（类似sql中的join）、冗余数据自动更新、动态条件等功能做了补充完善。其中自动建表，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不保证与原框架兼容。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果感觉本框架对您有所帮助，烦请去[Gitee](https://gitee.com/tangzc/mybatis-plus-ext) 给个小星星⭐️，作者二线不知名公司码农一枚，欢迎来撩共同进步。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果感觉本框架对您有所帮助，烦请去[Gitee](https://gitee.com/tangzc/mybatis-plus-ext) 给个小星星⭐️，欢迎来撩共同进步。
 
 <p align="center"><img src="https://s2.loli.net/2022/04/02/Sc6uMsaKNY9nWBE.png" alt="img" width="200px" /></p>
 
