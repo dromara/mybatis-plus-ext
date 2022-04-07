@@ -11,7 +11,7 @@
 
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;尽管[MybatisPlus](https://gitee.com/baomidou/mybatis-plus) （后文简称MP）相比较Mybatis丝滑了很多，但是，日常使用中，否偶尔仍会怀念JPA（Hibernate）的那种纵享丝滑的感受，更好的一心投入业务开发中，如果你也是如此，那么恭喜你发现了MybatisPlusExt（后文简称MPE）。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;尽管[MybatisPlus](https://gitee.com/baomidou/mybatis-plus) （后文简称MP）相比较Mybatis丝滑了很多，但是，日常使用中，是否偶尔仍会怀念JPA（Hibernate）的那种纵享丝滑的感受，更好的一心投入业务开发中，如果你也是如此，那么恭喜你发现了MybatisPlusExt（后文简称MPE）。
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MPE对MP做了进一步的拓展封装，即保留MP原功能，又添加更多有用便捷的功能。具体拓展体现在自动建表（仅支持mysql）、数据自动填充（类似JPA中的审计）、关联查询（类似sql中的join）、冗余数据自动更新、动态条件等功能做了补充完善。其中自动建表，是在[A.CTable](https://gitee.com/sunchenbin/mybatis-enhance) 框架上的基础上改进适配本框架的，只保留了其表创建功能，因此改动较大不保证与原框架兼容。
 
