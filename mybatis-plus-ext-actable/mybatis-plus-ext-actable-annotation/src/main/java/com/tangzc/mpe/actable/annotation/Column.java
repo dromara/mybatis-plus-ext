@@ -70,7 +70,7 @@ public @interface Column {
      * 是否为可以为null，true是可以，false是不可以，默认为true
      * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsNotNull
      *
-     * @return 是否为可以为null，true是可以，false是不可以，默认为true
+     * @return 是否为可以为null，true是不可以，false是可以，默认为false
      */
     @AliasFor(annotation = IsNotNull.class, attribute = "value")
     boolean notNull() default false;
