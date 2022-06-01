@@ -54,6 +54,7 @@ public class ResultBuilder<BEAN, ENTITY> {
                 .select(fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions))
                 .where(conditions, conditionSign.getCustomCondition())
                 .orderBy(conditionSign.getOrderBys())
+                .last(conditionSign.getLast())
                 .build(beans);
 
         Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();

@@ -29,13 +29,13 @@ public class BindFieldDescription extends FieldDescription<BindField, JoinCondit
     public BindFieldDescription(String fieldName, Class<?> fieldClass, Method setMethod, boolean isCollection,
                                 BindField bindField, Class<?> entityClass, List<JoinConditionDescription> conditions,
                                 List<OrderByDescription> orderBys, Method bindFieldGetMethod) {
-        super(fieldName, fieldClass, setMethod, isCollection, bindField, entityClass, bindField.customCondition(), orderBys);
+        super(fieldName, fieldClass, setMethod, isCollection, bindField, entityClass, bindField.customCondition(), orderBys, bindField.last());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
         this.bindFieldGetMethod = bindFieldGetMethod;
     }
 
     @Override
     public ConditionSign<?, JoinConditionDescription> conditionUniqueKey() {
-        return new ConditionSign<>(entityClass, conditions, customCondition, orderBys);
+        return new ConditionSign<>(entityClass, conditions, customCondition, orderBys, last);
     }
 }

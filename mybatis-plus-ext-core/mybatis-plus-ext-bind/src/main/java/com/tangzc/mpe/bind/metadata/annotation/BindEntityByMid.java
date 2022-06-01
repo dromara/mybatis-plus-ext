@@ -43,6 +43,11 @@ public @interface BindEntityByMid {
     JoinOrderBy[] orderBy() default {};
 
     /**
+     * 最后的sql拼接，通常是limit ?
+     */
+    String last() default "";
+
+    /**
      * 深度绑定（不熟悉的，不建议使用）
      */
     boolean deepBind() default false;

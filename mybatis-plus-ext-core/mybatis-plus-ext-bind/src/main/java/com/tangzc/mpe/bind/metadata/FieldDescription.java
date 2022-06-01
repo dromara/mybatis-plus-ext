@@ -49,10 +49,14 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
      * 注解条件：排序
      */
     protected List<OrderByDescription> orderBys;
+    /**
+     * 最后的sql拼接，通常是limit ?
+     */
+    protected String last;
 
     public FieldDescription(String fieldName, Class<?> fieldClass, Method setMethod, boolean isCollection,
                             BIND_ANNOTATION bindAnnotation, Class<?> entityClass,
-                            String customCondition, List<OrderByDescription> orderBys) {
+                            String customCondition, List<OrderByDescription> orderBys, String last) {
         this.fieldName = fieldName;
         this.fieldClass = fieldClass;
         this.setMethod = setMethod;
@@ -61,6 +65,7 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
         this.entityClass = entityClass;
         this.customCondition = customCondition;
         this.orderBys = orderBys.stream().distinct().collect(Collectors.toList());
+        this.last = last;
     }
 
     /**

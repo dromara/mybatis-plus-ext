@@ -12,12 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +24,8 @@ public class QueryWrapperBuilder<ENTITY> {
     private final QueryWrapper<ENTITY> queryWrapper = new QueryWrapper<>();
     private List<JoinConditionDescription> conditions;
     private String customCondition;
+
+    private String last;
 
     public QueryWrapperBuilder<ENTITY> select(String[] selectColumns) {
         // 查询某些列值
@@ -50,6 +47,12 @@ public class QueryWrapperBuilder<ENTITY> {
         for (OrderByDescription orderBy : orderBys) {
             queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.humpToLine(orderBy.getField()));
         }
+        return this;
+    }
+
+    public QueryWrapperBuilder<ENTITY> last(String last) {
+        // 查询某些列值
+        this.last = last;
         return this;
     }
 
@@ -89,6 +92,10 @@ public class QueryWrapperBuilder<ENTITY> {
                     joinCondition(queryWrapper3, whereList);
                 });
             }
+        }
+
+        if (StringUtils.hasText(last)) {
+            queryWrapper.last(last);
         }
 
         return queryWrapper;

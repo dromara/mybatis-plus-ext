@@ -24,6 +24,8 @@ public class ConditionSign<ENTITY, CONDITION_DESC> {
 
     private final List<OrderByDescription> orderBys;
 
+    private final String last;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -39,10 +41,12 @@ public class ConditionSign<ENTITY, CONDITION_DESC> {
         String thatConditions = that.getSortConditionStr();
         String thatCustomCondition = that.getCustomCondition();
         String thatOrderBys = that.getSortOrderByStr();
+        String thatLast = that.getLast();
         return joinEntityClass.equals(that.joinEntityClass)
                 && thisConditions.equals(thatConditions)
                 && customCondition.equals(thatCustomCondition)
-                && thisOrderBys.equals(thatOrderBys);
+                && thisOrderBys.equals(thatOrderBys)
+                && last.equals(thatLast);
     }
 
     @Override

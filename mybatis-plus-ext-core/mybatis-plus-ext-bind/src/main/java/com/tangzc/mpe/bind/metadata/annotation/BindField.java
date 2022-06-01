@@ -46,4 +46,9 @@ public @interface BindField {
      * 被关联的Entity的结果集，排序条件
      */
     JoinOrderBy[] orderBy() default {};
+
+    /**
+     * 最后的sql拼接，通常是limit ?
+     */
+    String last() default "";
 }

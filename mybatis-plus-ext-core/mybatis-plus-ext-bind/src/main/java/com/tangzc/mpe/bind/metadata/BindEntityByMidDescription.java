@@ -32,13 +32,13 @@ public class BindEntityByMidDescription extends FieldDescription<BindEntityByMid
                                       MidConditionDescription condition,
                                       List<OrderByDescription> orderBys) {
         super(fieldName, fieldClass, setMethod, isCollection, bindEntityByMid, entityClass,
-                bindEntityByMid.customCondition(), orderBys);
+                bindEntityByMid.customCondition(), orderBys, bindEntityByMid.last());
         this.condition = condition;
         this.deepBind = bindEntityByMid.deepBind();
     }
 
     @Override
     public ConditionSign<?, MidConditionDescription> conditionUniqueKey() {
-        return new ConditionSign<>(entityClass, Collections.singletonList(condition), customCondition, orderBys);
+        return new ConditionSign<>(entityClass, Collections.singletonList(condition), customCondition, orderBys, last);
     }
 }

@@ -35,13 +35,13 @@ public class BindEntityDescription extends FieldDescription<BindEntity, JoinCond
                                  List<JoinConditionDescription> conditions,
                                  List<OrderByDescription> orderBys) {
         super(fieldName, fieldClass, setMethod, isCollection, bindEntity, entityClass,
-                bindEntity.customCondition(), orderBys);
+                bindEntity.customCondition(), orderBys, bindEntity.last());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
         this.deepBind = bindEntity.deepBind();
     }
 
     @Override
     public ConditionSign<?, JoinConditionDescription> conditionUniqueKey() {
-        return new ConditionSign<>(entityClass, conditions, customCondition, orderBys);
+        return new ConditionSign<>(entityClass, conditions, customCondition, orderBys, last);
     }
 }
