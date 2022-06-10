@@ -1,5 +1,6 @@
 package com.tangzc.mpe.actable.manager.handler;
 
+import com.tangzc.mpe.actable.ProfileCondition;
 import com.tangzc.mpe.actable.annotation.DsName;
 import com.tangzc.mpe.actable.annotation.Table;
 import com.tangzc.mpe.actable.annotation.TablePrimary;
@@ -9,6 +10,7 @@ import com.tangzc.mpe.actable.utils.ClassTools;
 import com.tangzc.mpe.actable.utils.ColumnUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
  * @author chenbin.sun
  */
 @Slf4j
+@Conditional(ProfileCondition.class)
 public class StartUpHandler {
 
     /**

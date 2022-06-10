@@ -54,6 +54,20 @@ public class SpringContextUtil implements ApplicationContextAware {
         throw new RuntimeException("未找到主默认包");
     }
 
+    public static Class<?> getApplicationClass() {
+        StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
+        for (StackTraceElement stackTraceElement : stackTrace) {
+            if ("main".equals(stackTraceElement.getMethodName())) {
+                try {
+                    return Class.forName(stackTraceElement.getClassName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        throw new RuntimeException("未找到主默认包");
+    }
+
     public static void publishEvent(ApplicationEvent applicationEvent) {
         APPLICATION_CONTEXT.publishEvent(applicationEvent);
     }

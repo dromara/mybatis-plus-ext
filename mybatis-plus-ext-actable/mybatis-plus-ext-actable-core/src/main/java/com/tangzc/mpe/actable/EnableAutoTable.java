@@ -1,7 +1,7 @@
 package com.tangzc.mpe.actable;
 
-import com.tangzc.mpe.actable.manager.handler.DynamicDatasourceTableInitConfig;
 import com.tangzc.mpe.actable.manager.handler.DefaultTableInitConfig;
+import com.tangzc.mpe.actable.manager.handler.DynamicDatasourceTableInitConfig;
 import com.tangzc.mpe.actable.manager.handler.StartUpHandler;
 import com.tangzc.mpe.actable.manager.system.SysMysqlCreateTableManager;
 import com.tangzc.mpe.actable.utils.SpringContextUtil;
@@ -27,5 +27,7 @@ import java.lang.annotation.*;
 })
 public @interface EnableAutoTable {
 
-    boolean dynamicDataSources() default false;
+    String[] activeProfile() default "";
+
+    String profileProperty() default "spring.profiles.active";
 }
