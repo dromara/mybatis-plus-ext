@@ -395,7 +395,7 @@ public class TableInfoHelper {
     private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableId tableId) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
-        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
+        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class) != null) {
             logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
                     property, tableInfo.getEntityType().getName()));
         }
@@ -444,10 +444,10 @@ public class TableInfoHelper {
     private static boolean initTableIdWithoutAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field) {
         final String property = field.getName();
         if (DEFAULT_ID_NAME.equalsIgnoreCase(property)) {
-//            if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class) != null) {
-//                logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
-//                        property, tableInfo.getEntityType().getName()));
-//            }
+            // if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class) != null) {
+            //     logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
+            //             property, tableInfo.getEntityType().getName()));
+            // }
             String column = property;
             if (dbConfig.isCapitalMode()) {
                 column = column.toUpperCase();

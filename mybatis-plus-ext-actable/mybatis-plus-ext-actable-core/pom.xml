@@ -28,6 +28,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- mybatis-plus拓展 数据库操作框架 -->
