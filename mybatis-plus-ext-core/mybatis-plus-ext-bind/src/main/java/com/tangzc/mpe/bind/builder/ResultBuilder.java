@@ -26,13 +26,16 @@ public class ResultBuilder<BEAN, ENTITY> {
 
     public void fillData() {
 
+        // <条件签名, List<数据>>
         Map<String, List<ENTITY>> entityMap = listEntitiesByCondition();
 
+        // 循环填充每个bean
         for (BEAN bean : beans) {
 
-            String entryGroupKey = getGroupKeyOfBean(bean, conditionSign);
+            String entryGroupKey = getConditionSignatureBySelf(bean, conditionSign);
             List<?> entities = entityMap.getOrDefault(entryGroupKey, Collections.emptyList());
 
+            // 循环填充bean中的每个属性
             for (FieldDescription<?, JoinConditionDescription> fieldAnnotation : fieldDescriptions) {
 
                 List<?> dataList = entities;
@@ -48,22 +51,20 @@ public class ResultBuilder<BEAN, ENTITY> {
 
     private Map<String, List<ENTITY>> listEntitiesByCondition() {
 
-        List<JoinConditionDescription> conditions = conditionSign.getConditions();
-
         QueryWrapper<ENTITY> queryWrapper = QueryWrapperBuilder.<ENTITY>newInstance()
                 .select(fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions))
-                .where(conditions, conditionSign.getCustomCondition())
+                .where(conditionSign.getConditions(), conditionSign.getCustomCondition())
                 .orderBy(conditionSign.getOrderBys())
                 .last(conditionSign.getLast())
                 .build(beans);
 
         Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-        BaseMapper<ENTITY> mapper = MapperScanner.getMapper(joinEntityClass);
-        List<ENTITY> entities = mapper.selectList(queryWrapper);
+        BaseMapper<ENTITY> joinEntityMapper = MapperScanner.getMapper(joinEntityClass);
+        List<ENTITY> entities = joinEntityMapper.selectList(queryWrapper);
 
         return entities.stream()
                 .collect(Collectors.groupingBy(
-                        entity -> getGroupKeyOfEntity(entity, conditionSign)
+                        entity -> getConditionSignatureByJoin(entity, conditionSign)
                 ));
     }
 
@@ -100,7 +101,7 @@ public class ResultBuilder<BEAN, ENTITY> {
         }
     }
 
-    private String getGroupKeyOfBean(BEAN bean, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
+    private String getConditionSignatureBySelf(BEAN bean, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
 
         return conditionSign.getConditions().stream()
                 .map(condition -> {
@@ -113,7 +114,7 @@ public class ResultBuilder<BEAN, ENTITY> {
                 }).collect(Collectors.joining("|"));
     }
 
-    private String getGroupKeyOfEntity(ENTITY entity, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
+    private String getConditionSignatureByJoin(ENTITY entity, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
 
         return conditionSign.getConditions().stream()
                 .map(condition -> {

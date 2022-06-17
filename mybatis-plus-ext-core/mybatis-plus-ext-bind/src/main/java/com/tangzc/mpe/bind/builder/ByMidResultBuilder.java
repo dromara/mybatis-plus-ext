@@ -6,7 +6,9 @@ import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
+import com.tangzc.mpe.bind.metadata.OrderByDescription;
 import lombok.AllArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
@@ -26,13 +28,19 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
 
     public void fillData() {
 
-        Map<String, List<ENTITY>> entityMap = listEntitiesByCondition();
+        // 中间表关联关系，仅限于一个条件，所以直接get(0)
+        MidConditionDescription midConditionDescription = conditionSign.getConditions().get(0);
 
+        // <selfField值, List<join表数据>>
+        Map<String, List<ENTITY>> joinEntityMap = listEntitiesByCondition(midConditionDescription);
+
+        // 循环填充每个bean
         for (BEAN bean : beans) {
 
-            String entryGroupKey = getGroupKeyOfBean(bean, conditionSign);
-            List<?> entities = entityMap.getOrDefault(entryGroupKey, Collections.emptyList());
+            String selfFieldVal = getSelfFieldValFromBean(midConditionDescription, bean);
+            List<?> entities = joinEntityMap.getOrDefault(selfFieldVal, Collections.emptyList());
 
+            // 循环填充bean中的每个属性
             for (FieldDescription<?, MidConditionDescription> fieldAnnotation : fieldDescriptions) {
 
                 List<?> dataList = entities;
@@ -46,35 +54,39 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         }
     }
 
-    private Map<String, List<ENTITY>> listEntitiesByCondition() {
+    /**
+     * 查询目标表的数据集合
+     *
+     * @return <selfField值, List<join表数据>>
+     */
+    private Map<String, List<ENTITY>> listEntitiesByCondition(MidConditionDescription midConditionDescription) {
 
-        MidConditionDescription md = conditionSign.getConditions().get(0);
+        // 查询中间表符合要求的数据
+        List<Object> midDataList = listMidData(midConditionDescription);
 
-        // 查询中间表
-        List<Object> midDataList = listMidData();
-
-        // 对中间表数据进行分组
+        // 对中间表数据进行分组，确定主表与从表的数据对应关系
         // <selfFieldVal, List<joinFieldVal>>
         Map<Object, List<Object>> midDataListMap = midDataList.stream().collect(Collectors.groupingBy(midData -> {
             try {
-                return md.getSelfMidFieldGetMethod().invoke(midData);
+                return midConditionDescription.getSelfMidFieldGetMethod().invoke(midData);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, Collectors.mapping(midData -> {
             try {
-                return md.getJoinMidFieldGetMethod().invoke(midData);
+                return midConditionDescription.getJoinMidFieldGetMethod().invoke(midData);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }, Collectors.toList())));
 
         // 查询目标表数据
-        List<ENTITY> entities = listEntities(md, midDataList);
+        Set<Object> joinMidFieldVals = midDataListMap.values().stream().flatMap(Collection::stream).collect(Collectors.toSet());
+        List<ENTITY> entities = listEntities(midConditionDescription, joinMidFieldVals);
         // 对join表结果进行map映射
-        Map<Object, ENTITY> listMap = entities.stream().collect(Collectors.toMap(ent -> {
+        Map<Object, ENTITY> entitiesMap = entities.stream().collect(Collectors.toMap(ent -> {
             try {
-                return md.getJoinFieldGetMethod().invoke(ent);
+                return midConditionDescription.getJoinFieldGetMethod().invoke(ent);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -83,7 +95,11 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // 集合中间表数据与join表数据
         Map<String, List<ENTITY>> dataMap = new HashMap<>(midDataListMap.size());
         midDataListMap.forEach((selfVal, joinValList) ->
-                dataMap.put(selfVal.toString(), joinValList.stream().map(listMap::get).collect(Collectors.toList()))
+                dataMap.put(selfVal.toString(),
+                        joinValList.stream().map(entitiesMap::get)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList())
+                )
         );
         return dataMap;
     }
@@ -91,18 +107,9 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
     /**
      * 查询join表的数据
      */
-    private List<ENTITY> listEntities(MidConditionDescription md, List<Object> midDataList) {
+    private List<ENTITY> listEntities(MidConditionDescription midConditionDescription, Set<Object> joinMidFieldVals) {
 
-        Set<Object> joinMidFieldVals = new HashSet<>();
-        try {
-            for (Object midData : midDataList) {
-                joinMidFieldVals.add(md.getJoinMidFieldGetMethod().invoke(midData));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        if(joinMidFieldVals.isEmpty()) {
+        if (joinMidFieldVals.isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -112,7 +119,17 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         if (selectColumns != null && selectColumns.length > 0) {
             queryWrapper.select(selectColumns);
         }
-        queryWrapper.in(TableColumnUtil.humpToLine(md.getJoinField()), joinMidFieldVals);
+        // 添加主要条件
+        queryWrapper.in(TableColumnUtil.humpToLine(midConditionDescription.getJoinField()), joinMidFieldVals);
+        // 自定义条件
+        queryWrapper.apply(StringUtils.hasText(conditionSign.getCustomCondition()), conditionSign.getCustomCondition());
+        // 排序
+        for (OrderByDescription orderBy : conditionSign.getOrderBys()) {
+            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.humpToLine(orderBy.getField()));
+        }
+        // last sql
+        queryWrapper.last(conditionSign.getLast());
+
         return MapperScanner.getMapper(conditionSign.getJoinEntityClass())
                 .selectList(queryWrapper);
     }
@@ -120,10 +137,9 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
     /**
      * 查询中间表的数据
      */
-    private <MID> List<MID> listMidData() {
+    private <MID> List<MID> listMidData(MidConditionDescription midConditionDescription) {
 
-        MidConditionDescription midConditionDescription = conditionSign.getConditions().get(0);
-
+        // 获取bean集合中自身字段值的集合
         List<Object> selfFieldVals = new ArrayList<>();
         try {
             for (BEAN bean : beans) {
@@ -133,18 +149,19 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
             throw new RuntimeException(e);
         }
 
-        if(selfFieldVals.isEmpty()) {
+        if (selfFieldVals.isEmpty()) {
             return Collections.emptyList();
         }
 
+        // 构建查询器
         QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
-        // 查询某些列值
+        // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
         queryWrapper.select(TableColumnUtil.humpToLine(midConditionDescription.getJoinMidField()),
                 TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()));
-
         queryWrapper.in(TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()), selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
+
         return baseMapper.selectList(queryWrapper);
     }
 
@@ -181,9 +198,7 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         }
     }
 
-    private String getGroupKeyOfBean(BEAN bean, ConditionSign<ENTITY, MidConditionDescription> conditionSign) {
-
-        MidConditionDescription midConditionDescription = conditionSign.getConditions().get(0);
+    private String getSelfFieldValFromBean(MidConditionDescription midConditionDescription, BEAN bean) {
 
         try {
             Object val = midConditionDescription.getSelfFieldGetMethod().invoke(bean);
