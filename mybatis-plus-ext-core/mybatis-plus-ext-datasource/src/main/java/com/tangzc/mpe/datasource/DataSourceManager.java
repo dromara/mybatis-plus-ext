@@ -38,14 +38,14 @@ public class DataSourceManager {
 
     public static void addDataSource(Class<?> entityClass, Field field, DataSource dataSource) {
 
-        if(StringUtils.isEmpty(dataSource.sourceName()) && dataSource.source() == Void.class) {
+        if (StringUtils.isEmpty(dataSource.sourceName()) && dataSource.source() == Void.class) {
             log.error("{}类上的{}字段，@DataSource缺少`source`或`sourceName`属性，" +
                     "自动更新数据功能将被忽略", entityClass, field.getName());
             return;
         }
 
         String sourceName = dataSource.sourceName();
-        if(StringUtils.isEmpty(sourceName)) {
+        if (StringUtils.isEmpty(sourceName)) {
             sourceName = dataSource.source().getName();
         }
 
@@ -117,6 +117,8 @@ public class DataSourceManager {
                 }
             }
 
+            updateWrapper.apply(description.updateCondition);
+
             mapper.update(null, updateWrapper);
         }
     }
@@ -126,7 +128,9 @@ public class DataSourceManager {
                 desc.getEntityClass(),
                 Arrays.stream(desc.getDataSource().conditions())
                         .map(con -> new ConditionSignature(con.selfField(), con.sourceField()))
-                        .collect(Collectors.toList()));
+                        .collect(Collectors.toList()),
+                desc.getDataSource().updateCondition()
+        );
     }
 
     @Data
@@ -134,6 +138,8 @@ public class DataSourceManager {
     private static class DescriptionSignature {
         private Class<?> entityClass;
         private List<ConditionSignature> conditions;
+
+        private String updateCondition;
     }
 
     @Data

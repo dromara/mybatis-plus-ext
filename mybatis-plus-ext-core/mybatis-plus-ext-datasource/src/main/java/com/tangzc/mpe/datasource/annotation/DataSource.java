@@ -34,4 +34,10 @@ public @interface DataSource {
      * 数据来源
      */
     Condition[] conditions();
+
+    /**
+     * 执行更新的时候额外的where条件
+     * 通常指被更新表自身的特殊条件，例如：enable=1 and is_deleted=0
+     */
+    String updateCondition() default "";
 }
