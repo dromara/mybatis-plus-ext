@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
 @Import({
         SpringContextUtil.class,
         AutoFillMetaObjectHandler.class,
+        AutoFillMetaObjectHandler.AutoFillMetaObjectHandlerChecker.class,
         MapperScanner.class,
 })
 public class BaseAutoConfig {

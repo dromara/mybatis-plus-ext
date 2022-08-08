@@ -14,6 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
@@ -35,6 +39,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 //@Component
+@ConditionalOnMissingBean(MetaObjectHandler.class)
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     @Override
@@ -289,5 +294,25 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     @FunctionalInterface
     public static interface FieldDateTypeHandler {
         Class<?> getDateType(Class<?> clazz, Field field);
+    }
+
+    /**
+     * @author don
+     */
+    @Slf4j
+    public static class AutoFillMetaObjectHandlerChecker {
+
+        @Autowired(required = false)
+        private MetaObjectHandler metaObjectHandler;
+
+        @EventListener
+        public void onApplicationEvent(ContextRefreshedEvent event) {
+
+            if(!(metaObjectHandler instanceof AutoFillMetaObjectHandler)) {
+                log.warn("由于本地已经实现了{}，导致{}未生效，@InsertOptionDate、@InsertOptionUser、@InsertUpdateOptionDate、" +
+                        "@InsertUpdateOptionUser、@DefaultValue...等注解将会无法工作，请注意!",
+                        MetaObjectHandler.class.getName(), AutoFillMetaObjectHandler.class.getName());
+            }
+        }
     }
 }
