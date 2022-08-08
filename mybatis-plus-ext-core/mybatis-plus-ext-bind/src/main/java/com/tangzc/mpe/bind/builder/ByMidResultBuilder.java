@@ -120,12 +120,12 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
             queryWrapper.select(selectColumns);
         }
         // 添加主要条件
-        queryWrapper.in(TableColumnUtil.humpToLine(midConditionDescription.getJoinField()), joinMidFieldVals);
+        queryWrapper.in(TableColumnUtil.smartColumnName(midConditionDescription.getJoinField()), joinMidFieldVals);
         // 自定义条件
         queryWrapper.apply(StringUtils.hasText(conditionSign.getCustomCondition()), conditionSign.getCustomCondition());
         // 排序
         for (OrderByDescription orderBy : conditionSign.getOrderBys()) {
-            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.humpToLine(orderBy.getField()));
+            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.smartColumnName(orderBy.getField()));
         }
         // last sql
         queryWrapper.last(conditionSign.getLast());
@@ -156,9 +156,9 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // 构建查询器
         QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
         // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
-        queryWrapper.select(TableColumnUtil.humpToLine(midConditionDescription.getJoinMidField()),
-                TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()));
-        queryWrapper.in(TableColumnUtil.humpToLine(midConditionDescription.getSelfMidField()), selfFieldVals);
+        queryWrapper.select(TableColumnUtil.smartColumnName(midConditionDescription.getJoinMidField()),
+                TableColumnUtil.smartColumnName(midConditionDescription.getSelfMidField()));
+        queryWrapper.in(TableColumnUtil.smartColumnName(midConditionDescription.getSelfMidField()), selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
 

@@ -97,7 +97,7 @@ public class DataSourceManager {
                     Method readMethod = ENTITY_FIELD_METHOD_CACHE_MAP.computeIfAbsent(updateEntityName, k -> new HashMap<>(1))
                             .computeIfAbsent(fieldName, k -> BeanClassUtil.getReadMethod(updateEntityClass, fieldName));
                     Object val = readMethod.invoke(entityUpdateEvent.getEntity());
-                    updateWrapper.set(TableColumnUtil.humpToLine(desc.getEntityField().getName()), val);
+                    updateWrapper.set(TableColumnUtil.smartColumnName(desc.getEntityField().getName()), val);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -111,7 +111,7 @@ public class DataSourceManager {
                     Method readMethod = ENTITY_FIELD_METHOD_CACHE_MAP.computeIfAbsent(updateEntityName, k -> new HashMap<>(1))
                             .computeIfAbsent(condition.sourceField, k -> BeanClassUtil.getReadMethod(updateEntityClass, condition.sourceField));
                     Object val = readMethod.invoke(entityUpdateEvent.getEntity());
-                    updateWrapper.eq(TableColumnUtil.humpToLine(condition.selfField), val);
+                    updateWrapper.eq(TableColumnUtil.smartColumnName(condition.selfField), val);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

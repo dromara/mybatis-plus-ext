@@ -5,6 +5,7 @@ import com.tangzc.mpe.actable.manager.handler.DynamicDatasourceTableInitConfig;
 import com.tangzc.mpe.actable.manager.handler.StartUpHandler;
 import com.tangzc.mpe.actable.manager.system.SysMysqlCreateTableManager;
 import com.tangzc.mpe.actable.utils.SpringContextUtil;
+import com.tangzc.mpe.magic.MybatisPlusProperties;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

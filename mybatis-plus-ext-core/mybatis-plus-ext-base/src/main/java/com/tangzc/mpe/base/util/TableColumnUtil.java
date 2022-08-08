@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.tangzc.mpe.magic.MybatisPlusProperties;
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
@@ -30,7 +31,7 @@ public class TableColumnUtil {
         if (tableNameAnno != null && !tableNameAnno.value().isEmpty()) {
             tableName = tableNameAnno.value();
         } else {
-            tableName = TableColumnUtil.humpToLine(entityClass.getSimpleName());
+            tableName = smartHumpToLine(MybatisPlusProperties.tableUnderline, entityClass.getSimpleName());
         }
         return tableName.replace("`", "");
     }
@@ -41,9 +42,20 @@ public class TableColumnUtil {
         if (annotation != null && !annotation.value().isEmpty()) {
             columnName = annotation.value();
         } else {
-            columnName = humpToLine(field.getName());
+            columnName = smartColumnName(field.getName());
         }
         return columnName;
+    }
+
+    public static String smartColumnName(String fieldName) {
+        return smartHumpToLine(MybatisPlusProperties.mapUnderscoreToCamelCase, fieldName);
+    }
+
+    public static String smartHumpToLine(boolean convert, String fieldName) {
+        if (convert) {
+            fieldName = humpToLine(fieldName);
+        }
+        return fieldName;
     }
 
     /**
@@ -73,7 +85,7 @@ public class TableColumnUtil {
         }
         matcher.appendTail(sb);
         String newStr = sb.toString();
-        if(newStr.startsWith("_")) {
+        if (newStr.startsWith("_")) {
             return newStr.substring(1);
         }
         return newStr;

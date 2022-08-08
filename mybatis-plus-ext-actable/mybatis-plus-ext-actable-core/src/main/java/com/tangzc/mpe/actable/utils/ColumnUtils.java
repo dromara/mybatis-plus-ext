@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import com.google.common.base.CaseFormat;
-import com.tangzc.mpe.actable.MybatisPlusProperties;
+import com.tangzc.mpe.magic.MybatisPlusProperties;
 import com.tangzc.mpe.actable.annotation.*;
 import com.tangzc.mpe.actable.annotation.constants.MySqlCharsetConstant;
 import com.tangzc.mpe.actable.annotation.constants.MySqlEngineConstant;

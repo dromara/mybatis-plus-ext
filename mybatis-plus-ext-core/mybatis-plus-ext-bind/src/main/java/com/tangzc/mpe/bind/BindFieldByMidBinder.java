@@ -34,12 +34,12 @@ public class BindFieldByMidBinder<BEAN> implements Binder.IBinder<BEAN, BindFiel
                         List<String> columns = fieldAnnotations.stream()
                                 .map(bfd -> bfd.getBindAnnotation().field())
                                 // 驼峰转下划线
-                                .map(TableColumnUtil::humpToLine)
+                                .map(TableColumnUtil::smartColumnName)
                                 .collect(Collectors.toList());
 
                         // 追加条件查询字段，用于标识查询数据的
                         for (MidConditionDescription condition : conditionSign.getConditions()) {
-                            columns.add(TableColumnUtil.humpToLine(condition.getJoinField()));
+                            columns.add(TableColumnUtil.smartColumnName(condition.getJoinField()));
                         }
 
                         return columns.toArray(new String[0]);

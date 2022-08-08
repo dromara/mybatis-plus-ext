@@ -45,7 +45,7 @@ public class QueryWrapperBuilder<ENTITY> {
     public QueryWrapperBuilder<ENTITY> orderBy(List<OrderByDescription> orderBys) {
         // 查询某些列值
         for (OrderByDescription orderBy : orderBys) {
-            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.humpToLine(orderBy.getField()));
+            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.smartColumnName(orderBy.getField()));
         }
         return this;
     }
@@ -65,7 +65,7 @@ public class QueryWrapperBuilder<ENTITY> {
             for (BEAN bean : beans) {
                 List<WhereItem> whereItemList = new ArrayList<>();
                 for (JoinConditionDescription condition : conditions) {
-                    String column = TableColumnUtil.humpToLine(condition.getJoinField());
+                    String column = TableColumnUtil.smartColumnName(condition.getJoinField());
                     try {
                         Object val = condition.getSelfFieldGetMethod().invoke(bean);
                         whereItemList.add(new WhereItem(column, val));

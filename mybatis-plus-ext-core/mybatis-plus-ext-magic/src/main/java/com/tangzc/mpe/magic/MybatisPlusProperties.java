@@ -1,4 +1,4 @@
-package com.tangzc.mpe.actable;
+package com.tangzc.mpe.magic;
 
 import org.springframework.beans.factory.annotation.Value;
 

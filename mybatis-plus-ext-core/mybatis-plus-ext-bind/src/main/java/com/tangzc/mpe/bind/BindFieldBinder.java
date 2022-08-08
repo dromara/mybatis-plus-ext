@@ -39,13 +39,13 @@ public class BindFieldBinder<BEAN> implements Binder.IBinder<BEAN, BindFieldDesc
 
                         List<String> columns = fieldAnnotations.stream()
                                 .map(bfd -> bfd.getBindAnnotation().field())
-                                // 驼峰转下划线
-                                .map(TableColumnUtil::humpToLine)
+                                // 智能判断驼峰转下划线
+                                .map(TableColumnUtil::smartColumnName)
                                 .collect(Collectors.toList());
 
                         // 追加条件查询字段，用于标识查询数据的
                         for (JoinConditionDescription condition : entityJoinCondition.getConditions()) {
-                            columns.add(TableColumnUtil.humpToLine(condition.getJoinField()));
+                            columns.add(TableColumnUtil.smartColumnName(condition.getJoinField()));
                         }
 
                         return columns.toArray(new String[0]);
