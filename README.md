@@ -23,4 +23,9 @@
 
 ## 官方教程
 
-<a href="https://www.yuque.com/dontang/codewiki/gzqgd8" target="_blank">Mybatis-Plus-Ext教程</a>
+<a style="font-size:20px" href="https://www.yuque.com/dontang/codewiki/gzqgd8" target="_blank">Mybatis-Plus-Ext教程</a>
+
+## 特别感谢
+> 感谢JetBrains提供的软件支持
+
+<img width="200" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo.">
