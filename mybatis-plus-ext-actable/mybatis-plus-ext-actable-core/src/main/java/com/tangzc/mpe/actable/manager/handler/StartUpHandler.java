@@ -105,7 +105,7 @@ public class StartUpHandler {
 
         Map<String, List<Class<?>>> classMap = classes.stream().collect(Collectors.groupingBy(ColumnUtils::getTableName));
         // <数据源，List<表>>
-        Map<String, Set<Class<?>>> needCreateTable = new HashMap<>();
+        Map<String, Set<Class<?>>> needCreateTable = new HashMap<>(classMap.size());
         classMap.forEach((tableName, sameClasses) -> {
             final Class<?> primaryClass;
             // 挑选出重名的表，找到其中标记primary的，用作生成数据表的依据

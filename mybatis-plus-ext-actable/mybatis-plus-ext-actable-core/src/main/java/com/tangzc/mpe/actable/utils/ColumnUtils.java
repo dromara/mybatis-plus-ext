@@ -53,8 +53,12 @@ public class ColumnUtils {
                 // 都为空时采用类名按照驼峰格式转会为表名
                 finalTableName = getBuildLowerName(clasz.getSimpleName());
             } else {
-                // 禁止表名自动驼峰转下划线的情况下，全小写
-                finalTableName = clasz.getSimpleName().toLowerCase();
+                // 禁止表名自动驼峰转下划线的情况下
+                finalTableName = clasz.getSimpleName();
+            }
+            // 添加表前缀
+            if(StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
+                finalTableName = MybatisPlusProperties.tablePrefix + finalTableName;
             }
         }
         if (null != enableTimeSuffix && enableTimeSuffix.value()) {

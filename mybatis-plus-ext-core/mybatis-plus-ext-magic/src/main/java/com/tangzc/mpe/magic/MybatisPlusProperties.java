@@ -18,6 +18,10 @@ public class MybatisPlusProperties {
      * 默认true
      */
     public static boolean tableUnderline;
+    /**
+     * 表名前缀
+     */
+    public static String tablePrefix;
 
     @Value("${mybatis-plus.configuration.map-underscore-to-camel-case:true}")
     public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
@@ -27,5 +31,10 @@ public class MybatisPlusProperties {
     @Value("${mybatis-plus.global-config.db-config.table-underline:true}")
     public void setTableUnderline(boolean tableUnderline) {
         MybatisPlusProperties.tableUnderline = tableUnderline;
+    }
+
+    @Value("${mybatis-plus.global-config.db-config.table-prefix:}")
+    public void setTablePrefix(String tablePrefix) {
+        MybatisPlusProperties.tablePrefix = tablePrefix;
     }
 }

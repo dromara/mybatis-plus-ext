@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
 import net.sf.jsqlparser.schema.Table;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.regex.Matcher;
@@ -32,6 +33,10 @@ public class TableColumnUtil {
             tableName = tableNameAnno.value();
         } else {
             tableName = smartHumpToLine(MybatisPlusProperties.tableUnderline, entityClass.getSimpleName());
+            // 添加表前缀
+            if(StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
+                tableName = MybatisPlusProperties.tablePrefix + tableName;
+            }
         }
         return tableName.replace("`", "");
     }
