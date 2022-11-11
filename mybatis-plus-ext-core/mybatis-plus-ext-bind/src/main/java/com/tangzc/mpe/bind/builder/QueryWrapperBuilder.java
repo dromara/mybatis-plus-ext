@@ -1,7 +1,6 @@
 package com.tangzc.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.bind.metadata.JoinConditionDescription;
 import com.tangzc.mpe.bind.metadata.OrderByDescription;
 import com.tangzc.mpe.bind.parser.CustomConditionParser;
@@ -16,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * QueryWrapper构建工具
  * @author don
  */
 @NoArgsConstructor(staticName = "newInstance")
@@ -45,7 +45,7 @@ public class QueryWrapperBuilder<ENTITY> {
     public QueryWrapperBuilder<ENTITY> orderBy(List<OrderByDescription> orderBys) {
         // 查询某些列值
         for (OrderByDescription orderBy : orderBys) {
-            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.smartColumnName(orderBy.getField()));
+            queryWrapper.orderBy(true, orderBy.isAsc(), orderBy.getColumnName());
         }
         return this;
     }
@@ -65,7 +65,7 @@ public class QueryWrapperBuilder<ENTITY> {
             for (BEAN bean : beans) {
                 List<WhereItem> whereItemList = new ArrayList<>();
                 for (JoinConditionDescription condition : conditions) {
-                    String column = TableColumnUtil.smartColumnName(condition.getJoinField());
+                    String column = condition.getJoinColumnName();
                     try {
                         Object val = condition.getSelfFieldGetMethod().invoke(bean);
                         whereItemList.add(new WhereItem(column, val));

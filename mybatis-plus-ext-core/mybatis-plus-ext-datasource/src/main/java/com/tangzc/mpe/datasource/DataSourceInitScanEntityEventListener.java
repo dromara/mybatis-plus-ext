@@ -20,12 +20,12 @@ public class DataSourceInitScanEntityEventListener {
 
         Class<?> entityClass = event.getEntityClass();
         List<Field> allDeclaredFields = BeanClassUtil.getAllDeclaredFields(entityClass);
-        for (Field field : allDeclaredFields) {
+        for (Field entityField : allDeclaredFields) {
 
             // 扫描所有的Entity中的DataSource注解
-            DataSource dataSource = AnnotatedElementUtils.findMergedAnnotation(field, DataSource.class);
+            DataSource dataSource = AnnotatedElementUtils.findMergedAnnotation(entityField, DataSource.class);
             if (dataSource != null) {
-                DataSourceManager.addDataSource(entityClass, field, dataSource);
+                DataSourceManager.addDataSource(entityClass, entityField, dataSource);
             }
         }
     }

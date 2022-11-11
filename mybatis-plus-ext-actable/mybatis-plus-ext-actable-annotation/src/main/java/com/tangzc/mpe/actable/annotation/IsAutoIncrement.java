@@ -1,5 +1,8 @@
 package com.tangzc.mpe.actable.annotation;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,6 +23,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 // 将此注解包含在javadoc中
 @Documented
+// 告知MybatisPlus主键自增的方式
+@TableId(type = IdType.AUTO)
 public @interface IsAutoIncrement {
 
     boolean value() default true;

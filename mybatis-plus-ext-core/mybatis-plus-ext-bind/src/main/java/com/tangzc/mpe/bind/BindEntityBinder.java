@@ -22,6 +22,13 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(staticName = "newInstance")
 public class BindEntityBinder<BEAN> implements Binder.IBinder<BEAN, BindEntityDescription, JoinConditionDescription> {
 
+    /**
+     *
+     * @param beans 待填充的集合
+     * @param conditionSign 分组条件
+     * @param fieldAnnotations 相同条件的字段集合
+     * @param <ENTITY> 被关联类的类型
+     */
     @Override
     public <ENTITY> void fillData(List<BEAN> beans,
                                   ConditionSign<ENTITY, JoinConditionDescription> conditionSign,

@@ -94,7 +94,7 @@ public class ColumnUtils {
     public static String getColumnName(Field field) {
         TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
         if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
-            return tableField.value().toLowerCase().replace(SQL_ESCAPE_CHARACTER, "");
+            return tableField.value().replace(SQL_ESCAPE_CHARACTER, "");
         }
         TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
         if (tableId != null && !StringUtils.isEmpty(tableId.value())) {

@@ -73,7 +73,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
     @Override
     protected void processDelete(Delete delete, int index, String sql, Object obj) {
 
-        String tableName = TableColumnUtil.getTableName(delete.getTable());
+        String tableName = TableColumnUtil.filterSpecialChar(delete.getTable().getName());
 
         List<DynamicConditionDescription> descriptions = DynamicConditionManager.getDynamicCondition(tableName);
         if (descriptions == null) {
@@ -87,7 +87,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
     @Override
     protected void processUpdate(Update update, int index, String sql, Object obj) {
 
-        String tableName = TableColumnUtil.getTableName(update.getTable());
+        String tableName = TableColumnUtil.filterSpecialChar(update.getTable().getName());
 
         List<DynamicConditionDescription> descriptions = DynamicConditionManager.getDynamicCondition(tableName);
         if (descriptions == null) {
@@ -122,7 +122,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
     private void processPlainSelect(PlainSelect plainSelect) {
         FromItem fromItem = plainSelect.getFromItem();
         if (fromItem instanceof Table) {
-            String tableName = TableColumnUtil.getTableName((Table) fromItem);
+            String tableName = TableColumnUtil.filterSpecialChar(((Table) fromItem).getName());
 
             List<DynamicConditionDescription> descriptions = DynamicConditionManager.getDynamicCondition(tableName);
             if (descriptions == null) {
@@ -148,7 +148,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
                 String condExpr;
                 List<Object> values = conditionHandler.values();
                 if (values == null || values.isEmpty()) {
-                    condExpr = TableColumnUtil.getColumnName(entityField) + " is null";
+                    condExpr = TableColumnUtil.getRealColumnName(entityField) + " is null";
                 } else {
                     // 字符串的话，两边追加'
                     if (entityField.getType() == String.class) {
@@ -157,9 +157,9 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
                                 .collect(Collectors.toList());
                     }
                     if (values.size() == 1) {
-                        condExpr = TableColumnUtil.getColumnName(entityField) + "=" + values.get(0) + "";
+                        condExpr = TableColumnUtil.getRealColumnName(entityField) + "=" + values.get(0) + "";
                     } else {
-                        condExpr = TableColumnUtil.getColumnName(entityField) + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
+                        condExpr = TableColumnUtil.getRealColumnName(entityField) + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
                     }
                 }
                 Expression envCondition = CCJSqlParserUtil.parseCondExpression(condExpr);

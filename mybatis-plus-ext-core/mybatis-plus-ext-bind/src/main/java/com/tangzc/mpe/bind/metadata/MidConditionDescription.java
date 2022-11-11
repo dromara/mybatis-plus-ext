@@ -1,8 +1,10 @@
 package com.tangzc.mpe.bind.metadata;
 
+import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -16,11 +18,11 @@ public class MidConditionDescription {
     /**
      * {@link MidCondition#selfField()}
      */
-    private final String selfField;
+    private final Field selfField;
     /**
      * {@link MidCondition#joinField()}
      */
-    private final String joinField;
+    private final Field joinField;
     /**
      * 条件匹配字段 {@link MidCondition#selfField()} 的get方法
      */
@@ -38,7 +40,7 @@ public class MidConditionDescription {
     /**
      * {@link MidCondition#selfMidField()}
      */
-    private final String selfMidField;
+    private final Field selfMidField;
     /**
      * 条件匹配字段 {@link MidCondition#selfMidField()} 的get方法
      */
@@ -46,13 +48,13 @@ public class MidConditionDescription {
     /**
      * {@link MidCondition#joinMidField()}
      */
-    private final String joinMidField;
+    private final Field joinMidField;
     /**
      * 条件匹配字段 {@link MidCondition#joinMidField()} 的get方法
      */
     protected final Method joinMidFieldGetMethod;
 
-    public MidConditionDescription(String selfField, String joinField, Method selfFieldGetMethod, Method joinFieldGetMethod, Class<?> midEntity, String selfMidField, Method selfMidFieldGetMethod, String joinMidField, Method joinMidFieldGetMethod) {
+    public MidConditionDescription(Field selfField, Field joinField, Method selfFieldGetMethod, Method joinFieldGetMethod, Class<?> midEntity, Field selfMidField, Method selfMidFieldGetMethod, Field joinMidField, Method joinMidFieldGetMethod) {
         this.selfField = selfField;
         this.joinField = joinField;
         this.selfFieldGetMethod = selfFieldGetMethod;
@@ -74,19 +76,51 @@ public class MidConditionDescription {
         }
         MidConditionDescription condition = (MidConditionDescription) o;
         return midEntity.equals(condition.midEntity) &&
-                selfField.equals(condition.selfField) &&
-                joinField.equals(condition.joinField) &&
-                selfMidField.equals(condition.selfMidField) &&
-                joinMidField.equals(condition.joinMidField);
+                getSelfFieldName().equals(condition.getSelfFieldName()) &&
+                getJoinFieldName().equals(condition.getJoinFieldName()) &&
+                getSelfMidFieldName().equals(condition.getSelfMidFieldName()) &&
+                getJoinMidFieldName().equals(condition.getJoinMidFieldName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(midEntity, selfField, joinField, selfMidField, joinMidField);
+        return Objects.hash(midEntity, getSelfFieldName(), getJoinFieldName(), getSelfMidFieldName(), getJoinMidFieldName());
     }
 
     @Override
     public String toString() {
-        return midEntity.getName() + "|" + selfField + "|" + joinField + "|" + selfMidField + "|" + joinMidField;
+        return midEntity.getName() + "|" + getSelfFieldName() + "|" + getJoinFieldName() + "|" + getSelfMidFieldName() + "|" + getJoinMidFieldName();
+    }
+
+    public String getSelfFieldName() {
+        return selfField.getName();
+    }
+
+    public String getJoinFieldName() {
+        return joinField.getName();
+    }
+
+    public String getSelfMidFieldName() {
+        return selfMidField.getName();
+    }
+
+    public String getJoinMidFieldName() {
+        return joinMidField.getName();
+    }
+
+    public String getSelfColumnName() {
+        return TableColumnUtil.getRealColumnName(selfField);
+    }
+
+    public String getJoinColumnName() {
+        return TableColumnUtil.getRealColumnName(joinField);
+    }
+
+    public String getSelfMidColumnName() {
+        return TableColumnUtil.getRealColumnName(selfMidField);
+    }
+
+    public String getJoinMidColumnName() {
+        return TableColumnUtil.getRealColumnName(joinMidField);
     }
 }

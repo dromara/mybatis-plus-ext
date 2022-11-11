@@ -23,6 +23,11 @@ public class MybatisPlusProperties {
      */
     public static String tablePrefix;
 
+    /**
+     * 表名前缀
+     */
+    public static boolean capitalMode;
+
     @Value("${mybatis-plus.configuration.map-underscore-to-camel-case:true}")
     public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
         MybatisPlusProperties.mapUnderscoreToCamelCase = mapUnderscoreToCamelCase;
@@ -36,5 +41,10 @@ public class MybatisPlusProperties {
     @Value("${mybatis-plus.global-config.db-config.table-prefix:}")
     public void setTablePrefix(String tablePrefix) {
         MybatisPlusProperties.tablePrefix = tablePrefix;
+    }
+
+    @Value("${mybatis-plus.global-config.db-config.capital-mode:false}")
+    public static void setCapitalMode(boolean capitalMode) {
+        MybatisPlusProperties.capitalMode = capitalMode;
     }
 }

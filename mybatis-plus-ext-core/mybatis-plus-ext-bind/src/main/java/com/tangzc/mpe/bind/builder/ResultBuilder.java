@@ -19,9 +19,21 @@ import java.util.stream.Collectors;
 @AllArgsConstructor(staticName = "newInstance")
 public class ResultBuilder<BEAN, ENTITY> {
 
+    /**
+     * 待填充数据的原始集合
+     */
     private final List<BEAN> beans;
+    /**
+     * 某一分组依据：根据BEAN上的所有绑定关系，进行分组的条件
+     */
     private final ConditionSign<ENTITY, JoinConditionDescription> conditionSign;
+    /**
+     * 某一条件分组下的所有字段描述
+     */
     private final List<? extends FieldDescription<?, JoinConditionDescription>> fieldDescriptions;
+    /**
+     * 数据填充前自定义回调
+     */
     private final FillDataCallback fillDataCallback;
 
     public void fillData() {
@@ -106,7 +118,7 @@ public class ResultBuilder<BEAN, ENTITY> {
         return conditionSign.getConditions().stream()
                 .map(condition -> {
                     try {
-                        return condition.getJoinField() + "=" + condition.getSelfFieldGetMethod().invoke(bean);
+                        return condition.getJoinFieldName() + "=" + condition.getSelfFieldGetMethod().invoke(bean);
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;
@@ -119,7 +131,7 @@ public class ResultBuilder<BEAN, ENTITY> {
         return conditionSign.getConditions().stream()
                 .map(condition -> {
                     try {
-                        return condition.getJoinField() + "=" + condition.getJoinFieldGetMethod().invoke(entity);
+                        return condition.getJoinFieldName() + "=" + condition.getJoinFieldGetMethod().invoke(entity);
                     } catch (Exception e) {
                         e.printStackTrace();
                         return null;

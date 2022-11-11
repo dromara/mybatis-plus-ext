@@ -4,6 +4,7 @@ import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -23,15 +24,14 @@ public class BindEntityByMidDescription extends FieldDescription<BindEntityByMid
      */
     private final boolean deepBind;
 
-    public BindEntityByMidDescription(String fieldName,
-                                      Class<?> fieldClass,
+    public BindEntityByMidDescription(Field field,
                                       Method setMethod,
                                       boolean isCollection,
                                       BindEntityByMid bindEntityByMid,
                                       Class<?> entityClass,
                                       MidConditionDescription condition,
                                       List<OrderByDescription> orderBys) {
-        super(fieldName, fieldClass, setMethod, isCollection, bindEntityByMid, entityClass,
+        super(field, setMethod, isCollection, bindEntityByMid, entityClass,
                 bindEntityByMid.customCondition(), orderBys, bindEntityByMid.last());
         this.condition = condition;
         this.deepBind = bindEntityByMid.deepBind();

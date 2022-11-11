@@ -4,6 +4,7 @@ import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,15 +27,14 @@ public class BindEntityDescription extends FieldDescription<BindEntity, JoinCond
      */
     private final boolean deepBind;
 
-    public BindEntityDescription(String fieldName,
-                                 Class<?> fieldClass,
+    public BindEntityDescription(Field field,
                                  Method setMethod,
                                  boolean isCollection,
                                  BindEntity bindEntity,
                                  Class<?> entityClass,
                                  List<JoinConditionDescription> conditions,
                                  List<OrderByDescription> orderBys) {
-        super(fieldName, fieldClass, setMethod, isCollection, bindEntity, entityClass,
+        super(field, setMethod, isCollection, bindEntity, entityClass,
                 bindEntity.customCondition(), orderBys, bindEntity.last());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
         this.deepBind = bindEntity.deepBind();

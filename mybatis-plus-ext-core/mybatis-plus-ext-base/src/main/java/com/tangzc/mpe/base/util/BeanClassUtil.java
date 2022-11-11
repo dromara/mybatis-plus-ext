@@ -112,6 +112,13 @@ public class BeanClassUtil {
         throw new RuntimeException(clazz + "下未找到" + fieldName + "的get/is方法");
     }
 
+    public static Field getField(Class<?> clazz, String fieldName) {
+
+        return Arrays.stream(clazz.getDeclaredFields())
+                .filter(field -> field.getName().equals(fieldName))
+                .findFirst().orElse(null);
+    }
+
     public static List<Field> getAllDeclaredFields(Class<?> beanClass) {
 
         List<Field> fieldList = new ArrayList<>();

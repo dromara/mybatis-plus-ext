@@ -48,7 +48,8 @@ public @interface BindEntity {
     String last() default "";
 
     /**
-     * 深度绑定（不熟悉的，不建议使用）
+     * 深度绑定（不熟悉的，不建议使用）,未来某个版本会删除
      */
+    @Deprecated
     boolean deepBind() default false;
 }

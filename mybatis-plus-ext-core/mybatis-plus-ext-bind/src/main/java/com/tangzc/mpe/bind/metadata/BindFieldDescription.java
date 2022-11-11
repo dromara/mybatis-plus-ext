@@ -4,6 +4,7 @@ import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,10 @@ public class BindFieldDescription extends FieldDescription<BindField, JoinCondit
      */
     private final Method bindFieldGetMethod;
 
-    public BindFieldDescription(String fieldName, Class<?> fieldClass, Method setMethod, boolean isCollection,
+    public BindFieldDescription(Field field, Method setMethod, boolean isCollection,
                                 BindField bindField, Class<?> entityClass, List<JoinConditionDescription> conditions,
                                 List<OrderByDescription> orderBys, Method bindFieldGetMethod) {
-        super(fieldName, fieldClass, setMethod, isCollection, bindField, entityClass, bindField.customCondition(), orderBys, bindField.last());
+        super(field, setMethod, isCollection, bindField, entityClass, bindField.customCondition(), orderBys, bindField.last());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
         this.bindFieldGetMethod = bindFieldGetMethod;
     }

@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>mybatis-plus-ext-demo</artifactId>
+        <groupId>com.tangzc</groupId>
+        <version>3.5.2-EXT146</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>mybatis-plus-ext-demo</groupId>
+
+    <artifactId>mybatis-plus-ext-demo-datasource</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-demo-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- 只引入单项功能 -->
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-datasource</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- 只引入建表功能 -->
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-actable-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- mybatis plus -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -127,15 +127,22 @@ public class Binder {
             }
 
             // 合并相同条件的关联，减少查询
-            Map<ConditionSign<?, CONDITION_DESC>, List<FD>> fieldAnnotationListGroupByCondition =
+            Map<ConditionSign<?, CONDITION_DESC>, List<FD>> fieldDescriptionsGroupByCondition =
                     fieldDescriptions.stream().collect(Collectors.groupingBy(fd -> fd.conditionUniqueKey()));
 
             // 填充数据
-            fieldAnnotationListGroupByCondition.forEach(
+            fieldDescriptionsGroupByCondition.forEach(
                     (entityJoinCondition, fieldAnnotationList) -> fillData(beans, entityJoinCondition, fieldAnnotationList)
             );
         }
 
+        /**
+         * 批量查询数据做绑定
+         * @param beans 待填充的集合
+         * @param entityJoinCondition 分组条件
+         * @param fieldAnnotationList 相同条件的字段集合
+         * @param <ENTITY> 关联的对象类型
+         */
         <ENTITY> void fillData(List<BEAN> beans, ConditionSign<ENTITY, CONDITION_DESC> entityJoinCondition, List<FD> fieldAnnotationList);
     }
 }

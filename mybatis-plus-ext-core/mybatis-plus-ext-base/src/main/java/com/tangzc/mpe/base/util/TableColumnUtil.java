@@ -1,29 +1,24 @@
 package com.tangzc.mpe.base.util;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.google.common.base.CaseFormat;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
-import net.sf.jsqlparser.schema.Table;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author don
  */
 public class TableColumnUtil {
 
-    private static final Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
-
-    private static final Pattern HUMP_PATTERN = Pattern.compile("[A-Z]+");
-
-    public static String getTableName(Table table) {
-        return table.getName().replaceAll("`", "");
+    public static String filterSpecialChar(String name) {
+        return name.replaceAll("`", "");
     }
 
     public static String getTableName(Class<?> entityClass) {
@@ -32,67 +27,51 @@ public class TableColumnUtil {
         if (tableNameAnno != null && !tableNameAnno.value().isEmpty()) {
             tableName = tableNameAnno.value();
         } else {
-            tableName = smartHumpToLine(MybatisPlusProperties.tableUnderline, entityClass.getSimpleName());
+            tableName = smartConvert(MybatisPlusProperties.tableUnderline, entityClass.getSimpleName());
             // 添加表前缀
             if(StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
                 tableName = MybatisPlusProperties.tablePrefix + tableName;
             }
         }
-        return tableName.replace("`", "");
+        return filterSpecialChar(tableName);
     }
-
-    public static String getColumnName(Field field) {
-        String columnName;
-        TableField annotation = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
-        if (annotation != null && !annotation.value().isEmpty()) {
-            columnName = annotation.value();
-        } else {
-            columnName = smartColumnName(field.getName());
-        }
-        return columnName;
-    }
-
-    public static String smartColumnName(String fieldName) {
-        return smartHumpToLine(MybatisPlusProperties.mapUnderscoreToCamelCase, fieldName);
-    }
-
-    public static String smartHumpToLine(boolean convert, String fieldName) {
-        if (convert) {
-            fieldName = humpToLine(fieldName);
-        }
-        return fieldName;
-    }
-
     /**
-     * 下划线转驼峰
+     * 根据注解顺序和配置，获取字段对应的数据库字段名
+     * @param field
+     * @return
      */
-    public static String lineToHump(String str) {
-
-        str = str.toLowerCase();
-        Matcher matcher = LINE_PATTERN.matcher(str);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+    public static String getRealColumnName(Field field) {
+        TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+        if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
+            return filterSpecialChar(tableField.value());
         }
-        matcher.appendTail(sb);
-        return sb.toString();
+        TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
+        if (tableId != null && !StringUtils.isEmpty(tableId.value())) {
+            return filterSpecialChar(tableId.value());
+        }
+
+        return smartConvert(MybatisPlusProperties.mapUnderscoreToCamelCase, field.getName());
+    }
+
+    public static String smartConvert(boolean underCamel, String column) {
+
+        // 开启字段下划线申明
+        if (underCamel) {
+            column = com.baomidou.mybatisplus.core.toolkit.StringUtils.camelToUnderline(column);
+        }
+        // 全局大写命名
+        if (MybatisPlusProperties.capitalMode) {
+            column = column.toUpperCase();
+        }
+
+        return column;
     }
 
     /**
      * 驼峰转下划线
      */
-    public static String humpToLine(String str) {
-
-        Matcher matcher = HUMP_PATTERN.matcher(str);
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
-        }
-        matcher.appendTail(sb);
-        String newStr = sb.toString();
-        if (newStr.startsWith("_")) {
-            return newStr.substring(1);
-        }
-        return newStr;
+    private static String humpToLine(String name) {
+        return CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE,
+                name).toLowerCase();
     }
 }

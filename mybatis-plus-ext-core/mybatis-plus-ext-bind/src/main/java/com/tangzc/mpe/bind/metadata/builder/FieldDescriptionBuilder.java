@@ -37,15 +37,13 @@ public class FieldDescriptionBuilder {
     public static <BEAN> BindFieldDescription build(Class<BEAN> beanClass, Field field, BindField bindField) {
 
         boolean isCollection = Collection.class.isAssignableFrom(field.getType());
-        Class<?> fieldClass = BeanClassUtil.getFieldRealClass(field);
         Class<?> entityClass = bindField.entity();
-        String fieldName = field.getName();
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
         Method readMethod = BeanClassUtil.getReadMethod(entityClass, bindField.field());
         List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindField.conditions());
-        List<OrderByDescription> orderByList = getOrderByList(bindField.orderBy());
-        return new BindFieldDescription(fieldName, fieldClass, setMethod, isCollection, bindField,
+        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindField.orderBy());
+        return new BindFieldDescription(field, setMethod, isCollection, bindField,
                 entityClass, conditionList, orderByList, readMethod);
     }
 
@@ -60,10 +58,9 @@ public class FieldDescriptionBuilder {
 
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
-        String fieldName = field.getName();
         List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindEntity.conditions());
-        List<OrderByDescription> orderByList = getOrderByList(bindEntity.orderBy());
-        return new BindEntityDescription(fieldName, fieldClass, setMethod, isCollection, bindEntity,
+        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindEntity.orderBy());
+        return new BindEntityDescription(field, setMethod, isCollection, bindEntity,
                 entityClass, conditionList, orderByList);
     }
 
@@ -79,10 +76,9 @@ public class FieldDescriptionBuilder {
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
         Method bindFieldGetMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldByMid.field());
 
-        String fieldName = field.getName();
         MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindFieldByMid.conditions());
-        List<OrderByDescription> orderByList = getOrderByList(bindFieldByMid.orderBy());
-        return new BindFieldByMidDescription(fieldName, fieldClass, setMethod, isCollection, bindFieldByMid,
+        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindFieldByMid.orderBy());
+        return new BindFieldByMidDescription(field, setMethod, isCollection, bindFieldByMid,
                 entityClass, conditionList, orderByList, bindFieldGetMethod);
     }
 
@@ -98,10 +94,9 @@ public class FieldDescriptionBuilder {
 
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
-        String fieldName = field.getName();
         MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindEntity.conditions());
-        List<OrderByDescription> orderByList = getOrderByList(bindEntity.orderBy());
-        return new BindEntityByMidDescription(fieldName, fieldClass, setMethod, isCollection, bindEntity,
+        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindEntity.orderBy());
+        return new BindEntityByMidDescription(field, setMethod, isCollection, bindEntity,
                 entityClass, conditionList, orderByList);
     }
 
@@ -109,27 +104,36 @@ public class FieldDescriptionBuilder {
 
         return Arrays.stream(joinConditions)
                 .map(jc -> {
+                    Field selfField = BeanClassUtil.getField(beanClass, jc.selfField());
+                    Field joinField = BeanClassUtil.getField(joinClazz, jc.joinField());
                     Method selfFieldGetMethod = BeanClassUtil.getReadMethod(beanClass, jc.selfField());
                     Method joinFieldGetMethod = BeanClassUtil.getReadMethod(joinClazz, jc.joinField());
-                    return new JoinConditionDescription(jc.selfField(), jc.joinField(), selfFieldGetMethod, joinFieldGetMethod);
+                    return new JoinConditionDescription(selfField, joinField, selfFieldGetMethod, joinFieldGetMethod);
                 }).collect(Collectors.toList());
     }
 
     private static <BEAN> MidConditionDescription getCondition(Class<BEAN> beanClass, Class<?> joinClazz, MidCondition midCondition) {
 
+        Field selfField = BeanClassUtil.getField(beanClass, midCondition.selfField());
+        Field joinField = BeanClassUtil.getField(joinClazz, midCondition.joinField());
+        Field selfMidField = BeanClassUtil.getField(midCondition.midEntity(), midCondition.selfMidField());
+        Field joinMidField = BeanClassUtil.getField(midCondition.midEntity(), midCondition.joinMidField());
         Method selfFieldGetMethod = BeanClassUtil.getReadMethod(beanClass, midCondition.selfField());
         Method joinFieldGetMethod = BeanClassUtil.getReadMethod(joinClazz, midCondition.joinField());
         Method selfMidFieldGetMethod = BeanClassUtil.getReadMethod(midCondition.midEntity(), midCondition.selfMidField());
         Method joinMidFieldGetMethod = BeanClassUtil.getReadMethod(midCondition.midEntity(), midCondition.joinMidField());
-        return new MidConditionDescription(midCondition.selfField(), midCondition.joinField(),
+        return new MidConditionDescription(selfField, joinField,
                 selfFieldGetMethod, joinFieldGetMethod,
-                midCondition.midEntity(), midCondition.selfMidField(),
-                selfMidFieldGetMethod, midCondition.joinMidField(), joinMidFieldGetMethod);
+                midCondition.midEntity(), selfMidField,
+                selfMidFieldGetMethod, joinMidField, joinMidFieldGetMethod);
     }
 
-    private static List<OrderByDescription> getOrderByList(JoinOrderBy[] orderBy) {
+    private static List<OrderByDescription> getOrderByList(Class<?> entityClass, JoinOrderBy[] orderBy) {
         return Arrays.stream(orderBy)
-                .map(ob -> new OrderByDescription(ob.field(), ob.isAsc()))
+                .map(ob -> {
+                    Field field = BeanClassUtil.getField(entityClass, ob.field());
+                    return new OrderByDescription(field, ob.isAsc());
+                })
                 .collect(Collectors.toList());
     }
 }

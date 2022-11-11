@@ -3,7 +3,9 @@ package com.tangzc.mpe.demo.autotable.entity;
 import com.tangzc.mpe.actable.annotation.ColumnComment;
 import com.tangzc.mpe.actable.annotation.IsAutoIncrement;
 import com.tangzc.mpe.actable.annotation.Table;
+import lombok.Data;
 
+@Data
 @Table(comment = "表1")
 public class TestTable {
 

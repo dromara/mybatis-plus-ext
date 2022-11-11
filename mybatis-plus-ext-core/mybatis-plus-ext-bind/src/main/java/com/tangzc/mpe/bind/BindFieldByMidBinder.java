@@ -1,11 +1,13 @@
 package com.tangzc.mpe.bind;
 
+import com.tangzc.mpe.base.util.BeanClassUtil;
 import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.bind.builder.ByMidResultBuilder;
 import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.BindFieldByMidDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
+import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,14 +34,17 @@ public class BindFieldByMidBinder<BEAN> implements Binder.IBinder<BEAN, BindFiel
                                                   List<? extends FieldDescription<?, MidConditionDescription>> fieldDescriptions) {
 
                         List<String> columns = fieldAnnotations.stream()
-                                .map(bfd -> bfd.getBindAnnotation().field())
-                                // 驼峰转下划线
-                                .map(TableColumnUtil::smartColumnName)
+                                .map(bfd -> {
+                                    BindFieldByMid bindAnnotation = bfd.getBindAnnotation();
+                                    return BeanClassUtil.getField(bindAnnotation.entity(), bindAnnotation.field());
+                                })
+                                // 智能判断驼峰转下划线
+                                .map(TableColumnUtil::getRealColumnName)
                                 .collect(Collectors.toList());
 
                         // 追加条件查询字段，用于标识查询数据的
                         for (MidConditionDescription condition : conditionSign.getConditions()) {
-                            columns.add(TableColumnUtil.smartColumnName(condition.getJoinField()));
+                            columns.add(condition.getJoinColumnName());
                         }
 
                         return columns.toArray(new String[0]);

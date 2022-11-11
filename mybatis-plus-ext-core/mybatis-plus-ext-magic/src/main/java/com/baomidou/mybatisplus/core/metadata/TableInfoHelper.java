@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2021, baomidou (jobob@qq.com).
+ * Copyright (c) 2011-2022, baomidou (jobob@qq.com).
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.impl.TableIdImpl;
 import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
@@ -304,7 +305,7 @@ public class TableInfoHelper {
 
             /* 主键ID 初始化 */
             if (existTableId) {
-                TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
+                TableId tableId = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class);
                 if (tableId != null) {
                     if (isReadPK) {
                         throw ExceptionUtils.mpe("@TableId can't more than one in Class: \"%s\".", clazz.getName());
@@ -355,7 +356,7 @@ public class TableInfoHelper {
      * @return true 为存在 {@link TableId} 注解;
      */
     public static boolean isExistTableId(List<Field> list) {
-        return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, TableId.class));
+        return list.stream().anyMatch(field -> AnnotatedElementUtilsPlus.hasAnnotation(field, TableId.class));
     }
 
     /**
@@ -367,7 +368,7 @@ public class TableInfoHelper {
      * @return true 为存在 {@link TableLogic} 注解;
      */
     public static boolean isExistTableLogic(List<Field> list) {
-        return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, TableLogic.class));
+        return list.stream().anyMatch(field -> AnnotatedElementUtilsPlus.hasAnnotation(field, TableLogic.class));
     }
 
     /**
@@ -379,7 +380,7 @@ public class TableInfoHelper {
      * @return true 为存在 {@link OrderBy} 注解;
      */
     public static boolean isExistOrderBy(List<Field> list) {
-        return list.stream().anyMatch(field -> AnnotatedElementUtils.hasAnnotation(field, OrderBy.class));
+        return list.stream().anyMatch(field -> AnnotatedElementUtilsPlus.hasAnnotation(field, OrderBy.class));
     }
 
     /**
@@ -395,7 +396,7 @@ public class TableInfoHelper {
     private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableId tableId) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
-        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class) != null) {
+        if (AnnotatedElementUtilsPlus.hasAnnotation(field, TableField.class)) {
             logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
                     property, tableInfo.getEntityType().getName()));
         }
@@ -444,7 +445,7 @@ public class TableInfoHelper {
     private static boolean initTableIdWithoutAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field) {
         final String property = field.getName();
         if (DEFAULT_ID_NAME.equalsIgnoreCase(property)) {
-            // if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class) != null) {
+            // if (field.getAnnotation(TableField.class) != null) {
             //     logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
             //             property, tableInfo.getEntityType().getName()));
             // }

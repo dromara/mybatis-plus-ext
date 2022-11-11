@@ -7,9 +7,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 注解合并处理类，可以将相同的注解的不同实例，中的属性合并为一个注解实例
@@ -18,6 +16,11 @@ import java.util.Set;
  */
 @Slf4j
 public class AnnotatedElementUtilsPlus extends AnnotatedElementUtils {
+
+    // public static boolean hasAnnotation(@NotNull AnnotatedElement element, @NotNull Class<? extends Annotation> annoClass) {
+    //     final Set<?> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(element, annoClass);
+    //     return !allMergedAnnotations.isEmpty();
+    // }
 
     public static <ANNO extends Annotation, IMPL extends ANNO> IMPL findMergedAnnotation(AnnotatedElement element, Class<ANNO> annoClass, Class<IMPL> implClass) {
         final Set<ANNO> allMergedAnnotations = AnnotatedElementUtils.findAllMergedAnnotations(element, annoClass);
@@ -51,7 +54,12 @@ public class AnnotatedElementUtilsPlus extends AnnotatedElementUtils {
                         // 比对，如果与默认值不同，则说明是自定义值
                         .filter(val -> {
                             if (defaultVal.getClass().isArray()) {
-                                return ((Object[]) val).length != ((Object[]) defaultVal).length;
+                                if (((Object[]) val).length == ((Object[]) defaultVal).length) {
+                                    if(((Object[]) val).length != 0) {
+                                        return new HashSet<>(Arrays.asList((Object[]) val)).containsAll(Arrays.asList((Object[]) defaultVal));
+                                    }
+                                }
+                                return false;
                             }
                             return !Objects.equals(val, defaultVal);
                         })

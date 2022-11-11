@@ -4,6 +4,7 @@ import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import lombok.Getter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -23,8 +24,7 @@ public class BindFieldByMidDescription extends FieldDescription<BindFieldByMid, 
      */
     private final Method bindFieldGetMethod;
 
-    public BindFieldByMidDescription(String fieldName,
-                                     Class<?> fieldClass,
+    public BindFieldByMidDescription(Field field,
                                      Method setMethod,
                                      boolean isCollection,
                                      BindFieldByMid bindFieldByMid,
@@ -32,7 +32,7 @@ public class BindFieldByMidDescription extends FieldDescription<BindFieldByMid, 
                                      MidConditionDescription condition,
                                      List<OrderByDescription> orderBys,
                                      Method bindFieldGetMethod) {
-        super(fieldName, fieldClass, setMethod, isCollection, bindFieldByMid, entityClass,
+        super(field, setMethod, isCollection, bindFieldByMid, entityClass,
                 bindFieldByMid.customCondition(), orderBys, bindFieldByMid.last());
         this.condition = condition;
         this.bindFieldGetMethod = bindFieldGetMethod;

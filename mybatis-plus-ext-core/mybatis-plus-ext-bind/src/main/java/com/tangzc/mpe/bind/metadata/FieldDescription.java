@@ -1,9 +1,11 @@
 package com.tangzc.mpe.bind.metadata;
 
+import com.tangzc.mpe.base.util.BeanClassUtil;
 import com.tangzc.mpe.bind.builder.ConditionSign;
 import lombok.Getter;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +20,7 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
     /**
      * 被修饰字段：名
      */
-    protected String fieldName;
+    protected Field field;
     /**
      * 被修饰字段：类型
      */
@@ -54,11 +56,11 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
      */
     protected String last;
 
-    public FieldDescription(String fieldName, Class<?> fieldClass, Method setMethod, boolean isCollection,
+    public FieldDescription(Field field, Method setMethod, boolean isCollection,
                             BIND_ANNOTATION bindAnnotation, Class<?> entityClass,
                             String customCondition, List<OrderByDescription> orderBys, String last) {
-        this.fieldName = fieldName;
-        this.fieldClass = fieldClass;
+        this.field = field;
+        this.fieldClass = BeanClassUtil.getFieldRealClass(field);;
         this.setMethod = setMethod;
         this.isCollection = isCollection;
         this.bindAnnotation = bindAnnotation;
@@ -66,6 +68,10 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
         this.customCondition = customCondition;
         this.orderBys = orderBys.stream().distinct().collect(Collectors.toList());
         this.last = last;
+    }
+
+    public String getFieldName() {
+        return field.getName();
     }
 
     /**

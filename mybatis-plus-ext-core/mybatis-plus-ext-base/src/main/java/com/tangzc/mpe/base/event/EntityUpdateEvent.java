@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 @Getter
 public class EntityUpdateEvent<E> extends ApplicationEvent {
 
+    /**
+     * 需要冗余的类
+     */
     private final Class<E> entityClass;
     private final String entityName;
     private final E entity;

@@ -3,7 +3,6 @@ package com.tangzc.mpe.bind.builder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangzc.mpe.base.MapperScanner;
-import com.tangzc.mpe.base.util.TableColumnUtil;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
 import com.tangzc.mpe.bind.metadata.OrderByDescription;
@@ -120,12 +119,12 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
             queryWrapper.select(selectColumns);
         }
         // 添加主要条件
-        queryWrapper.in(TableColumnUtil.smartColumnName(midConditionDescription.getJoinField()), joinMidFieldVals);
+        queryWrapper.in(midConditionDescription.getJoinColumnName(), joinMidFieldVals);
         // 自定义条件
         queryWrapper.apply(StringUtils.hasText(conditionSign.getCustomCondition()), conditionSign.getCustomCondition());
         // 排序
         for (OrderByDescription orderBy : conditionSign.getOrderBys()) {
-            queryWrapper.orderBy(true, orderBy.isAsc(), TableColumnUtil.smartColumnName(orderBy.getField()));
+            queryWrapper.orderBy(true, orderBy.isAsc(), orderBy.getColumnName());
         }
         // last sql
         queryWrapper.last(conditionSign.getLast());
@@ -156,9 +155,8 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // 构建查询器
         QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
         // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
-        queryWrapper.select(TableColumnUtil.smartColumnName(midConditionDescription.getJoinMidField()),
-                TableColumnUtil.smartColumnName(midConditionDescription.getSelfMidField()));
-        queryWrapper.in(TableColumnUtil.smartColumnName(midConditionDescription.getSelfMidField()), selfFieldVals);
+        queryWrapper.select(midConditionDescription.getJoinMidColumnName(), midConditionDescription.getSelfMidColumnName());
+        queryWrapper.in(midConditionDescription.getSelfMidColumnName(), selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
 
