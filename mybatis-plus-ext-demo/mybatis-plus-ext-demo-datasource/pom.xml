@@ -6,7 +6,6 @@
         <version>3.5.2-EXT200</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>mybatis-plus-ext-demo</groupId>
 
     <artifactId>mybatis-plus-ext-demo-datasource</artifactId>
 
