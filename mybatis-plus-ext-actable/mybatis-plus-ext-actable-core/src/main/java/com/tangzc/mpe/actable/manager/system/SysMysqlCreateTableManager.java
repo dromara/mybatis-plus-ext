@@ -646,14 +646,15 @@ public class SysMysqlCreateTableManager {
         if (!"add".equals(tableAuto)) {
             // 2. 删除要变更主键的表的原来的字段的主键
             dropFieldsKeyByMap(baseTableMap.get(Constants.DROPKEY_TABLE_MAP));
-        }
 
-        // add是追加模式不做删除和修改操作
-        if (!"add".equals(tableAuto)) {
             // 3. 删除索引和约束
             dropIndexAndUniqueByMap(baseTableMap.get(Constants.DROPINDEXANDUNIQUE_TABLE_MAP));
-            // 4. 删除字段
-            removeFieldsByMap(baseTableMap.get(Constants.REMOVE_TABLE_MAP));
+
+            // update模式不删除字段
+            if (!"update".equals(tableAuto)) {
+                // 4. 删除字段
+                removeFieldsByMap(baseTableMap.get(Constants.REMOVE_TABLE_MAP));
+            }
             // 5. 修改表注释
             modifyTableCommentByMap(baseTableMap.get(Constants.MODIFY_TABLE_PROPERTY_MAP));
             // 6. 修改字段类型等
