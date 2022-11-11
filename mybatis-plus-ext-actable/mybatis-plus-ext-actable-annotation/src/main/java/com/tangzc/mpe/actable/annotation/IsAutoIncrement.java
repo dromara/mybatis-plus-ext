@@ -3,16 +3,11 @@ package com.tangzc.mpe.actable.annotation;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 
 /**
- * 标志该字段需要设置自增
- * 也可通过注解：com.tangzc.mpe.actable.annotation.Column的isAutoIncrement属性实现
+ * 标志该字段需要设置自增, @TableId(type = IdType.AUTO)的快捷方式
  *
  * @author sunchenbin
  * @version 2020年5月26日 下午6:13:15
@@ -26,6 +21,4 @@ import java.lang.annotation.Target;
 // 告知MybatisPlus主键自增的方式
 @TableId(type = IdType.AUTO)
 public @interface IsAutoIncrement {
-
-    boolean value() default true;
 }

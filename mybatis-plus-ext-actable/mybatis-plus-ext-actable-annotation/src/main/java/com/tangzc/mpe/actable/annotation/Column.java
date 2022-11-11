@@ -26,7 +26,6 @@ import java.lang.annotation.Target;
 @ColumnType
 @IsNotNull
 @IsKey
-@IsAutoIncrement
 @ColumnDefault
 @ColumnComment
 public @interface Column {
@@ -83,15 +82,6 @@ public @interface Column {
      */
     @AliasFor(annotation = IsKey.class, attribute = "value")
     boolean isKey() default false;
-
-    /**
-     * 是否自动递增，默认false
-     * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsAutoIncrement
-     *
-     * @return 是否自动递增，默认false 只有主键才能使用
-     */
-    @AliasFor(annotation = IsAutoIncrement.class, attribute = "value")
-    boolean isAutoIncrement() default false;
 
     /**
      * 默认值，默认为null

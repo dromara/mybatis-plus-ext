@@ -74,17 +74,6 @@ public class ColumnImpl implements Column {
     }
 
     /**
-     * 是否自动递增，默认false
-     * 也可通过注解实现：com.tangzc.mpe.actable.annotation.IsAutoIncrement
-     *
-     * @return 是否自动递增，默认false 只有主键才能使用
-     */
-    @Override
-    public boolean isAutoIncrement() {
-        return false;
-    }
-
-    /**
      * 默认值，默认为null
      * 1.3.0版本支持，也可通过注解实现：com.tangzc.mpe.actable.annotation.ColumnDefault
      *

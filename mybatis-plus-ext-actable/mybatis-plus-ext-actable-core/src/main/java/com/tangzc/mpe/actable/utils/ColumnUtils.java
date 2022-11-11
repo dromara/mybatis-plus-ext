@@ -1,10 +1,12 @@
 package com.tangzc.mpe.actable.utils;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.baomidou.mybatisplus.core.metadata.impl.TableIdImpl;
 import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import com.google.common.base.CaseFormat;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
@@ -49,7 +51,7 @@ public class ColumnUtils {
             finalTableName = tableNamePlus.value();
         }
         if (StringUtils.isEmpty(finalTableName)) {
-            if(MybatisPlusProperties.tableUnderline) {
+            if (MybatisPlusProperties.tableUnderline) {
                 // 都为空时采用类名按照驼峰格式转会为表名
                 finalTableName = getBuildLowerName(clasz.getSimpleName());
             } else {
@@ -57,7 +59,7 @@ public class ColumnUtils {
                 finalTableName = clasz.getSimpleName();
             }
             // 添加表前缀
-            if(StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
+            if (StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
                 finalTableName = MybatisPlusProperties.tablePrefix + finalTableName;
             }
         }
@@ -102,7 +104,7 @@ public class ColumnUtils {
         }
 
         // 如果不需要字段自动驼峰转下划线
-        if(!MybatisPlusProperties.mapUnderscoreToCamelCase) {
+        if (!MybatisPlusProperties.mapUnderscoreToCamelCase) {
             return field.getName();
         }
 
@@ -128,14 +130,11 @@ public class ColumnUtils {
     }
 
     public static boolean isAutoIncrement(Field field, Class<?> clasz) {
-        IsAutoIncrement column = AnnotatedElementUtils.findMergedAnnotation(field, IsAutoIncrement.class);
         if (!isIncloudField(field, clasz)) {
             return false;
         }
-        if (column != null && column.value()) {
-            return true;
-        }
-        return false;
+        TableId tableId = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class);
+        return tableId != null && tableId.type() == IdType.AUTO;
     }
 
     public static Boolean isNull(Field field, Class<?> clasz) {
