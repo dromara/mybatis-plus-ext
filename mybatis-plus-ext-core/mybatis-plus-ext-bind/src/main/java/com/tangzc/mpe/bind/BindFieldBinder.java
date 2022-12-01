@@ -1,7 +1,7 @@
 package com.tangzc.mpe.bind;
 
-import com.tangzc.mpe.base.util.BeanClassUtil;
-import com.tangzc.mpe.base.util.TableColumnUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.magic.TableColumnUtil;
 import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.builder.ResultBuilder;
 import com.tangzc.mpe.bind.metadata.BindFieldDescription;

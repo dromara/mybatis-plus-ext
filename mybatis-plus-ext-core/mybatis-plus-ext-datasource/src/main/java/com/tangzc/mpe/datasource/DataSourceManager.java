@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.event.EntityUpdateEvent;
-import com.tangzc.mpe.base.util.BeanClassUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.datasource.annotation.DataSource;
 import com.tangzc.mpe.datasource.description.DataSourceConditionDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateDescription;

@@ -1,6 +1,6 @@
 package com.tangzc.mpe.datasource.description;
 
-import com.tangzc.mpe.base.util.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

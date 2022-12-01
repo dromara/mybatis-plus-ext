@@ -1,6 +1,6 @@
 package com.tangzc.mpe.demo.bind.mid;
 
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
 
 /**

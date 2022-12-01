@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.bind;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
 import lombok.Data;

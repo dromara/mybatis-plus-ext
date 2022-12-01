@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-        <version>3.5.2-EXT200</version>
+        <version>3.5.2-EXT300-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -40,12 +40,12 @@
 
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable-core</artifactId>
+            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
+            <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
 
@@ -13,6 +14,7 @@ import java.lang.annotation.Annotation;
  */
 @Getter
 @Setter
+@Accessors(fluent = true)
 public class TableIdImpl implements TableId {
 
     /**
@@ -25,16 +27,6 @@ public class TableIdImpl implements TableId {
      * {@link IdType}
      */
     private IdType type = IdType.NONE;
-
-    @Override
-    public String value() {
-        return value;
-    }
-
-    @Override
-    public IdType type() {
-        return type;
-    }
 
     @Override
     public Class<? extends Annotation> annotationType() {

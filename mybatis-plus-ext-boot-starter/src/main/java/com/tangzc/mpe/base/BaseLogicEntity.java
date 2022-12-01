@@ -1,7 +1,7 @@
 package com.tangzc.mpe.base;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.tangzc.mpe.actable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.annotation.DefaultValue;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,7 +2,7 @@ package com.tangzc.mpe.bind;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.tangzc.mpe.base.util.BeanClassUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.manager.BeanAnnotationManager;
 import com.tangzc.mpe.bind.metadata.BeanDescription;

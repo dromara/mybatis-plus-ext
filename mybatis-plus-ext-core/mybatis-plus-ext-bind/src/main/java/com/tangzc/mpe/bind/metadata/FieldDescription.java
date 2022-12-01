@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.base.util.BeanClassUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.bind.builder.ConditionSign;
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.bind.mid;
 
-import com.tangzc.mpe.actable.annotation.Column;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.Column;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import com.tangzc.mpe.bind.metadata.annotation.JoinOrderBy;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;

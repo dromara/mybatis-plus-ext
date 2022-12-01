@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mybatis-plus-ext-autotable</artifactId>
+        <groupId>com.tangzc</groupId>
+        <version>3.5.2-EXT300-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>mybatis-plus-ext-autotable-core</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-magic</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- mybatis-plus拓展 数据库操作框架 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>${dynamic-datasource.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+</project>

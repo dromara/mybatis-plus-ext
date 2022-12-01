@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata.builder;
 
-import com.tangzc.mpe.base.util.BeanClassUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.bind.metadata.BindEntityByMidDescription;
 import com.tangzc.mpe.bind.metadata.BindEntityDescription;
 import com.tangzc.mpe.bind.metadata.BindFieldByMidDescription;

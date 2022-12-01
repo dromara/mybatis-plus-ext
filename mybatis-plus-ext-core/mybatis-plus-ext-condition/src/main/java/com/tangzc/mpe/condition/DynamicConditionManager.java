@@ -2,7 +2,7 @@ package com.tangzc.mpe.condition;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.tangzc.mpe.base.util.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import lombok.extern.slf4j.Slf4j;

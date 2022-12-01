@@ -1,13 +1,13 @@
 package com.tangzc.mpe.demo.flyway.entity;
 
-import com.tangzc.mpe.actable.annotation.ColumnComment;
-import com.tangzc.mpe.actable.annotation.IsAutoIncrement;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.AutoIncrement;
+import com.tangzc.mpe.autotable.annotation.Table;
 
 @Table(comment = "表1")
 public class AutoCreateTable {
 
-    @IsAutoIncrement
+    @AutoIncrement
     @ColumnComment("ID")
     private Long id;
 

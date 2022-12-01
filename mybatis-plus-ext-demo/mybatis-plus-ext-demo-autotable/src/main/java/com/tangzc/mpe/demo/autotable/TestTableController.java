@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("actable")
+@RequestMapping("autotable")
 public class TestTableController {
 
     @Resource
@@ -18,7 +18,7 @@ public class TestTableController {
     @GetMapping("add")
     public void add(String username) {
         TestTable entity = new TestTable();
-        entity.setUserName(username);
+        entity.setUsername(username);
         testTableRepository.save(entity);
     }
 }

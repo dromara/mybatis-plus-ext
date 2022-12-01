@@ -2,3 +2,7 @@ mybatis-plus:
   global-config:
     db-config:
       table-prefix: my_
+
+mpe:
+  auto-table:
+    auto-drop-column: true

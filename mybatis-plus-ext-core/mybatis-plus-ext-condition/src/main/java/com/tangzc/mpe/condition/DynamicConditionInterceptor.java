@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.tangzc.mpe.base.util.SpringContextUtil;
-import com.tangzc.mpe.base.util.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
 import lombok.extern.slf4j.Slf4j;

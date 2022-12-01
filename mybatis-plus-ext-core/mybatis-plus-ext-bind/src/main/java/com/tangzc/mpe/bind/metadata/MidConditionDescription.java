@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.base.util.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnUtil;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
 import lombok.Getter;
 
