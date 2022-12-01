@@ -20,14 +20,14 @@ public interface MysqlTablesMapper {
     /**
      * 万能sql执行器
      *
-     * @param sqlStr 待执行的sql
+     * @param sql 待执行的sql
      */
     @Select("${sql}")
     void executeSelect(String sql);
 
     /**
      * 创建记录执行SQL日志的表
-     * @param tableName
+     * @param tableName 记录sql的表名
      */
     @Select("CREATE TABLE `${tableName}` (" +
             "`id` bigint NOT NULL AUTO_INCREMENT COMMENT '自增主键'," +
@@ -37,6 +37,11 @@ public interface MysqlTablesMapper {
             ")")
     void initExecuteSqlLogTable(String tableName);
 
+    /**
+     * 插入执行SQL
+     * @param tableName 记录sql的表名
+     * @param log 执行日志
+     */
     @Insert("INSERT INTO `${tableName}` (`sql`, `executeTime`) VALUES (#{log.sql}, #{log.executeTime, jdbcType=TIMESTAMP})")
     void insertExecuteSqlLog(String tableName, MpeExecuteSqlLog log);
 
