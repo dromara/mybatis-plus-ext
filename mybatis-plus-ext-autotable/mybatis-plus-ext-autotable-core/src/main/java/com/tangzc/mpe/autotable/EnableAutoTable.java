@@ -5,7 +5,7 @@ import com.tangzc.mpe.autotable.dynamicds.define.DynamicDatasourceTableInitDefin
 import com.tangzc.mpe.autotable.mybatisplus.MybatisPlusIgnore;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.mysql.MysqlStrategy;
-import com.tangzc.mpe.autotable.strategy.mysql.builder.TableParamBuilder;
+import com.tangzc.mpe.autotable.strategy.mysql.builder.TableMetadataBuilder;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,7 +26,7 @@ import java.lang.annotation.*;
         MapperScannerConfig.class,
         MysqlStrategy.class,
         MybatisPlusIgnore.class,
-        TableParamBuilder.class,
+        TableMetadataBuilder.class,
         StartUp.class,
         DynamicDatasourceTableInitDefine.class,
         DefaultTableInitDefine.class,

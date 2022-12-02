@@ -1,6 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql.handler;
 
-import com.tangzc.mpe.autotable.strategy.mysql.data.MySqlColumnTypeEnum;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
 
 import java.lang.reflect.Field;
 

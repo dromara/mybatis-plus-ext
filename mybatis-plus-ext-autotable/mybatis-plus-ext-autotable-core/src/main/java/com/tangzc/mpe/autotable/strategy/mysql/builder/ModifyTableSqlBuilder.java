@@ -1,8 +1,8 @@
 package com.tangzc.mpe.autotable.strategy.mysql.builder;
 
-import com.tangzc.mpe.autotable.strategy.mysql.data.ColumnParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.IndexParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.ModifyTableParam;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlCompareTableInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -19,25 +19,25 @@ public class ModifyTableSqlBuilder {
     /**
      * 构建创建新表的SQL
      *
-     * @param modifyTableParam 参数
+     * @param mysqlCompareTableInfo 参数
      * @return sql
      */
-    public static String buildSql(ModifyTableParam modifyTableParam) {
+    public static String buildSql(MysqlCompareTableInfo mysqlCompareTableInfo) {
 
         List<String> primaries = new ArrayList<>();
 
-        String name = modifyTableParam.getName();
+        String name = mysqlCompareTableInfo.getName();
 
-        String collate = modifyTableParam.getCollate();
-        String engine = modifyTableParam.getEngine();
-        String characterSet = modifyTableParam.getCharacterSet();
-        String comment = modifyTableParam.getComment();
+        String collate = mysqlCompareTableInfo.getCollate();
+        String engine = mysqlCompareTableInfo.getEngine();
+        String characterSet = mysqlCompareTableInfo.getCharacterSet();
+        String comment = mysqlCompareTableInfo.getComment();
 
-        List<String> dropColumnList = modifyTableParam.getDropColumnList();
-        List<ColumnParam> modifyColumnParamList = modifyTableParam.getModifyColumnParamList();
-        List<ColumnParam> columnParamList = modifyTableParam.getColumnParamList();
-        List<String> dropIndexList = modifyTableParam.getDropIndexList();
-        List<IndexParam> indexParamList = modifyTableParam.getIndexParamList();
+        List<String> dropColumnList = mysqlCompareTableInfo.getDropColumnList();
+        List<MysqlColumnMetadata> modifyMysqlColumnMetadataList = mysqlCompareTableInfo.getModifyMysqlColumnMetadataList();
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlCompareTableInfo.getMysqlColumnMetadataList();
+        List<String> dropIndexList = mysqlCompareTableInfo.getDropIndexList();
+        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlCompareTableInfo.getMysqlIndexMetadataList();
 
         // 记录所有修改项，（利用数组结构，便于添加,分割）
         List<String> modifyItems = new ArrayList<>();
@@ -52,7 +52,7 @@ public class ModifyTableSqlBuilder {
 
         // 修改表字段处理
         modifyItems.add(
-                modifyColumnParamList.stream().map(modifyColumn -> {
+                modifyMysqlColumnMetadataList.stream().map(modifyColumn -> {
                     // 判断是主键，自动设置为NOT NULL，并记录
                     if (modifyColumn.isPrimary()) {
                         modifyColumn.setNotNull(true);
@@ -66,7 +66,7 @@ public class ModifyTableSqlBuilder {
 
         // 新增表字段处理
         modifyItems.add(
-                columnParamList.stream().map(addColumn -> {
+                mysqlColumnMetadataList.stream().map(addColumn -> {
                     // 判断是主键，自动设置为NOT NULL，并记录
                     if (addColumn.isPrimary()) {
                         addColumn.setNotNull(true);
@@ -80,7 +80,7 @@ public class ModifyTableSqlBuilder {
 
         // 主键, 同时判断主键是否有改变，有的话，删除原来的主键，重新创建
         // 改变的情况：现有主键集合与最新主键集合不能完全匹配，忽略顺序。
-        if (modifyTableParam.isResetPrimary() && !primaries.isEmpty()) {
+        if (mysqlCompareTableInfo.isResetPrimary() && !primaries.isEmpty()) {
             String primaryKeySql = CreateTableSqlBuilder.getPrimaryKeySql(primaries);
             modifyItems.add(
                     "DROP PRIMARY KEY, ADD PRIMARY " + primaryKeySql
@@ -97,7 +97,7 @@ public class ModifyTableSqlBuilder {
 
         // 添加索引
         modifyItems.add(
-                indexParamList.stream().map(indexParam -> {
+                mysqlIndexMetadataList.stream().map(indexParam -> {
                     String indexSql = CreateTableSqlBuilder.getIndexSql(indexParam);
                     return "ADD " + indexSql;
                 }).collect(Collectors.joining(","))

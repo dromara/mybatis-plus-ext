@@ -5,6 +5,7 @@ import com.tangzc.mpe.autotable.annotation.IndexField;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlIndexFunctionEnum;
 import com.tangzc.mpe.magic.TableColumnUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Accessors(chain = true)
-public class IndexParam {
+public class MysqlIndexMetadata {
 
     /**
      * 索引名称
@@ -62,44 +63,44 @@ public class IndexParam {
         private IndexSortTypeEnum sort;
     }
 
-    public static IndexParam create(Field field, String indexPrefix) {
+    public static MysqlIndexMetadata create(Field field, String indexPrefix) {
         // 获取当前字段的@Index注解
         Index index = AnnotatedElementUtils.findMergedAnnotation(field, Index.class);
         if (null != index) {
             String realColumnName = TableColumnUtil.getRealColumnName(field);
-            IndexParam indexParam = new IndexParam();
+            MysqlIndexMetadata mysqlIndexMetadata = new MysqlIndexMetadata();
             String indexName = index.name();
             if (StringUtils.isEmpty(indexName)) {
                 indexName = TableColumnUtil.getRealColumnName(field);
             }
-            indexParam.setName(indexPrefix + indexName);
-            indexParam.setType(index.type());
+            mysqlIndexMetadata.setName(indexPrefix + indexName);
+            mysqlIndexMetadata.setType(index.type());
             if (StringUtils.hasText(index.function())) {
-                indexParam.setFunction(MySqlIndexFunctionEnum.parse(index.function()));
+                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(index.function()));
             }
-            indexParam.setComment(index.comment());
-            indexParam.getColumns().add(IndexParam.IndexColumnParam.newInstance(realColumnName, null));
-            return indexParam;
+            mysqlIndexMetadata.setComment(index.comment());
+            mysqlIndexMetadata.getColumns().add(MysqlIndexMetadata.IndexColumnParam.newInstance(realColumnName, null));
+            return mysqlIndexMetadata;
         }
         return null;
     }
 
-    public static IndexParam create(Class<?> clazz, TableIndex tableIndex, String indexPrefix) {
+    public static MysqlIndexMetadata create(Class<?> clazz, TableIndex tableIndex, String indexPrefix) {
 
         // 获取当前字段的@Index注解
         if (null != tableIndex) {
 
             List<IndexColumnParam> columnParams = getColumnParams(clazz, tableIndex);
 
-            IndexParam indexParam = new IndexParam();
-            indexParam.setName(indexPrefix + tableIndex.name());
-            indexParam.setType(tableIndex.type());
+            MysqlIndexMetadata mysqlIndexMetadata = new MysqlIndexMetadata();
+            mysqlIndexMetadata.setName(indexPrefix + tableIndex.name());
+            mysqlIndexMetadata.setType(tableIndex.type());
             if (StringUtils.hasText(tableIndex.function())) {
-                indexParam.setFunction(MySqlIndexFunctionEnum.parse(tableIndex.function()));
+                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(tableIndex.function()));
             }
-            indexParam.setComment(tableIndex.comment());
-            indexParam.setColumns(columnParams);
-            return indexParam;
+            mysqlIndexMetadata.setComment(tableIndex.comment());
+            mysqlIndexMetadata.setColumns(columnParams);
+            return mysqlIndexMetadata;
         }
         return null;
     }

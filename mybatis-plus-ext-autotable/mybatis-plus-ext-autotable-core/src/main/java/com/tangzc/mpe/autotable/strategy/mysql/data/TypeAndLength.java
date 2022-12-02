@@ -1,6 +1,7 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
 import com.google.common.collect.Sets;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.tangzc.mpe.autotable.strategy.mysql.data.metadata;
+package com.tangzc.mpe.autotable.strategy.mysql.data.dbdata;
 
 import lombok.Data;
 

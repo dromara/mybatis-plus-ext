@@ -1,9 +1,9 @@
 package com.tangzc.mpe.autotable.strategy.mysql.builder;
 
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
-import com.tangzc.mpe.autotable.strategy.mysql.data.ColumnParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.IndexParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.TableParam;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTableMetadata;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -21,27 +21,27 @@ public class CreateTableSqlBuilder {
     /**
      * 构建创建新表的SQL
      *
-     * @param tableParam 参数
+     * @param mysqlTableMetadata 参数
      * @return sql
      */
-    public static String buildSql(TableParam tableParam) {
+    public static String buildSql(MysqlTableMetadata mysqlTableMetadata) {
 
         List<String> primaries = new ArrayList<>();
 
-        String name = tableParam.getName();
-        List<ColumnParam> columnParamList = tableParam.getColumnParamList();
-        List<IndexParam> indexParamList = tableParam.getIndexParamList();
-        String collate = tableParam.getCollate();
-        String engine = tableParam.getEngine();
-        String characterSet = tableParam.getCharacterSet();
-        String comment = tableParam.getComment();
+        String name = mysqlTableMetadata.getTableName();
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
+        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getMysqlIndexMetadataList();
+        String collate = mysqlTableMetadata.getCollate();
+        String engine = mysqlTableMetadata.getEngine();
+        String characterSet = mysqlTableMetadata.getCharacterSet();
+        String comment = mysqlTableMetadata.getComment();
 
         // 记录所有修改项，（利用数组结构，便于添加,分割）
         List<String> addItems = new ArrayList<>();
 
         // 表字段处理
         addItems.add(
-                columnParamList.stream().map(columnData -> {
+                mysqlColumnMetadataList.stream().map(columnData -> {
                     // 判断是主键，自动设置为NOT NULL，并记录
                     if (columnData.isPrimary()) {
                         columnData.setNotNull(true);
@@ -62,7 +62,7 @@ public class CreateTableSqlBuilder {
 
         // 索引
         addItems.add(
-                indexParamList.stream()
+                mysqlIndexMetadataList.stream()
                         // 例子： UNIQUE INDEX `unique_name_age`(`name` ASC, `age` DESC) COMMENT '姓名、年龄索引' USING BTREE
                         .map(CreateTableSqlBuilder::getIndexSql)
                         // 同类型的索引，排在一起，SQL美化
@@ -105,13 +105,13 @@ public class CreateTableSqlBuilder {
                 .replace("{tableProperties}", propertiesSql);
     }
 
-    public static String getIndexSql(IndexParam indexParam) {
+    public static String getIndexSql(MysqlIndexMetadata mysqlIndexMetadata) {
         // 例子： UNIQUE INDEX `unique_name_age`(`name` ASC, `age` DESC) COMMENT '姓名、年龄索引' USING BTREE,
         return StringHelper.newInstance("{indexType} INDEX `{indexName}`({columns}) {indexFunction} {indexComment}")
-                .replace("{indexType}", indexParam.getType() == IndexTypeEnum.NORMAL ? "" : indexParam.getType().name())
-                .replace("{indexName}", indexParam.getName())
+                .replace("{indexType}", mysqlIndexMetadata.getType() == IndexTypeEnum.NORMAL ? "" : mysqlIndexMetadata.getType().name())
+                .replace("{indexName}", mysqlIndexMetadata.getName())
                 .replace("{columns}", (key) -> {
-                    List<IndexParam.IndexColumnParam> columnParams = indexParam.getColumns();
+                    List<MysqlIndexMetadata.IndexColumnParam> columnParams = mysqlIndexMetadata.getColumns();
                     return columnParams.stream().map(column ->
                             // 例：`name` ASC
                             "`{column}` {sortMode}"
@@ -120,13 +120,13 @@ public class CreateTableSqlBuilder {
                     ).collect(Collectors.joining(","));
                 })
                 .replace("{indexFunction}", (key) -> {
-                    if (indexParam.getFunction() != null) {
-                        return "USING " + indexParam.getFunction().name();
+                    if (mysqlIndexMetadata.getFunction() != null) {
+                        return "USING " + mysqlIndexMetadata.getFunction().name();
                     } else {
                         return "";
                     }
                 })
-                .replace("{indexComment}", StringUtils.hasText(indexParam.getComment()) ? "COMMENT '" + indexParam.getComment() + "'" : "")
+                .replace("{indexComment}", StringUtils.hasText(mysqlIndexMetadata.getComment()) ? "COMMENT '" + mysqlIndexMetadata.getComment() + "'" : "")
                 .toString();
     }
 

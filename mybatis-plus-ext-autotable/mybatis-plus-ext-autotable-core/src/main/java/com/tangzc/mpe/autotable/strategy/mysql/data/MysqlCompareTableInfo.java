@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @RequiredArgsConstructor
-public class ModifyTableParam {
+public class MysqlCompareTableInfo {
 
     /**
      * 表名: 不可变，变了意味着新表
@@ -46,11 +46,11 @@ public class ModifyTableParam {
     /**
      * 修改的列
      */
-    private final List<ColumnParam> modifyColumnParamList = new ArrayList<>();
+    private final List<MysqlColumnMetadata> modifyMysqlColumnMetadataList = new ArrayList<>();
     /**
      * 新增的列
      */
-    private final List<ColumnParam> columnParamList = new ArrayList<>();
+    private final List<MysqlColumnMetadata> mysqlColumnMetadataList = new ArrayList<>();
     /**
      * 删除的索引
      */
@@ -58,7 +58,7 @@ public class ModifyTableParam {
     /**
      * 索引
      */
-    private final List<IndexParam> indexParamList = new ArrayList<>();
+    private final List<MysqlIndexMetadata> mysqlIndexMetadataList = new ArrayList<>();
 
     /**
      * 判断该修改参数，是不是可用，如果除了name，其他值均没有设置过，则无效，反之有效
@@ -70,9 +70,9 @@ public class ModifyTableParam {
                 comment != null ||
                 resetPrimary ||
                 !dropColumnList.isEmpty() ||
-                !modifyColumnParamList.isEmpty() ||
-                !columnParamList.isEmpty() ||
+                !modifyMysqlColumnMetadataList.isEmpty() ||
+                !mysqlColumnMetadataList.isEmpty() ||
                 !dropIndexList.isEmpty() ||
-                !indexParamList.isEmpty();
+                !mysqlIndexMetadataList.isEmpty();
     }
 }

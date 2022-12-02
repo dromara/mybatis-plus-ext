@@ -1,4 +1,4 @@
-package com.tangzc.mpe.autotable.strategy.mysql.data;
+package com.tangzc.mpe.autotable.strategy.mysql.data.enums;
 
 /**
  * 索引方法

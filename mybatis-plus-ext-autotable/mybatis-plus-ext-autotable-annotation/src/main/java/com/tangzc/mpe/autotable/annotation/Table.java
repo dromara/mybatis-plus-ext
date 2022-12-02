@@ -31,23 +31,9 @@ public @interface Table {
     String comment() default "";
 
     /**
-     * 表字符集
-     */
-    String charset() default "";
-
-    /**
-     * 表字符排序
-     */
-    String collate() default "";
-    /**
-     * 表引擎
-     */
-    String engine() default "";
-
-    /**
-     * 是否主表
+     * 是否主表：在多个Bean对应同一个表的时候，指定以哪一个Bean为主，以此主Bean构建表
      *
-     * @return 表名
+     * @return 是否主表
      */
     boolean primary() default false;
 

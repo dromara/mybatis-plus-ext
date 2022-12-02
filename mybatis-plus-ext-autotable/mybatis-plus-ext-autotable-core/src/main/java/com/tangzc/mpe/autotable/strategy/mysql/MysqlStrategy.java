@@ -1,23 +1,20 @@
 package com.tangzc.mpe.autotable.strategy.mysql;
 
 import com.google.common.base.Functions;
-import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
+import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.constants.DatabaseType;
-import com.tangzc.mpe.autotable.constants.RunMode;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.IStrategy;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.CreateTableSqlBuilder;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.ModifyTableSqlBuilder;
-import com.tangzc.mpe.autotable.strategy.mysql.builder.TableParamBuilder;
+import com.tangzc.mpe.autotable.strategy.mysql.builder.TableMetadataBuilder;
 import com.tangzc.mpe.autotable.strategy.mysql.data.*;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaColumn;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaStatistics;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaTable;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.MpeExecuteSqlLog;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaColumn;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaStatistics;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaTable;
 import com.tangzc.mpe.autotable.strategy.mysql.mapper.MysqlTablesMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -32,13 +29,13 @@ import java.util.stream.Collectors;
  * @version 2019/07/06
  */
 @Slf4j
-public class MysqlStrategy implements IStrategy {
+public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompareTableInfo, InformationSchemaTable> {
 
     @Resource
     private AutoTableProperties autoTableProperties;
 
     @Resource
-    private TableParamBuilder tableParamBuilder;
+    private TableMetadataBuilder tableMetadataBuilder;
 
     @Resource
     private MysqlTablesMapper mysqlTablesMapper;
@@ -49,149 +46,48 @@ public class MysqlStrategy implements IStrategy {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void analyseClasses(Set<Class<?>> needCreateTable) {
-
-        log.info("数据库类型MySQL，开始执行分析数据模型差异");
-        // 检查是否开启了sql执行记录，如果开启了，再检查有没有创建记录表，没有的话自动创建
-        checkExecuteSqlLogTable();
-
-        List<TableParam> createTables = new ArrayList<>();
-        List<ModifyTableParam> modifyTables = new ArrayList<>();
-        // 循环全部的model
-        for (Class<?> clas : needCreateTable) {
-            compareTableParams(clas, createTables, modifyTables);
-        }
-
-        // 1. 创建表
-        createTable(createTables);
-        // 2. 修改表
-        modifyTable(modifyTables);
-
-        // 打印执行情况
-        if (autoTableProperties.isPrintRunResult()) {
-            printRunResult(createTables, modifyTables);
-        }
+    public void dropTable(String tableName) {
+        mysqlTablesMapper.dropTableByName(tableName);
     }
 
-    private void checkExecuteSqlLogTable() {
-        if (autoTableProperties.getExecuteSqlLog().isEnable()) {
-            String tableName = autoTableProperties.getExecuteSqlLog().getTableName();
-            if (tableName == null) {
-                throw new RuntimeException("开启记录SQL执行记录后，需要配置记录表的名称");
-            }
-            InformationSchemaTable tableInformation = mysqlTablesMapper.findTableByTableName(tableName);
-            if (tableInformation == null) {
-                mysqlTablesMapper.initExecuteSqlLogTable(tableName);
-            }
-        }
+    @Override
+    public InformationSchemaTable getTableInformationFromDb(String tableName) {
+        return mysqlTablesMapper.findTableByTableName(tableName);
     }
 
-    private static void printRunResult(List<TableParam> createTables, List<ModifyTableParam> modifyTables) {
-
-        List<String> detail = new ArrayList<>();
-
-        int newTableCount = createTables.size();
-        addDetail(detail, "-- 新增%s张表", newTableCount);
-
-        int editTableCount = modifyTables.size();
-        addDetail(detail, "-- 修改%s张表", editTableCount);
-
-        long newColumnCount = modifyTables.stream()
-                .map(ModifyTableParam::getColumnParamList)
-                .mapToLong(Collection::size)
-                .sum();
-        addDetail(detail, "---- 新增%s个列", newColumnCount);
-
-        long dropColumnCount = modifyTables.stream()
-                .map(ModifyTableParam::getDropColumnList)
-                .mapToLong(Collection::size)
-                .sum();
-        addDetail(detail, "---- 删除%s个列", dropColumnCount);
-
-        long editColumnCount = modifyTables.stream()
-                .map(ModifyTableParam::getModifyColumnParamList)
-                .mapToLong(Collection::size)
-                .sum();
-        addDetail(detail, "---- 修改%s个列", editColumnCount);
-
-        long newIndexCount = modifyTables.stream()
-                .map(ModifyTableParam::getIndexParamList)
-                .mapToLong(Collection::size)
-                .sum();
-        addDetail(detail, "---- 新增%s个索引", newIndexCount);
-
-        long dropIndexCount = modifyTables.stream()
-                .map(ModifyTableParam::getDropIndexList)
-                .mapToLong(Collection::size)
-                .sum();
-        addDetail(detail, "---- 删除%s个索引", dropIndexCount);
-
-        log.info("分析数据模型差异结束: " + (
-                detail.size() > 0 ?
-                        ("\n-----------------------------------------------\n" +
-                                String.join("\n", detail) +
-                                "\n-----------------------------------------------")
-                        : "【无差异】"
-        ));
+    @Override
+    public MysqlTableMetadata analyseClass(Class<?> beanClass) {
+        MysqlTableMetadata mysqlTableMetadata = tableMetadataBuilder.build(beanClass);
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
+        if (mysqlColumnMetadataList.isEmpty()) {
+            log.warn("扫描发现{}没有建表字段请检查！", beanClass.getName());
+            return null;
+        }
+        return mysqlTableMetadata;
     }
 
-    private static void addDetail(List<String> detail, String format, long newTableCount) {
-        if (newTableCount > 0) {
-            detail.add(String.format(format, newTableCount));
-        }
+    @Override
+    public void createTable(MysqlTableMetadata tableMetadata) {
+        log.info("开始创建表：{}", tableMetadata.getTableName());
+        String sqlStr = CreateTableSqlBuilder.buildSql(tableMetadata);
+        log.info("执行SQL：{}", sqlStr);
+        mysqlTablesMapper.executeSelect(sqlStr);
+        // insertExecuteSqlLog(sqlStr);
+        log.info("结束创建表：{}", tableMetadata.getTableName());
     }
 
-    /**
-     * 构建出全部表的增删改的map
-     *
-     * @param clazz        package中的model的Class
-     * @param createTables 需要创建的表集合
-     * @param modifyTables 需要修改的表集合
-     */
-    private void compareTableParams(Class<?> clazz, final List<TableParam> createTables, final List<ModifyTableParam> modifyTables) {
+    @Override
+    public MysqlCompareTableInfo compareTable(MysqlTableMetadata tableMetadata, InformationSchemaTable informationSchemaTable) {
 
-        TableParam tableParam = tableParamBuilder.build(clazz);
+        String tableName = tableMetadata.getTableName();
 
-        List<ColumnParam> columnParamList = tableParam.getColumnParamList();
-        if (columnParamList.isEmpty()) {
-            log.warn("扫描发现{}没有建表字段请检查！", clazz.getName());
-            return;
-        }
-
-        String tableName = tableParam.getName();
-        // 如果配置文件配置的是create，表示将所有的表删掉重新创建
-        if (autoTableProperties.getMode() == RunMode.create) {
-            log.info("由于配置的模式是create，因此先删除表后续根据结构重建，删除表：{}", tableName);
-            mysqlTablesMapper.dropTableByName(tableName);
-        }
-
-        // 先查该表是否以存在
-        InformationSchemaTable tableInformation = mysqlTablesMapper.findTableByTableName(tableName);
-
-        // 不存在时，创建新表
-        if (tableInformation == null) {
-            createTables.add(tableParam);
-        } else {
-            // 存在，进行比对
-            ModifyTableParam modifyTableParam = getModifyTableParam(tableParam, tableInformation);
-            if (modifyTableParam.isValid()) {
-                modifyTables.add(modifyTableParam);
-            }
-        }
-    }
-
-    public ModifyTableParam getModifyTableParam(TableParam tableParam, InformationSchemaTable tableInformation) {
-
-        String tableName = tableParam.getName();
-
-        ModifyTableParam modifyTableParam = new ModifyTableParam(tableName);
+        MysqlCompareTableInfo mysqlCompareTableInfo = new MysqlCompareTableInfo(tableName);
 
         // 对比表配置有无变化
-        compareTableProperties(tableParam, tableInformation, modifyTableParam);
+        compareTableProperties(tableMetadata, informationSchemaTable, mysqlCompareTableInfo);
 
         // 开始比对列的变化: 新增、修改、删除
-        compareColumns(tableParam, tableName, modifyTableParam);
+        compareColumns(tableMetadata, tableName, mysqlCompareTableInfo);
 
         // 开始比对 主键 和 索引 的变化
         List<InformationSchemaStatistics> informationSchemaStatistics = mysqlTablesMapper.queryTablePrimaryAndIndex(tableName);
@@ -201,45 +97,57 @@ public class MysqlStrategy implements IStrategy {
 
         // 对比主键
         List<InformationSchemaStatistics> tablePrimaries = keyColumnGroupByName.remove("PRIMARY");
-        comparePrimary(tableParam, modifyTableParam, tablePrimaries);
+        comparePrimary(tableMetadata, mysqlCompareTableInfo, tablePrimaries);
 
         // 对比索引, informationSchemaKeyColumnUsages中剩余的都是索引数据了
-        Map<String, List<InformationSchemaStatistics>> tableIndexs = keyColumnGroupByName;
-        compareIndexes(tableParam, modifyTableParam, tableIndexs);
+        Map<String, List<InformationSchemaStatistics>> tableIndexes = keyColumnGroupByName;
+        compareIndexes(tableMetadata, mysqlCompareTableInfo, tableIndexes);
 
-        return modifyTableParam;
+        return mysqlCompareTableInfo;
     }
 
-    private void compareIndexes(TableParam tableParam, ModifyTableParam modifyTableParam, Map<String, List<InformationSchemaStatistics>> tableIndexs) {
+    @Override
+    public void modifyTable(MysqlCompareTableInfo mysqlCompareTableInfo) {
+        String sqlStr = ModifyTableSqlBuilder.buildSql(mysqlCompareTableInfo);
+        if (StringUtils.hasText(sqlStr)) {
+            log.info("开始修改表：{}", mysqlCompareTableInfo.getName());
+            log.info("执行SQL：{}", sqlStr);
+            mysqlTablesMapper.executeSelect(sqlStr);
+            // insertExecuteSqlLog(sqlStr);
+            log.info("结束修改表：{}", mysqlCompareTableInfo.getName());
+        }
+    }
+
+    private void compareIndexes(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, Map<String, List<InformationSchemaStatistics>> tableIndexs) {
         // Bean上所有的索引
-        List<IndexParam> indexParamList = tableParam.getIndexParamList();
+        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getMysqlIndexMetadataList();
         // 以Bean上的索引开启循环，逐个匹配表上的索引
-        for (IndexParam indexParam : indexParamList) {
+        for (MysqlIndexMetadata mysqlIndexMetadata : mysqlIndexMetadataList) {
             // 根据Bean上的索引名称获取表上的索引
-            String indexName = indexParam.getName();
+            String indexName = mysqlIndexMetadata.getName();
             // 获取表上对应索引名称的所有列
             List<InformationSchemaStatistics> theIndexColumns = tableIndexs.remove(indexName);
             if (theIndexColumns == null) {
                 // 表上不存在该索引，新增
-                modifyTableParam.getIndexParamList().add(indexParam);
+                mysqlCompareTableInfo.getMysqlIndexMetadataList().add(mysqlIndexMetadata);
             } else {
                 // 先把表上的该索引的所有字段，按照顺序排列
                 theIndexColumns = theIndexColumns.stream()
                         .sorted(Comparator.comparing(InformationSchemaStatistics::getSeqInIndex))
                         .collect(Collectors.toList());
                 // 获取Bean上该索引涉及的所有字段（按照字段顺序自然排序）
-                List<IndexParam.IndexColumnParam> columns = indexParam.getColumns();
+                List<MysqlIndexMetadata.IndexColumnParam> columns = mysqlIndexMetadata.getColumns();
                 // 先初步按照索引牵扯的字段数量一不一样判断是不是需要更新索引
                 if (theIndexColumns.size() != columns.size()) {
                     // 同名的索引，但是表上的字段数量跟Bean上指定的不一致，需要修改（先删除，再新增）
-                    modifyTableParam.getDropIndexList().add(indexName);
-                    modifyTableParam.getIndexParamList().add(indexParam);
+                    mysqlCompareTableInfo.getDropIndexList().add(indexName);
+                    mysqlCompareTableInfo.getMysqlIndexMetadataList().add(mysqlIndexMetadata);
                 } else {
                     // 牵扯的字段数目一致，再按顺序逐个比较每个位置的列名及其排序方式是否相同
                     for (int i = 0; i < theIndexColumns.size(); i++) {
                         InformationSchemaStatistics informationSchemaStatistics = theIndexColumns.get(i);
                         IndexSortTypeEnum indexSort = IndexSortTypeEnum.parseFromMysql(informationSchemaStatistics.getCollation());
-                        IndexParam.IndexColumnParam indexColumnParam = columns.get(i);
+                        MysqlIndexMetadata.IndexColumnParam indexColumnParam = columns.get(i);
                         IndexSortTypeEnum indexColumnParamSort = indexColumnParam.getSort();
 
                         // 名字不同即不同
@@ -248,8 +156,8 @@ public class MysqlStrategy implements IStrategy {
                         boolean sortTypeIsDiff = indexColumnParamSort != null && indexColumnParamSort != indexSort;
                         if (nameIsDiff || sortTypeIsDiff) {
                             // 同名的索引，但是表上的字段数量跟Bean上指定的不一致，需要修改（先删除，再新增）
-                            modifyTableParam.getDropIndexList().add(indexName);
-                            modifyTableParam.getIndexParamList().add(indexParam);
+                            mysqlCompareTableInfo.getDropIndexList().add(indexName);
+                            mysqlCompareTableInfo.getMysqlIndexMetadataList().add(mysqlIndexMetadata);
                             break;
                         }
                     }
@@ -259,23 +167,23 @@ public class MysqlStrategy implements IStrategy {
         // 因为上一步循环，在基于Bean上索引匹配上表中的索引后，就立即删除了表上对应的索引，所以剩下的索引都是Bean上没有声明的索引，需要根据配置判断，是否删掉多余的索引
         Set<String> needDropIndexes = tableIndexs.keySet();
         if (autoTableProperties.isAutoDropIndex() && !needDropIndexes.isEmpty()) {
-            modifyTableParam.getDropIndexList().addAll(needDropIndexes);
+            mysqlCompareTableInfo.getDropIndexList().addAll(needDropIndexes);
         }
     }
 
-    private static void comparePrimary(TableParam tableParam, ModifyTableParam modifyTableParam, List<InformationSchemaStatistics> tablePrimaries) {
+    private static void comparePrimary(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, List<InformationSchemaStatistics> tablePrimaries) {
         // 存在主键的话
         if (CollectionUtils.isEmpty(tablePrimaries)) {
             // 如果当前表不存在主键，则更新主键(如果Bean上有的话)
-            modifyTableParam.setResetPrimary(true);
+            mysqlCompareTableInfo.setResetPrimary(true);
         } else {
             // 获取当前Bean上指定的主键列表，顺序按照列的自然顺序排列
-            List<ColumnParam> primaries = tableParam.getColumnParamList().stream()
-                    .filter(ColumnParam::isPrimary)
+            List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getMysqlColumnMetadataList().stream()
+                    .filter(MysqlColumnMetadata::isPrimary)
                     .collect(Collectors.toList());
             if (tablePrimaries.size() != primaries.size()) {
                 // 主键数量不一致，需要更新
-                modifyTableParam.setResetPrimary(true);
+                mysqlCompareTableInfo.setResetPrimary(true);
             } else {
                 // 主键数量一致的情况下，逐个比对每个位置的列名
                 // 先按照顺序排好数据库主键的顺序
@@ -287,7 +195,7 @@ public class MysqlStrategy implements IStrategy {
                     InformationSchemaStatistics tablePrimary = tablePrimaries.get(i);
                     if (!tablePrimary.getColumnName().equals(primaries.get(i).getName())) {
                         // 主键列中按顺序比较，存在顺序不一致的情况，需要更新
-                        modifyTableParam.setResetPrimary(true);
+                        mysqlCompareTableInfo.setResetPrimary(true);
                         break;
                     }
                 }
@@ -295,42 +203,42 @@ public class MysqlStrategy implements IStrategy {
         }
     }
 
-    private void compareColumns(TableParam tableParam, String tableName, ModifyTableParam modifyTableParam) {
-        List<ColumnParam> columnParamList = tableParam.getColumnParamList();
-        // 变形：《列名，ColumnParam》
-        Map<String, ColumnParam> columnParamMap = columnParamList.stream().collect(Collectors.toMap(ColumnParam::getName, Functions.identity()));
+    private void compareColumns(MysqlTableMetadata mysqlTableMetadata, String tableName, MysqlCompareTableInfo mysqlCompareTableInfo) {
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
+        // 变形：《列名，MysqlColumnMetadata》
+        Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
         // 查询所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);
         for (InformationSchemaColumn informationSchemaColumn : tableColumnList) {
             String columnName = informationSchemaColumn.getColumnName();
             // 以数据库字段名，从当前Bean上取信息，获取到就从中剔除
-            ColumnParam columnParam = columnParamMap.remove(columnName);
-            if (columnParam != null) {
+            MysqlColumnMetadata mysqlColumnMetadata = columnParamMap.remove(columnName);
+            if (mysqlColumnMetadata != null) {
                 // 取到了，则进行字段配置的比对
-                boolean commentChanged = isCommentChanged(informationSchemaColumn, columnParam);
-                boolean fieldTypeChanged = isFieldTypeChanged(informationSchemaColumn, columnParam);
-                boolean notNullChanged = columnParam.isNotNull() != informationSchemaColumn.isNotNull();
-                boolean fieldIsAutoIncrementChanged = columnParam.isAutoIncrement() != informationSchemaColumn.isAutoIncrement();
-                boolean defaultValueChanged = isDefaultValueChanged(informationSchemaColumn, columnParam);
+                boolean commentChanged = isCommentChanged(informationSchemaColumn, mysqlColumnMetadata);
+                boolean fieldTypeChanged = isFieldTypeChanged(informationSchemaColumn, mysqlColumnMetadata);
+                boolean notNullChanged = mysqlColumnMetadata.isNotNull() != informationSchemaColumn.isNotNull();
+                boolean fieldIsAutoIncrementChanged = mysqlColumnMetadata.isAutoIncrement() != informationSchemaColumn.isAutoIncrement();
+                boolean defaultValueChanged = isDefaultValueChanged(informationSchemaColumn, mysqlColumnMetadata);
                 if (commentChanged || fieldTypeChanged || notNullChanged || fieldIsAutoIncrementChanged || defaultValueChanged) {
                     // 任何一项有变化，则说明需要更新该字段
-                    modifyTableParam.getModifyColumnParamList().add(columnParam);
+                    mysqlCompareTableInfo.getModifyMysqlColumnMetadataList().add(mysqlColumnMetadata);
                 }
             } else {
                 // 没有取到对应字段，说明库中存在的字段，Bean上不存在，根据配置，决定是否删除库上的多余字段
                 if (autoTableProperties.isAutoDropColumn()) {
-                    modifyTableParam.getDropColumnList().add(columnName);
+                    mysqlCompareTableInfo.getDropColumnList().add(columnName);
                 }
             }
         }
         // 因为按照表中字段已经晒过一轮Bean上的字段了，同名可以取到的均删除了，剩下的都是表中字段不存在的，需要新增
-        Collection<ColumnParam> needNewColumns = columnParamMap.values();
-        modifyTableParam.getColumnParamList().addAll(needNewColumns);
+        Collection<MysqlColumnMetadata> needNewColumns = columnParamMap.values();
+        mysqlCompareTableInfo.getMysqlColumnMetadataList().addAll(needNewColumns);
     }
 
-    private static boolean isDefaultValueChanged(InformationSchemaColumn informationSchemaColumn, ColumnParam columnParam) {
+    private static boolean isDefaultValueChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
         String columnDefault = informationSchemaColumn.getColumnDefault();
-        DefaultValueEnum defaultValueType = columnParam.getDefaultValueType();
+        DefaultValueEnum defaultValueType = mysqlColumnMetadata.getDefaultValueType();
         if (DefaultValueEnum.isValid(defaultValueType)) {
             // 需要设置为null，但是数据库当前不是null
             if (defaultValueType == DefaultValueEnum.NULL) {
@@ -342,8 +250,8 @@ public class MysqlStrategy implements IStrategy {
             }
         } else {
             // 自定义值 默认值对比
-            TypeAndLength paramType = columnParam.getType();
-            String defaultValue = columnParam.getDefaultValue();
+            TypeAndLength paramType = mysqlColumnMetadata.getType();
+            String defaultValue = mysqlColumnMetadata.getDefaultValue();
             // 未设置有效默认值，直接返回未变更
             if (StringUtils.isEmpty(defaultValue)) {
                 return false;
@@ -364,9 +272,9 @@ public class MysqlStrategy implements IStrategy {
     /**
      * 字段类型比对是否需要改变
      */
-    private static boolean isFieldTypeChanged(InformationSchemaColumn informationSchemaColumn, ColumnParam columnParam) {
+    private static boolean isFieldTypeChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
 
-        TypeAndLength fieldType = columnParam.getType();
+        TypeAndLength fieldType = mysqlColumnMetadata.getType();
         // 整数类型，只对比类型，不对比长度
         if (fieldType.isNumber()) {
             return !fieldType.typeName().equalsIgnoreCase(informationSchemaColumn.getDataType());
@@ -376,19 +284,19 @@ public class MysqlStrategy implements IStrategy {
         return !fullType.equals(informationSchemaColumn.getColumnType().toLowerCase());
     }
 
-    private static boolean isCommentChanged(InformationSchemaColumn informationSchemaColumn, ColumnParam columnParam) {
-        String fieldComment = columnParam.getComment();
+    private static boolean isCommentChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
+        String fieldComment = mysqlColumnMetadata.getComment();
         return !StringUtils.isEmpty(fieldComment) && !fieldComment.equals(informationSchemaColumn.getColumnComment());
     }
 
-    private static void compareTableProperties(TableParam tableParam, InformationSchemaTable tableInformation, ModifyTableParam modifyTableParam) {
-        String tableComment = tableParam.getComment();
-        String tableCharset = tableParam.getCharacterSet();
-        String tableCollate = tableParam.getCollate();
-        String tableEngine = tableParam.getEngine();
+    private static void compareTableProperties(MysqlTableMetadata mysqlTableMetadata, InformationSchemaTable tableInformation, MysqlCompareTableInfo mysqlCompareTableInfo) {
+        String tableComment = mysqlTableMetadata.getComment();
+        String tableCharset = mysqlTableMetadata.getCharacterSet();
+        String tableCollate = mysqlTableMetadata.getCollate();
+        String tableEngine = mysqlTableMetadata.getEngine();
         // 判断表注释是否要更新
         if (!StringUtils.isEmpty(tableComment) && !tableComment.equals(tableInformation.getTableComment())) {
-            modifyTableParam.setComment(tableComment);
+            mysqlCompareTableInfo.setComment(tableComment);
         }
         // 判断表字符集是否要更新
         if (!StringUtils.isEmpty(tableCharset)) {
@@ -396,62 +304,14 @@ public class MysqlStrategy implements IStrategy {
             if (!StringUtils.isEmpty(collate)) {
                 String charset = collate.substring(0, collate.indexOf("_"));
                 if (!tableCharset.equals(charset) || !tableCollate.equals(collate)) {
-                    modifyTableParam.setCharacterSet(tableCharset);
-                    modifyTableParam.setCollate(tableCollate);
+                    mysqlCompareTableInfo.setCharacterSet(tableCharset);
+                    mysqlCompareTableInfo.setCollate(tableCollate);
                 }
             }
         }
         // 判断表引擎是否要更新
         if (!StringUtils.isEmpty(tableEngine) && !tableEngine.equals(tableInformation.getEngine())) {
-            modifyTableParam.setEngine(tableEngine);
-        }
-    }
-
-    /**
-     * 创建表
-     *
-     * @param newTables 需要创建的表的信息
-     */
-    private void createTable(final List<TableParam> newTables) {
-        // 做创建表操作
-        if (newTables.size() > 0) {
-            for (TableParam entry : newTables) {
-                log.info("开始创建表：{}", entry.getName());
-                String sqlStr = CreateTableSqlBuilder.buildSql(entry);
-                log.info("执行SQL：{}", sqlStr);
-                mysqlTablesMapper.executeSelect(sqlStr);
-                insertExecuteSqlLog(sqlStr);
-                log.info("结束创建表：{}", entry.getName());
-            }
-        }
-    }
-
-    /**
-     * 修改表信息
-     *
-     * @param modifyTables 需要修改的表信息
-     */
-    private void modifyTable(final List<ModifyTableParam> modifyTables) {
-        // 做修改表操作
-        if (modifyTables.size() > 0) {
-            for (ModifyTableParam entry : modifyTables) {
-                String sqlStr = ModifyTableSqlBuilder.buildSql(entry);
-                if (StringUtils.hasText(sqlStr)) {
-                    log.info("开始修改表：{}", entry.getName());
-                    log.info("执行SQL：{}", sqlStr);
-                    mysqlTablesMapper.executeSelect(sqlStr);
-                    insertExecuteSqlLog(sqlStr);
-                    log.info("结束修改表：{}", entry.getName());
-                }
-            }
-        }
-    }
-
-    private void insertExecuteSqlLog(String sqlStr) {
-        if(autoTableProperties.getExecuteSqlLog().isEnable()) {
-            MpeExecuteSqlLog mpeExecuteSqlLog = MpeExecuteSqlLog.newInstance(sqlStr);
-            String tableName = autoTableProperties.getExecuteSqlLog().getTableName();
-            mysqlTablesMapper.insertExecuteSqlLog(tableName, mpeExecuteSqlLog);
+            mysqlCompareTableInfo.setEngine(tableEngine);
         }
     }
 }

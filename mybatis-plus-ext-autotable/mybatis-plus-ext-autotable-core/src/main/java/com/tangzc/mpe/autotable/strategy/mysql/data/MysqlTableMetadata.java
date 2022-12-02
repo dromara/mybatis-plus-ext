@@ -1,5 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
+import com.tangzc.mpe.autotable.strategy.TableMetadata;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -9,12 +10,12 @@ import java.util.List;
  * @author don
  */
 @Data
-public class TableParam {
+public class MysqlTableMetadata implements TableMetadata {
 
     /**
      * 表名
      */
-    private String name;
+    private String tableName;
     /**
      * 引擎
      */
@@ -34,9 +35,9 @@ public class TableParam {
     /**
      * 所有列
      */
-    private List<ColumnParam> columnParamList = new ArrayList<>();
+    private List<MysqlColumnMetadata> mysqlColumnMetadataList = new ArrayList<>();
     /**
      * 索引
      */
-    private List<IndexParam> indexParamList = new ArrayList<>();
+    private List<MysqlIndexMetadata> mysqlIndexMetadataList = new ArrayList<>();
 }

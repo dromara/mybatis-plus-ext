@@ -1,14 +1,16 @@
 package com.tangzc.mpe.autotable.strategy.mysql.builder;
 
 import com.google.common.collect.Sets;
-import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.TableIndexes;
+import com.tangzc.mpe.autotable.annotation.mysql.Charset;
+import com.tangzc.mpe.autotable.annotation.mysql.Engine;
+import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.IgnoreExt;
-import com.tangzc.mpe.autotable.strategy.mysql.data.ColumnParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.IndexParam;
-import com.tangzc.mpe.autotable.strategy.mysql.data.TableParam;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTableMetadata;
 import com.tangzc.mpe.magic.TableColumnUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ import java.util.stream.Collectors;
  * @author don
  */
 @Slf4j
-public class TableParamBuilder {
+public class TableMetadataBuilder {
 
     private static Map<Class<?>, HashSet<String>> excludeFieldsMap = new HashMap<>();
 
@@ -34,59 +36,59 @@ public class TableParamBuilder {
     @Resource
     private AutoTableProperties autoTableProperties;
 
-    public TableParam build(Class<?> clazz) {
+    public MysqlTableMetadata build(Class<?> clazz) {
 
         String tableName = TableColumnUtil.getTableName(clazz);
 
-        TableParam tableParam = new TableParam();
-        tableParam.setName(tableName);
+        MysqlTableMetadata mysqlTableMetadata = new MysqlTableMetadata();
+        mysqlTableMetadata.setTableName(tableName);
 
         Table tableAnno = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
         assert tableAnno != null;
         // 获取表注释
-        tableParam.setComment(tableAnno.comment());
+        mysqlTableMetadata.setComment(tableAnno.comment());
 
-        String charset = tableAnno.charset();
-        String collate = tableAnno.collate();
-        // 无字符集的情况下，设置默认值
-        if (charset == null) {
-            charset = autoTableProperties.getDefaultTableCharset();
-            collate = autoTableProperties.getDefaultTableCollate();
-        } else {
+        Charset charsetAnno = AnnotatedElementUtils.findMergedAnnotation(clazz, Charset.class);
+        if (charsetAnno != null) {
+            String charset = charsetAnno.value();
+            String collate = charsetAnno.collate();
             // 字符编码不对应，自动更正
             if (!collate.startsWith(charset)) {
                 collate = charset + "_general_ci";
                 // log.warn("表{}的排序规则与字符编码不匹配，自动更正为{}", tableName, collate);
             }
+            // 获取表字符集
+            mysqlTableMetadata.setCharacterSet(charset);
+            // 字符排序
+            mysqlTableMetadata.setCollate(collate);
         }
-        // 获取表字符集
-        tableParam.setCharacterSet(charset);
-        // 字符排序
-        tableParam.setCollate(collate);
 
         // 获取表引擎
-        tableParam.setEngine(tableAnno.engine());
+        Engine engine = AnnotatedElementUtils.findMergedAnnotation(clazz, Engine.class);
+        if (engine != null) {
+            mysqlTableMetadata.setEngine(engine.value());
+        }
 
-        tableParam.setColumnParamList(getColumnList(clazz));
-        tableParam.setIndexParamList(getIndexList(clazz));
+        mysqlTableMetadata.setMysqlColumnMetadataList(getColumnList(clazz));
+        mysqlTableMetadata.setMysqlIndexMetadataList(getIndexList(clazz));
 
-        return tableParam;
+        return mysqlTableMetadata;
     }
 
-    public List<ColumnParam> getColumnList(Class<?> clazz) {
+    public List<MysqlColumnMetadata> getColumnList(Class<?> clazz) {
         Field[] fields = getAllFields(clazz);
         return Arrays.stream(fields)
                 .filter(field -> isIncludeField(field, clazz))
-                .map(field -> ColumnParam.create(clazz, field))
+                .map(field -> MysqlColumnMetadata.create(clazz, field))
                 .collect(Collectors.toList());
     }
 
-    public List<IndexParam> getIndexList(Class<?> clazz) {
+    public List<MysqlIndexMetadata> getIndexList(Class<?> clazz) {
 
         // 标记所有的索引，用于检测重复的
-        Map<String, IndexParam> exitsIndexes = new HashMap<>(16);
+        Map<String, MysqlIndexMetadata> exitsIndexes = new HashMap<>(16);
         // 索引重复检测过滤器
-        Function<IndexParam, Boolean> filter = (indexParam) -> {
+        Function<MysqlIndexMetadata, Boolean> filter = (indexParam) -> {
 
             if (indexParam == null) {
                 return false;
@@ -102,33 +104,33 @@ public class TableParamBuilder {
             return true;
         };
 
-        List<IndexParam> indexParams = new ArrayList<>();
+        List<MysqlIndexMetadata> indexMetadataList = new ArrayList<>();
         // 类上的索引注解集合
         TableIndexes tableIndexes = AnnotatedElementUtils.findMergedAnnotation(clazz, TableIndexes.class);
         if (tableIndexes != null) {
-            List<IndexParam> onTableIndexParams = Arrays.stream(tableIndexes.value())
-                    .map(tableIndex -> IndexParam.create(clazz, tableIndex, autoTableProperties.getIndexPrefix()))
+            List<MysqlIndexMetadata> onTableIndexMetadata = Arrays.stream(tableIndexes.value())
+                    .map(tableIndex -> MysqlIndexMetadata.create(clazz, tableIndex, autoTableProperties.getIndexPrefix()))
                     .filter(filter::apply)
                     .collect(Collectors.toList());
-            indexParams.addAll(onTableIndexParams);
+            indexMetadataList.addAll(onTableIndexMetadata);
         }
         // 类上的索引注解
         TableIndex tableIndex = AnnotatedElementUtils.findMergedAnnotation(clazz, TableIndex.class);
         if (tableIndex != null) {
-            IndexParam indexParam = IndexParam.create(clazz, tableIndex, autoTableProperties.getIndexPrefix());
-            if (filter.apply(indexParam)) {
-                indexParams.add(indexParam);
+            MysqlIndexMetadata indexMetadata = MysqlIndexMetadata.create(clazz, tableIndex, autoTableProperties.getIndexPrefix());
+            if (filter.apply(indexMetadata)) {
+                indexMetadataList.add(indexMetadata);
             }
         }
         // 字段上的索引注解
         Field[] fields = getAllFields(clazz);
-        List<IndexParam> onFieldIndexParams = Arrays.stream(fields)
+        List<MysqlIndexMetadata> onFieldIndexMetadata = Arrays.stream(fields)
                 .filter(field -> isIncludeField(field, clazz))
-                .map(field -> IndexParam.create(field, autoTableProperties.getIndexPrefix()))
+                .map(field -> MysqlIndexMetadata.create(field, autoTableProperties.getIndexPrefix()))
                 .filter(filter::apply)
                 .collect(Collectors.toList());
-        indexParams.addAll(onFieldIndexParams);
-        return indexParams;
+        indexMetadataList.addAll(onFieldIndexMetadata);
+        return indexMetadataList;
     }
 
     private Field[] getAllFields(Class<?> clas) {

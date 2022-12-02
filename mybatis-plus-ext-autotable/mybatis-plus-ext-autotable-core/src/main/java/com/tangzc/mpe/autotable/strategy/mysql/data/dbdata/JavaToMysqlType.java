@@ -1,6 +1,6 @@
-package com.tangzc.mpe.autotable.strategy.mysql.data.metadata;
+package com.tangzc.mpe.autotable.strategy.mysql.data.dbdata;
 
-import com.tangzc.mpe.autotable.strategy.mysql.data.MySqlColumnTypeEnum;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.handler.FieldTypeHandler;
 import com.tangzc.mpe.autotable.strategy.mysql.handler.SqlTypeHandler;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;

@@ -4,7 +4,8 @@ import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.JavaToMysqlType;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.JavaToMysqlType;
 import com.tangzc.mpe.autotable.utils.ColumnUtils;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.magic.TableColumnUtil;
@@ -18,12 +19,11 @@ import java.lang.reflect.Field;
 /**
  * 用于存放创建表的字段信息
  *
- * @author sunchenbin, Spet
- * @version 2019/07/06
+ * @author don
  */
 @Slf4j
 @Data
-public class ColumnParam {
+public class MysqlColumnMetadata {
 
     /**
      * 字段名: 不可变，变了意味着新字段
@@ -67,18 +67,18 @@ public class ColumnParam {
      */
     private boolean primary;
 
-    public static ColumnParam create(Class<?> clazz, Field field) {
-        ColumnParam columnParam = new ColumnParam();
-        columnParam.setName(TableColumnUtil.getRealColumnName(field));
-        columnParam.setType(getTypeAndLength(field, clazz));
-        columnParam.setNotNull(ColumnUtils.isNotNull(field));
-        columnParam.setPrimary(ColumnUtils.isPrimary(field));
-        columnParam.setAutoIncrement(ColumnUtils.isAutoIncrement(field));
+    public static MysqlColumnMetadata create(Class<?> clazz, Field field) {
+        MysqlColumnMetadata mysqlColumnMetadata = new MysqlColumnMetadata();
+        mysqlColumnMetadata.setName(TableColumnUtil.getRealColumnName(field));
+        mysqlColumnMetadata.setType(getTypeAndLength(field, clazz));
+        mysqlColumnMetadata.setNotNull(ColumnUtils.isNotNull(field));
+        mysqlColumnMetadata.setPrimary(ColumnUtils.isPrimary(field));
+        mysqlColumnMetadata.setAutoIncrement(ColumnUtils.isAutoIncrement(field));
         ColumnDefault columnDefault = ColumnUtils.getDefaultValue(field);
         if (columnDefault != null) {
-            columnParam.setDefaultValueType(columnDefault.type());
+            mysqlColumnMetadata.setDefaultValueType(columnDefault.type());
             String defaultValue = columnDefault.value();
-            TypeAndLength type = columnParam.getType();
+            TypeAndLength type = mysqlColumnMetadata.getType();
             // 补偿逻辑：类型为Boolean的时候(实际数据库为bit数字类型)，兼容 true、false
             if (type.isBoolean() && !"1".equals(defaultValue) && !"0".equals(defaultValue)) {
                 if (Boolean.parseBoolean(defaultValue)) {
@@ -91,14 +91,14 @@ public class ColumnParam {
             if (type.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
-            columnParam.setDefaultValue(defaultValue);
+            mysqlColumnMetadata.setDefaultValue(defaultValue);
         }
-        columnParam.setComment(ColumnUtils.getComment(field));
+        mysqlColumnMetadata.setComment(ColumnUtils.getComment(field));
 
         /* 基础的校验逻辑 */
-        ParamValidChecker.checkColumnParam(clazz, field, columnParam);
+        ParamValidChecker.checkColumnParam(clazz, field, mysqlColumnMetadata);
 
-        return columnParam;
+        return mysqlColumnMetadata;
     }
 
     /**

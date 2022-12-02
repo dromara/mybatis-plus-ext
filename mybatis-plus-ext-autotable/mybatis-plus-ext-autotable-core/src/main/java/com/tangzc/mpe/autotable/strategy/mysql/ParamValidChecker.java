@@ -2,7 +2,7 @@ package com.tangzc.mpe.autotable.strategy.mysql;
 
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
-import com.tangzc.mpe.autotable.strategy.mysql.data.ColumnParam;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
 import com.tangzc.mpe.autotable.strategy.mysql.data.TypeAndLength;
 
 import java.lang.reflect.Field;
@@ -41,9 +41,9 @@ public class ParamValidChecker {
 
     private static final List<IColumnChecker> COLUMN_PARAM_CHECKER_LIST = Arrays.asList(CHECK_AUTO_INCREMENT, CHECK_DEFAULT_IS_EMPTY_STRING);
 
-    public static void checkColumnParam(Class<?> clazz, Field field, ColumnParam columnParam) {
+    public static void checkColumnParam(Class<?> clazz, Field field, MysqlColumnMetadata mysqlColumnMetadata) {
         for (IColumnChecker iColumnChecker : COLUMN_PARAM_CHECKER_LIST) {
-            iColumnChecker.check(clazz, field, columnParam);
+            iColumnChecker.check(clazz, field, mysqlColumnMetadata);
         }
     }
 
@@ -55,6 +55,6 @@ public class ParamValidChecker {
         /**
          * 校验
          */
-        Exception check(Class<?> clazz, Field field, ColumnParam columnParam) throws RuntimeException;
+        Exception check(Class<?> clazz, Field field, MysqlColumnMetadata mysqlColumnMetadata) throws RuntimeException;
     }
 }

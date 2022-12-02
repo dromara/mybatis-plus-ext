@@ -44,6 +44,10 @@ public class SpringContextUtil implements ApplicationContextAware {
         return new ArrayList<>(beansOfTypeMap.values());
     }
 
+    public static <T> T getBeanOfType(Class<T> clazz) {
+        return getApplicationContext().getBean(clazz);
+    }
+
     public static String getBootPackage() {
         StackTraceElement[] stackTrace = new RuntimeException().getStackTrace();
         for (StackTraceElement stackTraceElement : stackTrace) {

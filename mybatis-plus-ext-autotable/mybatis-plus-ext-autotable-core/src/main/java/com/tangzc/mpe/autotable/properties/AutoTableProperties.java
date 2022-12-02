@@ -34,14 +34,6 @@ public class AutoTableProperties {
      */
     private String indexPrefix = "mpe_idx_";
     /**
-     * 默认表的字符编码
-     */
-    private String defaultTableCharset = "utf8mb4";
-    /**
-     * 默认表的排序规则
-     */
-    private String defaultTableCollate = "utf8mb4_general_ci";
-    /**
      * 自动删除名称不匹配的字段：强烈不建议开启，会发生丢失数据等不可逆的操作。
      */
     private boolean autoDropColumn = false;
@@ -52,10 +44,10 @@ public class AutoTableProperties {
     /**
      * 打印执行结果
      */
-    private boolean printRunResult = true;
+    // private boolean printRunResult = true;
     /**
      * 记录执行的SQL
      */
-    private ExecuteSqlLogProperties executeSqlLog = new ExecuteSqlLogProperties();
+    // private ExecuteSqlLogProperties executeSqlLog = new ExecuteSqlLogProperties();
 
 }

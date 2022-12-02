@@ -1,11 +1,9 @@
 package com.tangzc.mpe.autotable.strategy.mysql.mapper;
 
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaStatistics;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaTable;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.InformationSchemaColumn;
-import com.tangzc.mpe.autotable.strategy.mysql.data.metadata.MpeExecuteSqlLog;
-import org.apache.ibatis.annotations.Insert;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaStatistics;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaTable;
+import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaColumn;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -24,26 +22,6 @@ public interface MysqlTablesMapper {
      */
     @Select("${sql}")
     void executeSelect(String sql);
-
-    /**
-     * 创建记录执行SQL日志的表
-     * @param tableName 记录sql的表名
-     */
-    @Select("CREATE TABLE `${tableName}` (" +
-            "`id` bigint NOT NULL AUTO_INCREMENT COMMENT '自增主键'," +
-            "`sql` text NOT NULL COMMENT '执行的SQL'," +
-            "`executeTime` datetime NOT NULL COMMENT '执行时间'," +
-            "PRIMARY KEY (`id`)" +
-            ")")
-    void initExecuteSqlLogTable(String tableName);
-
-    /**
-     * 插入执行SQL
-     * @param tableName 记录sql的表名
-     * @param log 执行日志
-     */
-    @Insert("INSERT INTO `${tableName}` (`sql`, `executeTime`) VALUES (#{log.sql}, #{log.executeTime, jdbcType=TIMESTAMP})")
-    void insertExecuteSqlLog(String tableName, MpeExecuteSqlLog log);
 
     /**
      * 根据表名查询表在库中是否存在

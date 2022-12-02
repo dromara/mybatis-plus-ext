@@ -19,7 +19,8 @@ import java.lang.annotation.Annotation;
 public class ColumnDefaultImpl implements ColumnDefault {
 
     /**
-     * 字段的默认值
+     * <p>列默认值类型</p>
+     * <p>如果该值有值的情况下，将忽略 {@link #value} 的值</p>
      */
     private DefaultValueEnum type = DefaultValueEnum.UNDEFINED;
 
