@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    dynamic:
+      primary: mysql #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        my-mysql:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/mybatis-plus-ext?useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&zeroLongTimeBehavior=convertToNull
+          username: root
+          password: 12345678
+        my-sqlite:
+          # url最容易出错，如果使用相对于项目的相对地址，那么填入 jdbc:sqlite::resource:sqlit数据库所在位置
+          # 注：
+          # :resource: 指向项目的 resources 路径（resource前后两个 `:` 不能省略）
+          url: jdbc:sqlite::resource:mpe.db
+          driver-class-name: org.sqlite.JDBC
+#        pgsql:
+#          url: ENC(xxxxx) # 内置加密,使用请查看详细文档
+#          username: ENC(xxxxx)
+#          password: ENC(xxxxx)
+#          driver-class-name: com.mysql.jdbc.Driver
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: my_
+
+mpe:
+  auto-table:
+    auto-drop-column: true

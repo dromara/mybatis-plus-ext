@@ -4,8 +4,8 @@ import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.TableIndexes;
-import com.tangzc.mpe.autotable.annotation.mysql.Charset;
-import com.tangzc.mpe.autotable.annotation.mysql.Engine;
+import com.tangzc.mpe.autotable.annotation.mysql.MysqlCharset;
+import com.tangzc.mpe.autotable.annotation.mysql.MysqlEngine;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.IgnoreExt;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
@@ -48,10 +48,10 @@ public class TableMetadataBuilder {
         // 获取表注释
         mysqlTableMetadata.setComment(tableAnno.comment());
 
-        Charset charsetAnno = AnnotatedElementUtils.findMergedAnnotation(clazz, Charset.class);
-        if (charsetAnno != null) {
-            String charset = charsetAnno.value();
-            String collate = charsetAnno.collate();
+        MysqlCharset mysqlCharsetAnno = AnnotatedElementUtils.findMergedAnnotation(clazz, MysqlCharset.class);
+        if (mysqlCharsetAnno != null) {
+            String charset = mysqlCharsetAnno.value();
+            String collate = mysqlCharsetAnno.collate();
             // 字符编码不对应，自动更正
             if (!collate.startsWith(charset)) {
                 collate = charset + "_general_ci";
@@ -64,9 +64,9 @@ public class TableMetadataBuilder {
         }
 
         // 获取表引擎
-        Engine engine = AnnotatedElementUtils.findMergedAnnotation(clazz, Engine.class);
-        if (engine != null) {
-            mysqlTableMetadata.setEngine(engine.value());
+        MysqlEngine mysqlEngine = AnnotatedElementUtils.findMergedAnnotation(clazz, MysqlEngine.class);
+        if (mysqlEngine != null) {
+            mysqlTableMetadata.setEngine(mysqlEngine.value());
         }
 
         mysqlTableMetadata.setMysqlColumnMetadataList(getColumnList(clazz));

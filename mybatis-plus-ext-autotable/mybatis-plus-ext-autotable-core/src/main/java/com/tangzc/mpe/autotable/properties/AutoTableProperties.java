@@ -1,6 +1,5 @@
 package com.tangzc.mpe.autotable.properties;
 
-import com.tangzc.mpe.autotable.constants.DatabaseType;
 import com.tangzc.mpe.autotable.constants.RunMode;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,10 +19,6 @@ public class AutoTableProperties {
      * add：系统启动后，只做新增，比如新增表/新增字段/新增索引/新增唯一约束的功能，而不会去做修改和删除的操作。
      */
     private RunMode mode = RunMode.update;
-    /**
-     * 数据库类型，目前仅支持mysql
-     */
-    private DatabaseType databaseType = DatabaseType.mysql;
     /**
      * 您的model包路径，多个路径可以用分号或者逗号隔开，会递归这个目录下的全部目录中的java对象，支持类似com.bz.**.entity
      * 缺省值：[Spring启动类所在包]

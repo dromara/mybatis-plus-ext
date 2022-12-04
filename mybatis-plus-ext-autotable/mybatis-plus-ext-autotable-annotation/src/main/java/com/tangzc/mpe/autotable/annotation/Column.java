@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 @NotNull
 @Primary
 @ColumnDefault
-@ColumnComment
+@ColumnComment("")
 public @interface Column {
 
     /**

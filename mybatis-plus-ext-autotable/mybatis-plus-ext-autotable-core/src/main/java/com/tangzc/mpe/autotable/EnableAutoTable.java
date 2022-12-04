@@ -6,6 +6,7 @@ import com.tangzc.mpe.autotable.mybatisplus.MybatisPlusIgnore;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.mysql.MysqlStrategy;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.TableMetadataBuilder;
+import com.tangzc.mpe.autotable.strategy.sqlite.SqliteStrategy;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -25,6 +26,7 @@ import java.lang.annotation.*;
         MybatisPlusProperties.class,
         MapperScannerConfig.class,
         MysqlStrategy.class,
+        SqliteStrategy.class,
         MybatisPlusIgnore.class,
         TableMetadataBuilder.class,
         StartUp.class,

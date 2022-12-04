@@ -1,18 +1,24 @@
 package com.tangzc.mpe.autotable.strategy;
 
-import com.tangzc.mpe.autotable.constants.DatabaseType;
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
+import com.baomidou.dynamic.datasource.ds.ItemDataSource;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.constants.RunMode;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Set;
 
 /**
  * @author don
  */
-public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO, TABLE_INFO> {
+public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO> {
 
     Logger log = LoggerFactory.getLogger(IStrategy.class);
 
@@ -23,18 +29,59 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
      */
     default void start(Set<Class<?>> beanClasses) {
 
-        // 获取当前数据源所属的方言(目前仅支持MySQL，所以写死了)
-        DatabaseType currentDatabaseType = DatabaseType.mysql;
-
-        IStrategy<?, ?, ?> dbStrategy = SpringContextUtil.getBeansOfTypeList(IStrategy.class).stream()
-                // 删选出对应方言的策略
-                .filter(strategy -> strategy.dbType() == currentDatabaseType).findFirst()
-                .orElse(null);
-        if (dbStrategy == null) {
-            log.warn("没有找到对应的数据库（" + currentDatabaseType + "）方言策略，无法执行自动建表");
+        DatabaseDialect databaseDialect = getDatabaseDialect();
+        IStrategy<?, ?> databaseStrategy = getDatabaseStrategy(databaseDialect);
+        if (databaseStrategy == null) {
+            log.warn("没有找到对应的数据库（" + databaseDialect + "）方言策略，无法执行自动建表");
         } else {
-            dbStrategy.analyseClasses(beanClasses);
+            databaseStrategy.analyseClasses(beanClasses);
         }
+    }
+
+    /**
+     * 获取对应的数据库处理策略
+     *
+     * @param databaseDialect 数据库方言
+     * @return 策略
+     */
+    @Nullable
+    default IStrategy<?, ?> getDatabaseStrategy(DatabaseDialect databaseDialect) {
+        return (IStrategy<?, ?>) SpringContextUtil.getBeansOfTypeList(IStrategy.class).stream()
+                // 删选出对应方言的策略
+                .filter(strategy -> strategy.dbDialect() == databaseDialect).findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * 自动获取当前数据源的方言
+     *
+     * @return 返回数据方言
+     */
+    @Nullable
+    default DatabaseDialect getDatabaseDialect() {
+        String driverName;
+        DataSource dataSource = SpringContextUtil.getBeanOfType(DataSource.class);
+        // 多数据源模式
+        String dynamicDsClassName = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource";
+        if (dynamicDsClassName.equals(dataSource.getClass().getName())) {
+            // 纯属为了校验，防止DynamicRoutingDataSource类的签名有变更
+            assert com.baomidou.dynamic.datasource.DynamicRoutingDataSource.class.getName().equals(dynamicDsClassName);
+            dataSource = ((DynamicRoutingDataSource) dataSource).getDataSource(DynamicDataSourceContextHolder.peek());
+            DataSource realDataSource = ((ItemDataSource) dataSource).getRealDataSource();
+            try {
+                driverName = realDataSource.getConnection().getMetaData().getDriverName();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                driverName = dataSource.getConnection().getMetaData().getDriverName();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // 获取当前数据源所属的方言
+        return DatabaseDialect.parseFromDriverName(driverName);
     }
 
     /**
@@ -42,7 +89,7 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
      *
      * @return 方言
      */
-    DatabaseType dbType();
+    DatabaseDialect dbDialect();
 
     /**
      * 分析bean class
@@ -70,16 +117,15 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
             }
 
             // 判断表是否存在
-            TABLE_INFO tableInfo = getTableInformationFromDb(tableName);
-            if (tableInfo == null) {
-                // 当表不存在的时候，直接生成表
-                createTable(tableMetadata);
-            } else {
+            boolean isExist = checkTableExist(tableName);
+            if (isExist) {
                 // 当表存在，比对表与Bean描述的差异
-                COMPARE_TABLE_INFO compareTableInfo = compareTable(tableMetadata, tableInfo);
-
+                COMPARE_TABLE_INFO compareTableInfo = compareTable(tableMetadata);
                 // 修改表信息
                 modifyTable(compareTableInfo);
+            } else {
+                // 当表不存在的时候，直接生成表
+                createTable(tableMetadata);
             }
         }
     }
@@ -92,12 +138,12 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
     void dropTable(String tableName);
 
     /**
-     * 根据表名查询表详情
+     * 检查表是否存在
      *
      * @param tableName 表名
      * @return 表详情
      */
-    TABLE_INFO getTableInformationFromDb(String tableName);
+    boolean checkTableExist(String tableName);
 
     /**
      * 分析Bean，得到元数据信息
@@ -109,6 +155,7 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
 
     /**
      * 创建表
+     *
      * @param tableMetadata 表元数据
      */
     void createTable(TABLE_META tableMetadata);
@@ -117,10 +164,9 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO,
      * 对比表与bean的差异
      *
      * @param tableMetadata 表元数据
-     * @param tableInfo     数据库表信息
      * @return 待修改的表信息描述
      */
-    COMPARE_TABLE_INFO compareTable(TABLE_META tableMetadata, TABLE_INFO tableInfo);
+    COMPARE_TABLE_INFO compareTable(TABLE_META tableMetadata);
 
     /**
      * 修改表

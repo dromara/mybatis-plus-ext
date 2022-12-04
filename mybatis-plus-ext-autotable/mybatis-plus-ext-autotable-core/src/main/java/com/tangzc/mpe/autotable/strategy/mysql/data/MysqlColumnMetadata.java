@@ -4,13 +4,12 @@ import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
-import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.JavaToMysqlType;
+import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
 import com.tangzc.mpe.autotable.utils.ColumnUtils;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.magic.TableColumnUtil;
 import lombok.Data;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -136,7 +135,7 @@ public class MysqlColumnMetadata {
     private static TypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
 
         ColumnType column = ColumnUtils.getColumnType(field);
-        if (column != null && StringUtils.hasLength(column.value())) {
+        if (column != null && StringUtils.hasText(column.value())) {
             MySqlColumnTypeEnum columnTypeEnum = MySqlColumnTypeEnum.parseByLowerCaseName(column.value());
             return new TypeAndLength(column.length(), column.decimalLength(), columnTypeEnum);
         }
@@ -146,21 +145,9 @@ public class MysqlColumnMetadata {
             throw new RuntimeException("字段名：" + clazz.getName() + ":" + field.getName() + "不支持" + field.getGenericType() + "类型转换到mysql类型，仅支持JavaToMysqlType类中的类型默认转换，异常抛出！");
         }
         // 默认类型可以使用column来设置长度
-        if (column != null) {
-            return buildTypeAndLength(mysqlType, column.length(), column.decimalLength());
+        if (column != null && column.length() > 0) {
+            return new TypeAndLength(column.length(), column.decimalLength(), mysqlType);
         }
-        return buildTypeAndLength(mysqlType, mysqlType.getLengthDefault(), mysqlType.getDecimalLengthDefault());
-    }
-
-    private static TypeAndLength buildTypeAndLength(@NonNull MySqlColumnTypeEnum columnType, Integer length, Integer decimalLength) {
-
-        TypeAndLength targetTypeAndLength = new TypeAndLength(columnType.getLengthDefault(), columnType.getDecimalLengthDefault(), columnType);
-        if (length != null && length > 0) {
-            targetTypeAndLength.setLength(length);
-        }
-        if (decimalLength != null && decimalLength > 0) {
-            targetTypeAndLength.setDecimalLength(decimalLength);
-        }
-        return targetTypeAndLength;
+        return new TypeAndLength(mysqlType.getLengthDefault(), mysqlType.getDecimalLengthDefault(), mysqlType);
     }
 }

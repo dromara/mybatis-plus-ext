@@ -3,7 +3,7 @@ package com.tangzc.mpe.autotable.strategy.mysql;
 import com.google.common.base.Functions;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
-import com.tangzc.mpe.autotable.constants.DatabaseType;
+import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.IStrategy;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.CreateTableSqlBuilder;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @version 2019/07/06
  */
 @Slf4j
-public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompareTableInfo, InformationSchemaTable> {
+public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompareTableInfo> {
 
     @Resource
     private AutoTableProperties autoTableProperties;
@@ -41,8 +41,8 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     private MysqlTablesMapper mysqlTablesMapper;
 
     @Override
-    public DatabaseType dbType() {
-        return DatabaseType.mysql;
+    public DatabaseDialect dbDialect() {
+        return DatabaseDialect.MySQL;
     }
 
     @Override
@@ -51,8 +51,8 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     }
 
     @Override
-    public InformationSchemaTable getTableInformationFromDb(String tableName) {
-        return mysqlTablesMapper.findTableByTableName(tableName);
+    public boolean checkTableExist(String tableName) {
+        return mysqlTablesMapper.findTableByTableName(tableName) != null;
     }
 
     @Override
@@ -77,11 +77,12 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     }
 
     @Override
-    public MysqlCompareTableInfo compareTable(MysqlTableMetadata tableMetadata, InformationSchemaTable informationSchemaTable) {
+    public MysqlCompareTableInfo compareTable(MysqlTableMetadata tableMetadata) {
 
         String tableName = tableMetadata.getTableName();
-
         MysqlCompareTableInfo mysqlCompareTableInfo = new MysqlCompareTableInfo(tableName);
+
+        InformationSchemaTable informationSchemaTable = mysqlTablesMapper.findTableByTableName(tableName);
 
         // 对比表配置有无变化
         compareTableProperties(tableMetadata, informationSchemaTable, mysqlCompareTableInfo);

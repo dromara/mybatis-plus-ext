@@ -22,5 +22,5 @@ public @interface ColumnComment {
      *
      * @return 字段备注
      */
-    String value() default "";
+    String value();
 }

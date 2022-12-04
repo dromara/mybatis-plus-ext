@@ -1,9 +1,10 @@
-package com.tangzc.mpe.demo.autotable.entity;
+package com.tangzc.mpe.demo.autotable.mysql;
 
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
+import com.tangzc.mpe.autotable.annotation.mysql.MysqlCharset;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -18,8 +19,9 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-@Table(value = "tt", comment = "测试表")
-public class TestTable {
+@MysqlCharset(value = "utf8mb4")
+@Table(comment = "测试表", dsName = "my-mysql")
+public class MysqlTable {
 
     @AutoIncrement
     @Column(comment = "ID", type = "bigint")
@@ -48,6 +50,7 @@ public class TestTable {
     @Column(comment = "激活状态")
     private Boolean active;
 
+    @ColumnType(value = "text")
     @ColumnComment("个人简介")
     private String description;
 
