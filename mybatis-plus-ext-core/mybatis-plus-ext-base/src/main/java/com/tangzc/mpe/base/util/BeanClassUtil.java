@@ -114,7 +114,7 @@ public class BeanClassUtil {
 
     public static Field getField(Class<?> clazz, String fieldName) {
 
-        return Arrays.stream(clazz.getDeclaredFields())
+        return getAllDeclaredFields(clazz).stream()
                 .filter(field -> field.getName().equals(fieldName))
                 .findFirst().orElse(null);
     }
