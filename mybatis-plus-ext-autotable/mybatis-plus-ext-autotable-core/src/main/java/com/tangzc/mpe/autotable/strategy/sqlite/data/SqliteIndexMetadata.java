@@ -1,11 +1,10 @@
-package com.tangzc.mpe.autotable.strategy.mysql.data;
+package com.tangzc.mpe.autotable.strategy.sqlite.data;
 
 import com.tangzc.mpe.autotable.annotation.Index;
 import com.tangzc.mpe.autotable.annotation.IndexField;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
-import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlIndexFunctionEnum;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @Accessors(chain = true)
-public class MysqlIndexMetadata {
+public class SqliteIndexMetadata {
 
     /**
      * 索引名称
@@ -40,18 +39,13 @@ public class MysqlIndexMetadata {
     private IndexTypeEnum type;
 
     /**
-     * 索引方法
-     */
-    private MySqlIndexFunctionEnum function;
-
-    /**
      * 索引注释
      */
     private String comment;
 
     @Data
     @Accessors(chain = true)
-    @AllArgsConstructor(staticName = "newInstance")
+    @AllArgsConstructor(staticName = "of")
     public static class IndexColumnParam {
         /**
          * 字段名称
@@ -63,44 +57,38 @@ public class MysqlIndexMetadata {
         private IndexSortTypeEnum sort;
     }
 
-    public static MysqlIndexMetadata create(Field field, String indexPrefix) {
+    public static SqliteIndexMetadata create(Field field, String indexPrefix) {
         // 获取当前字段的@Index注解
         Index index = AnnotatedElementUtils.findMergedAnnotation(field, Index.class);
         if (null != index) {
             String realColumnName = TableColumnNameUtil.getRealColumnName(field);
-            MysqlIndexMetadata mysqlIndexMetadata = new MysqlIndexMetadata();
+            SqliteIndexMetadata sqliteIndexMetadata = new SqliteIndexMetadata();
             String indexName = index.name();
             if (StringUtils.isEmpty(indexName)) {
                 indexName = TableColumnNameUtil.getRealColumnName(field);
             }
-            mysqlIndexMetadata.setName(indexPrefix + indexName);
-            mysqlIndexMetadata.setType(index.type());
-            if (StringUtils.hasText(index.function())) {
-                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(index.function()));
-            }
-            mysqlIndexMetadata.setComment(index.comment());
-            mysqlIndexMetadata.getColumns().add(MysqlIndexMetadata.IndexColumnParam.newInstance(realColumnName, null));
-            return mysqlIndexMetadata;
+            sqliteIndexMetadata.setName(indexPrefix + indexName);
+            sqliteIndexMetadata.setType(index.type());
+            sqliteIndexMetadata.setComment(index.comment());
+            sqliteIndexMetadata.getColumns().add(IndexColumnParam.of(realColumnName, null));
+            return sqliteIndexMetadata;
         }
         return null;
     }
 
-    public static MysqlIndexMetadata create(Class<?> clazz, TableIndex tableIndex, String indexPrefix) {
+    public static SqliteIndexMetadata create(Class<?> clazz, TableIndex tableIndex, String indexPrefix) {
 
         // 获取当前字段的@Index注解
         if (null != tableIndex) {
 
             List<IndexColumnParam> columnParams = getColumnParams(clazz, tableIndex);
 
-            MysqlIndexMetadata mysqlIndexMetadata = new MysqlIndexMetadata();
-            mysqlIndexMetadata.setName(indexPrefix + tableIndex.name());
-            mysqlIndexMetadata.setType(tableIndex.type());
-            if (StringUtils.hasText(tableIndex.function())) {
-                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(tableIndex.function()));
-            }
-            mysqlIndexMetadata.setComment(tableIndex.comment());
-            mysqlIndexMetadata.setColumns(columnParams);
-            return mysqlIndexMetadata;
+            SqliteIndexMetadata sqliteIndexMetadata = new SqliteIndexMetadata();
+            sqliteIndexMetadata.setName(indexPrefix + tableIndex.name());
+            sqliteIndexMetadata.setType(tableIndex.type());
+            sqliteIndexMetadata.setComment(tableIndex.comment());
+            sqliteIndexMetadata.setColumns(columnParams);
+            return sqliteIndexMetadata;
         }
         return null;
     }
@@ -121,7 +109,7 @@ public class MysqlIndexMetadata {
                                     return null;
                                 }
                                 exitsColumns.add(realColumnName);
-                                return IndexColumnParam.newInstance(realColumnName, sortField.sort());
+                                return IndexColumnParam.of(realColumnName, sortField.sort());
                             })
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList())
@@ -139,7 +127,7 @@ public class MysqlIndexMetadata {
                                     return null;
                                 }
                                 exitsColumns.add(realColumnName);
-                                return IndexColumnParam.newInstance(realColumnName, null);
+                                return IndexColumnParam.of(realColumnName, null);
                             })
                             .filter(Objects::nonNull)
                             .collect(Collectors.toList())

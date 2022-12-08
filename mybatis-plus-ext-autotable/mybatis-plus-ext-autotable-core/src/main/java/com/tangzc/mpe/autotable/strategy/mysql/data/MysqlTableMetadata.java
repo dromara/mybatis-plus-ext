@@ -35,9 +35,9 @@ public class MysqlTableMetadata implements TableMetadata {
     /**
      * 所有列
      */
-    private List<MysqlColumnMetadata> mysqlColumnMetadataList = new ArrayList<>();
+    private List<MysqlColumnMetadata> columnMetadataList = new ArrayList<>();
     /**
      * 索引
      */
-    private List<MysqlIndexMetadata> mysqlIndexMetadataList = new ArrayList<>();
+    private List<MysqlIndexMetadata> indexMetadataList = new ArrayList<>();
 }

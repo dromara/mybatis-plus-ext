@@ -5,7 +5,7 @@ import com.tangzc.mpe.autotable.constants.RunMode;
 import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.utils.ClassScanner;
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Conditional;
@@ -69,7 +69,7 @@ public class StartUp {
 
         // <表名，List<java对象>>
         Map<String, List<Class<?>>> tableClassMap = classes.stream()
-                .collect(Collectors.groupingBy(TableColumnUtil::getTableName));
+                .collect(Collectors.groupingBy(TableColumnNameUtil::getTableName));
         // <数据源，List<表>>
         Map<String, Set<Class<?>>> needHandleTableMap = new HashMap<>(tableClassMap.size());
         tableClassMap.forEach((tableName, sameClasses) -> {

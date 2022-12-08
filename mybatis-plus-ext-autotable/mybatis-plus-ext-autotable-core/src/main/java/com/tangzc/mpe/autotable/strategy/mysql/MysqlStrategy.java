@@ -35,9 +35,6 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     private AutoTableProperties autoTableProperties;
 
     @Resource
-    private TableMetadataBuilder tableMetadataBuilder;
-
-    @Resource
     private MysqlTablesMapper mysqlTablesMapper;
 
     @Override
@@ -57,9 +54,8 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
 
     @Override
     public MysqlTableMetadata analyseClass(Class<?> beanClass) {
-        MysqlTableMetadata mysqlTableMetadata = tableMetadataBuilder.build(beanClass);
-        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
-        if (mysqlColumnMetadataList.isEmpty()) {
+        MysqlTableMetadata mysqlTableMetadata = TableMetadataBuilder.build(beanClass);
+        if (mysqlTableMetadata.getColumnMetadataList().isEmpty()) {
             log.warn("扫描发现{}没有建表字段请检查！", beanClass.getName());
             return null;
         }
@@ -68,12 +64,10 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
 
     @Override
     public void createTable(MysqlTableMetadata tableMetadata) {
-        log.info("开始创建表：{}", tableMetadata.getTableName());
         String sqlStr = CreateTableSqlBuilder.buildSql(tableMetadata);
         log.info("执行SQL：{}", sqlStr);
         mysqlTablesMapper.executeSelect(sqlStr);
         // insertExecuteSqlLog(sqlStr);
-        log.info("结束创建表：{}", tableMetadata.getTableName());
     }
 
     @Override
@@ -121,7 +115,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
 
     private void compareIndexes(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, Map<String, List<InformationSchemaStatistics>> tableIndexs) {
         // Bean上所有的索引
-        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getMysqlIndexMetadataList();
+        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getIndexMetadataList();
         // 以Bean上的索引开启循环，逐个匹配表上的索引
         for (MysqlIndexMetadata mysqlIndexMetadata : mysqlIndexMetadataList) {
             // 根据Bean上的索引名称获取表上的索引
@@ -179,7 +173,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             mysqlCompareTableInfo.setResetPrimary(true);
         } else {
             // 获取当前Bean上指定的主键列表，顺序按照列的自然顺序排列
-            List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getMysqlColumnMetadataList().stream()
+            List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getColumnMetadataList().stream()
                     .filter(MysqlColumnMetadata::isPrimary)
                     .collect(Collectors.toList());
             if (tablePrimaries.size() != primaries.size()) {
@@ -205,8 +199,8 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     }
 
     private void compareColumns(MysqlTableMetadata mysqlTableMetadata, String tableName, MysqlCompareTableInfo mysqlCompareTableInfo) {
-        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
-        // 变形：《列名，MysqlColumnMetadata》
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
+        // 变形：《列名，SqliteColumnMetadata》
         Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
         // 查询所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);

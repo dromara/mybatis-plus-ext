@@ -2,7 +2,7 @@ package com.tangzc.mpe.condition;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class DynamicConditionManager {
 
     public static void add(Class<?> entityClass, Field field, DynamicCondition dynamicCondition) {
 
-        String tableName = TableColumnUtil.getTableName(entityClass);
+        String tableName = TableColumnNameUtil.getTableName(entityClass);
 
         List<DynamicConditionDescription> dynamicConditionDescriptions = DYN_CON_CACHE.get(tableName, entityClass);
         if (dynamicConditionDescriptions == null) {

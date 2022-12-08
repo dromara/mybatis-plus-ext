@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @Table(comment = "测试表", dsName = "my-sqlite")
-public class SqliteTable {
+public class Sqlite3Table {
 
     @AutoIncrement
     @Column(comment = "ID", type = "bigint")

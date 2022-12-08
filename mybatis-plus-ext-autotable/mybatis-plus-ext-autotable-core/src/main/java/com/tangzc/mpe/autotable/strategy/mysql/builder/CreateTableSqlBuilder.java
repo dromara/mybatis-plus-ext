@@ -26,11 +26,11 @@ public class CreateTableSqlBuilder {
      */
     public static String buildSql(MysqlTableMetadata mysqlTableMetadata) {
 
-        List<String> primaries = new ArrayList<>();
+        // List<String> primaries = new ArrayList<>();
 
         String name = mysqlTableMetadata.getTableName();
-        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getMysqlColumnMetadataList();
-        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getMysqlIndexMetadataList();
+        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
+        List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlTableMetadata.getIndexMetadataList();
         String collate = mysqlTableMetadata.getCollate();
         String engine = mysqlTableMetadata.getEngine();
         String characterSet = mysqlTableMetadata.getCharacterSet();
@@ -39,18 +39,22 @@ public class CreateTableSqlBuilder {
         // 记录所有修改项，（利用数组结构，便于添加,分割）
         List<String> addItems = new ArrayList<>();
 
+        // 获取所有主键（至于表字段处理之前，为了主键修改notnull）
+        List<String> primaries = new ArrayList<>();
+        mysqlColumnMetadataList.forEach(columnData -> {
+            // 判断是主键，自动设置为NOT NULL，并记录
+            if (columnData.isPrimary()) {
+                columnData.setNotNull(true);
+                primaries.add(columnData.getName());
+            }
+        });
+
         // 表字段处理
         addItems.add(
-                mysqlColumnMetadataList.stream().map(columnData -> {
-                    // 判断是主键，自动设置为NOT NULL，并记录
-                    if (columnData.isPrimary()) {
-                        columnData.setNotNull(true);
-                        primaries.add(columnData.getName());
-                    }
-
-                    // 拼接每个字段的sql片段
-                    return columnData.toColumnSql();
-                }).collect(Collectors.joining(","))
+                mysqlColumnMetadataList.stream()
+                        // 拼接每个字段的sql片段
+                        .map(MysqlColumnMetadata::toColumnSql)
+                        .collect(Collectors.joining(","))
         );
 
 

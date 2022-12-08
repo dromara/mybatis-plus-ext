@@ -6,9 +6,9 @@ import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
 import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.JavaToMysqlType;
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
-import com.tangzc.mpe.autotable.utils.ColumnUtils;
 import com.tangzc.mpe.autotable.utils.StringHelper;
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.autotable.utils.TableBeanUtils;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -68,12 +68,12 @@ public class MysqlColumnMetadata {
 
     public static MysqlColumnMetadata create(Class<?> clazz, Field field) {
         MysqlColumnMetadata mysqlColumnMetadata = new MysqlColumnMetadata();
-        mysqlColumnMetadata.setName(TableColumnUtil.getRealColumnName(field));
+        mysqlColumnMetadata.setName(TableColumnNameUtil.getRealColumnName(field));
         mysqlColumnMetadata.setType(getTypeAndLength(field, clazz));
-        mysqlColumnMetadata.setNotNull(ColumnUtils.isNotNull(field));
-        mysqlColumnMetadata.setPrimary(ColumnUtils.isPrimary(field));
-        mysqlColumnMetadata.setAutoIncrement(ColumnUtils.isAutoIncrement(field));
-        ColumnDefault columnDefault = ColumnUtils.getDefaultValue(field);
+        mysqlColumnMetadata.setNotNull(TableBeanUtils.isNotNull(field));
+        mysqlColumnMetadata.setPrimary(TableBeanUtils.isPrimary(field));
+        mysqlColumnMetadata.setAutoIncrement(TableBeanUtils.isAutoIncrement(field));
+        ColumnDefault columnDefault = TableBeanUtils.getDefaultValue(field);
         if (columnDefault != null) {
             mysqlColumnMetadata.setDefaultValueType(columnDefault.type());
             String defaultValue = columnDefault.value();
@@ -92,7 +92,7 @@ public class MysqlColumnMetadata {
             }
             mysqlColumnMetadata.setDefaultValue(defaultValue);
         }
-        mysqlColumnMetadata.setComment(ColumnUtils.getComment(field));
+        mysqlColumnMetadata.setComment(TableBeanUtils.getComment(field));
 
         /* 基础的校验逻辑 */
         ParamValidChecker.checkColumnParam(clazz, field, mysqlColumnMetadata);
@@ -134,20 +134,21 @@ public class MysqlColumnMetadata {
 
     private static TypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
 
-        ColumnType column = ColumnUtils.getColumnType(field);
+        ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null && StringUtils.hasText(column.value())) {
             MySqlColumnTypeEnum columnTypeEnum = MySqlColumnTypeEnum.parseByLowerCaseName(column.value());
             return new TypeAndLength(column.length(), column.decimalLength(), columnTypeEnum);
         }
         // 类型为空根据字段类型去默认匹配类型
-        MySqlColumnTypeEnum mysqlType = JavaToMysqlType.getSqlType(field, clazz);
-        if (mysqlType == null) {
+        Class<?> fieldType = TableBeanUtils.getFieldType(clazz, field);
+        MySqlColumnTypeEnum sqlType = JavaToMysqlType.getSqlType(fieldType);
+        if (sqlType == null) {
             throw new RuntimeException("字段名：" + clazz.getName() + ":" + field.getName() + "不支持" + field.getGenericType() + "类型转换到mysql类型，仅支持JavaToMysqlType类中的类型默认转换，异常抛出！");
         }
         // 默认类型可以使用column来设置长度
         if (column != null && column.length() > 0) {
-            return new TypeAndLength(column.length(), column.decimalLength(), mysqlType);
+            return new TypeAndLength(column.length(), column.decimalLength(), sqlType);
         }
-        return new TypeAndLength(mysqlType.getLengthDefault(), mysqlType.getDecimalLengthDefault(), mysqlType);
+        return new TypeAndLength(sqlType.getLengthDefault(), sqlType.getDecimalLengthDefault(), sqlType);
     }
 }

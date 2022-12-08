@@ -7,22 +7,25 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author don
+ */
 @RestController
 @RequestMapping("autotable/sqlite")
 public class SqliteTableController {
 
     @Resource
-    private SqliteTableRepository sqliteTableRepository;
+    private Sqlite3TableRepository sqlite3TableRepository;
 
     @GetMapping("add")
     public void add(String username) {
-        SqliteTable entity = new SqliteTable();
+        Sqlite3Table entity = new Sqlite3Table();
         entity.setUsername(username);
-        sqliteTableRepository.save(entity);
+        sqlite3TableRepository.save(entity);
     }
 
     @GetMapping("list")
-    public List<SqliteTable> list() {
-        return sqliteTableRepository.list();
+    public List<Sqlite3Table> list() {
+        return sqlite3TableRepository.list();
     }
 }

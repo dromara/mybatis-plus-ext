@@ -7,6 +7,9 @@ import com.tangzc.mpe.base.BaseEntity;
 
 import java.lang.reflect.Field;
 
+/**
+ * @author don
+ */
 public class BaseEntityFieldTypeHandler implements FieldTypeHandler, AutoFillMetaObjectHandler.FieldDateTypeHandler {
 
     @Override

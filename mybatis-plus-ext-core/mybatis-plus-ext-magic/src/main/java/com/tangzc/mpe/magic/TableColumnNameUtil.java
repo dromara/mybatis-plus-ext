@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 /**
  * @author don
  */
-public class TableColumnUtil {
+public class TableColumnNameUtil {
 
     public static String filterSpecialChar(String name) {
         return name.replaceAll("`", "");

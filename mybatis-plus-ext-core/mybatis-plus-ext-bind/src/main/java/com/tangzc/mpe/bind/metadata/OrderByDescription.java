@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.bind.metadata.annotation.JoinOrderBy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,6 +51,6 @@ public class OrderByDescription {
     }
 
     public String getColumnName() {
-        return TableColumnUtil.getRealColumnName(field);
+        return TableColumnNameUtil.getRealColumnName(field);
     }
 }

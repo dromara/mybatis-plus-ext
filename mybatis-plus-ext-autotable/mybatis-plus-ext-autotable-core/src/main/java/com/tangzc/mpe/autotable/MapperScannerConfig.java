@@ -1,6 +1,7 @@
 package com.tangzc.mpe.autotable;
 
 import com.tangzc.mpe.autotable.strategy.mysql.mapper.MysqlTablesMapper;
+import com.tangzc.mpe.autotable.strategy.sqlite.mapper.SqliteTablesMapper;
 import org.mybatis.spring.annotation.MapperScannerRegistrar;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.BeansException;
@@ -19,12 +20,19 @@ public class MapperScannerConfig implements BeanDefinitionRegistryPostProcessor 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
-        builder.addPropertyValue("processPropertyPlaceHolders", true);
-        builder.addPropertyValue("basePackage", ClassUtils.getPackageName(MysqlTablesMapper.class));
+        // 注册mysql的mapper
+        BeanDefinitionBuilder mysqlMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
+        mysqlMapperBuilder.addPropertyValue("processPropertyPlaceHolders", true);
+        mysqlMapperBuilder.addPropertyValue("basePackage", ClassUtils.getPackageName(MysqlTablesMapper.class));
+        String mysqlMapperBeanName = MapperScannerRegistrar.class.getSimpleName() + "#" + MapperScannerConfigurer.class.getSimpleName() + "#0";
+        registry.registerBeanDefinition(mysqlMapperBeanName, mysqlMapperBuilder.getBeanDefinition());
 
-        String beanName = MapperScannerRegistrar.class.getSimpleName() + "#" + MapperScannerConfigurer.class.getSimpleName() + "#0";
-        registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
+        // 注册sqlite的mapper
+        BeanDefinitionBuilder sqliteMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
+        sqliteMapperBuilder.addPropertyValue("processPropertyPlaceHolders", true);
+        sqliteMapperBuilder.addPropertyValue("basePackage", ClassUtils.getPackageName(SqliteTablesMapper.class));
+        String sqliteMapperBeanName = MapperScannerRegistrar.class.getSimpleName() + "#" + MapperScannerConfigurer.class.getSimpleName() + "#1";
+        registry.registerBeanDefinition(sqliteMapperBeanName, sqliteMapperBuilder.getBeanDefinition());
     }
 
     @Override

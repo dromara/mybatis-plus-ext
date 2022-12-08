@@ -11,10 +11,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BeanClassUtil {
 
@@ -117,10 +115,18 @@ public class BeanClassUtil {
     private static void getFieldList(List<Field> fields, Class<?> beanClass) {
 
         Field[] declaredFields = beanClass.getDeclaredFields();
-        fields.addAll(Arrays.asList(declaredFields));
+        // 获取当前class的所有fields的name列表
+        Set<String> fieldNames = fields.stream().map(Field::getName).collect(Collectors.toSet());
+        for (Field field : declaredFields) {
+            // 避免重载属性
+            if (fieldNames.contains(field.getName())) {
+                continue;
+            }
+            fields.add(field);
+        }
 
         Class<?> superclass = beanClass.getSuperclass();
-        if (superclass != null && superclass != Object.class) {
+        if (superclass != null) {
             getFieldList(fields, superclass);
         }
     }

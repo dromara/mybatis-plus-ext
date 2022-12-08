@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -65,10 +65,10 @@ public class JoinConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getRealColumnName(selfField);
     }
 
     public String getJoinColumnName() {
-        return TableColumnUtil.getRealColumnName(joinField);
+        return TableColumnNameUtil.getRealColumnName(joinField);
     }
 }

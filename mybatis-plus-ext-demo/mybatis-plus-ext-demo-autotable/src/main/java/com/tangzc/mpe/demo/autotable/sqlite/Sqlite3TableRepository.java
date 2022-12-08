@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
  */
 @DS("my-sqlite")
 @Component
-public class SqliteTableRepository extends BaseRepository<SqliteTableMapper, SqliteTable> {
+public class Sqlite3TableRepository extends BaseRepository<Sqlite3TableMapper, Sqlite3Table> {
 }
 
 @Mapper
-interface SqliteTableMapper extends BaseMapper<SqliteTable> {
+interface Sqlite3TableMapper extends BaseMapper<Sqlite3Table> {
 
 }

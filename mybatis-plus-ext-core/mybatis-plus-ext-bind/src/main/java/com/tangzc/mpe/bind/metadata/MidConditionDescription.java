@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
 import lombok.Getter;
 
@@ -109,18 +109,18 @@ public class MidConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getRealColumnName(selfField);
     }
 
     public String getJoinColumnName() {
-        return TableColumnUtil.getRealColumnName(joinField);
+        return TableColumnNameUtil.getRealColumnName(joinField);
     }
 
     public String getSelfMidColumnName() {
-        return TableColumnUtil.getRealColumnName(selfMidField);
+        return TableColumnNameUtil.getRealColumnName(selfMidField);
     }
 
     public String getJoinMidColumnName() {
-        return TableColumnUtil.getRealColumnName(joinMidField);
+        return TableColumnNameUtil.getRealColumnName(joinMidField);
     }
 }

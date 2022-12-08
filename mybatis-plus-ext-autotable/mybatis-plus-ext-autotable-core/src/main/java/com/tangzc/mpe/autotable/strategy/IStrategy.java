@@ -10,6 +10,7 @@ import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -96,6 +97,7 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO>
      *
      * @param beanClasses 待处理的类
      */
+    @Transactional(rollbackFor = Exception.class)
     default void analyseClasses(Set<Class<?>> beanClasses) {
 
         for (Class<?> beanClass : beanClasses) {
@@ -108,23 +110,25 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO>
             }
 
             String tableName = tableMetadata.getTableName();
+
             AutoTableProperties autoTableProperties = SpringContextUtil.getBeanOfType(AutoTableProperties.class);
             if (autoTableProperties.getMode() == RunMode.create) {
                 // create模式特殊对待，如果配置文件配置的是create，表示将所有的表删掉重新创建
-                log.info("由于配置的模式是create，因此先删除表后续根据结构重建，删除表：{}", tableName);
+                log.info("create模式，删除表：{}", tableName);
                 // 直接删除表重新生成
                 dropTable(tableName);
             }
 
             // 判断表是否存在
-            boolean isExist = checkTableExist(tableName);
-            if (isExist) {
+            boolean tableIsExist = checkTableExist(tableName);
+            if (tableIsExist) {
                 // 当表存在，比对表与Bean描述的差异
                 COMPARE_TABLE_INFO compareTableInfo = compareTable(tableMetadata);
                 // 修改表信息
                 modifyTable(compareTableInfo);
             } else {
                 // 当表不存在的时候，直接生成表
+                log.info("创建表：{}", tableName);
                 createTable(tableMetadata);
             }
         }

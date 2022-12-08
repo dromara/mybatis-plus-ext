@@ -1,17 +1,15 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data.dbdata;
 
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
-import com.tangzc.mpe.autotable.strategy.mysql.handler.FieldTypeHandler;
-import com.tangzc.mpe.autotable.strategy.mysql.handler.SqlTypeHandler;
-import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author don
@@ -50,30 +48,7 @@ public class JavaToMysqlType {
         put(short.class, MySqlColumnTypeEnum.SMALLINT);
     }};
 
-    public static MySqlColumnTypeEnum getSqlType(Field field, Class<?> clazz) {
-
-        Class<?> fieldType = field.getType();
-
-        // 自定义获取字段的类型
-        List<FieldTypeHandler> fieldTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldTypeHandler.class);
-        Optional<? extends Class<?>> optionalFieldType = fieldTypeHandlers.stream()
-                .map(handler -> handler.getFieldType(clazz, field))
-                .filter(Objects::nonNull)
-                .findFirst();
-        if (optionalFieldType.isPresent()) {
-            fieldType = optionalFieldType.get();
-        }
-
-        // 自定义获取sql的类型
-        List<SqlTypeHandler> sqlTypeHandlers = SpringContextUtil.getBeansOfTypeList(SqlTypeHandler.class);
-        Class<?> finalFieldType = fieldType;
-        Optional<MySqlColumnTypeEnum> optionalSqlType = sqlTypeHandlers.stream()
-                .map(handler -> handler.getSqlType(clazz, field, finalFieldType))
-                .filter(Objects::nonNull)
-                .findFirst();
-        if (optionalSqlType.isPresent()) {
-            return optionalSqlType.get();
-        }
+    public static MySqlColumnTypeEnum getSqlType(Class<?> fieldType) {
 
         // 枚举默认设置字符串类型
         if (fieldType.isEnum()) {

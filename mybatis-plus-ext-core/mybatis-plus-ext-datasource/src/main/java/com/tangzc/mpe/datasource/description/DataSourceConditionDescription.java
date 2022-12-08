@@ -1,6 +1,6 @@
 package com.tangzc.mpe.datasource.description;
 
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -29,10 +29,10 @@ public class DataSourceConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getRealColumnName(selfField);
     }
 
     public String getSourceColumnName() {
-        return TableColumnUtil.getRealColumnName(sourceField);
+        return TableColumnNameUtil.getRealColumnName(sourceField);
     }
 }

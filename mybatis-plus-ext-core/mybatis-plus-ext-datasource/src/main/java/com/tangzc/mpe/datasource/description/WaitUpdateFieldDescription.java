@@ -1,6 +1,6 @@
 package com.tangzc.mpe.datasource.description;
 
-import com.tangzc.mpe.magic.TableColumnUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -28,10 +28,10 @@ public class WaitUpdateFieldDescription {
     }
 
     public String getEntityColumnName() {
-        return TableColumnUtil.getRealColumnName(entityField);
+        return TableColumnNameUtil.getRealColumnName(entityField);
     }
 
     public String getSourceColumnName() {
-        return TableColumnUtil.getRealColumnName(sourceField);
+        return TableColumnNameUtil.getRealColumnName(sourceField);
     }
 }

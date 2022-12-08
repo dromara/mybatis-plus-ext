@@ -25,7 +25,7 @@ public @interface Index {
     IndexTypeEnum type() default IndexTypeEnum.NORMAL;
 
     /**
-     * 索引方法
+     * 索引方法: sqlite不支持该属性
      */
     String function() default "";
 
