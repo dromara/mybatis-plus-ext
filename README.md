@@ -28,7 +28,7 @@
 * 自动建表，多种数据库支持（3.0.0分支）
   - [x] 重构自动建表相关的代码
   - [x] 默认支持MySQL
-  - [ ] 支持SQLite
+  - [x] 支持SQLite
   - [ ] 支持PgSql
 * 加密解密场景
   - [ ] 新增`@Encrypt`: {autoDecode: boolean(默认ture), mode: enum(默认BASE64), encryptHandle?: class\<IEncryptHandler>}，字段自动加密（类似密码字段的需求，内置几种常用算法）
