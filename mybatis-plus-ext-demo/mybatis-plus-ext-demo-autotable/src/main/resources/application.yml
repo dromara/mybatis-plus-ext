@@ -32,4 +32,4 @@ mybatis-plus:
 mpe:
   auto-table:
     auto-drop-column: true
-    mode: create
+#    mode: create

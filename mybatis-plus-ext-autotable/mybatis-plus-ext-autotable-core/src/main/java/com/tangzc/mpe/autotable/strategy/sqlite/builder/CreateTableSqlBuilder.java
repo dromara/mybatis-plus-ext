@@ -1,15 +1,16 @@
-package com.tangzc.mpe.autotable.strategy.sqlite.data.dbdata;
+package com.tangzc.mpe.autotable.strategy.sqlite.builder;
 
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteColumnMetadata;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteIndexMetadata;
-import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteTableMetadata;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -30,27 +31,9 @@ public class CreateTableSqlBuilder {
      * "card_number" text(30) NOT NULL, -- 身份证号码
      * PRIMARY KEY ("id", "card_id")
      * );
-     * <p>
-     * CREATE UNIQUE INDEX "main"."index_card_id"
-     * ON "无标题" (
-     * "card_id" ASC
-     * );
-     * <p>
-     * CREATE INDEX "main"."index_age"
-     * ON "无标题" (
-     * "age" ASC,
-     * "address" ASC
-     * );
-     *
-     * @param sqliteTableMetadata 参数
-     * @return sql
      */
-    public static String buildSql(SqliteTableMetadata sqliteTableMetadata) {
-
-        String name = sqliteTableMetadata.getTableName();
-        String comment = sqliteTableMetadata.getComment();
-        List<SqliteColumnMetadata> columnMetadataList = sqliteTableMetadata.getColumnMetadataList();
-
+    @NotNull
+    public static String buildTableSql(String name, String comment, List<SqliteColumnMetadata> columnMetadataList) {
         // 获取所有主键
         List<String> primaries = new ArrayList<>();
         columnMetadataList.forEach(columnData -> {
@@ -62,21 +45,24 @@ public class CreateTableSqlBuilder {
         });
         // 单个主键，sqlite有特殊处理，声明在列描述上，多个主键的话，像mysql一样特殊声明
         boolean isSinglePrimaryKey = primaries.size() == 1;
+        boolean hasPrimaries = !primaries.isEmpty() && !isSinglePrimaryKey;
 
         // 记录所有修改项，（利用数组结构，便于添加,分割）
         List<String> addItems = new ArrayList<>();
 
         // 表字段处理
+        AtomicInteger count = new AtomicInteger(0);
         addItems.add(
                 columnMetadataList.stream().map(columnData -> {
-                    // 拼接每个字段的sql片段
-                    return columnData.toColumnSql(isSinglePrimaryKey);
-                }).collect(Collectors.joining(",\n"))
+                    // 拼接每个字段的sql片段,
+                    // 不是最后一个字段，或者后面还有主键需要添加，加逗号
+                    boolean isNotLastItem = count.incrementAndGet() < columnMetadataList.size();
+                    return columnData.toColumnSql(isSinglePrimaryKey, isNotLastItem || hasPrimaries);
+                }).collect(Collectors.joining("\n"))
         );
 
-
         // 主键
-        if (!primaries.isEmpty() && !isSinglePrimaryKey) {
+        if (hasPrimaries) {
             String primaryKeySql = getPrimaryKeySql(primaries);
             addItems.add(primaryKeySql);
         }
@@ -86,22 +72,29 @@ public class CreateTableSqlBuilder {
                 .filter(StringUtils::hasText)
                 .collect(Collectors.joining(","));
 
-        String createTable = ("CREATE TABLE `{tableName}` -- {comment} \n" +
-                "(\n{addItems});\n")
+        return ("CREATE TABLE `{tableName}` -- {comment} \n" +
+                "(\n{addItems}\n" +
+                ");")
                 .replace("{tableName}", name)
                 .replace("{comment}", comment)
                 .replace("{addItems}", addSql);
+    }
 
+    /**
+     * CREATE UNIQUE INDEX "main"."index_card_id"
+     * ON "无标题" (
+     * "card_id" ASC
+     * );
+     */
+    @NotNull
+    public static List<String> buildIndexSql(String name, List<SqliteIndexMetadata> indexMetadataList) {
         // sqlite索引特殊处理
-        List<SqliteIndexMetadata> indexMetadataList = sqliteTableMetadata.getIndexMetadataList();
         // 索引
-        createTable += indexMetadataList.stream()
+        return indexMetadataList.stream()
                 .map(indexMetadata -> CreateTableSqlBuilder.getIndexSql(name, indexMetadata))
                 // 同类型的索引，排在一起，SQL美化
                 .sorted()
-                .collect(Collectors.joining("\n"));
-
-        return createTable;
+                .collect(Collectors.toList());
     }
 
     /**
@@ -115,8 +108,8 @@ public class CreateTableSqlBuilder {
      * @return
      */
     public static String getIndexSql(String tableName, SqliteIndexMetadata sqliteIndexMetadata) {
-        return StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON {tableName} ({columns}) {indexComment};")
-                .replace("{indexType}", sqliteIndexMetadata.getType() == IndexTypeEnum.NORMAL ? "" : sqliteIndexMetadata.getType().name())
+        return StringHelper.newInstance("CREATE{indexType} INDEX \"{indexName}\" ON {tableName} ({columns}) {indexComment};")
+                .replace("{indexType}", sqliteIndexMetadata.getType() == IndexTypeEnum.NORMAL ? "" : " " + sqliteIndexMetadata.getType().name())
                 .replace("{indexName}", sqliteIndexMetadata.getName())
                 .replace("{tableName}", tableName)
                 .replace("{columns}", (key) -> {
@@ -132,7 +125,7 @@ public class CreateTableSqlBuilder {
                 .toString();
     }
 
-    public static String getPrimaryKeySql(List<String> primaries) {
+    private static String getPrimaryKeySql(List<String> primaries) {
         return "PRIMARY KEY ({primaries})"
                 .replace(
                         "{primaries}",

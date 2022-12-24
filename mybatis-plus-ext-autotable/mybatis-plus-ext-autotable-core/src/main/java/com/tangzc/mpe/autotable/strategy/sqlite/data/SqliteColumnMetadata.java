@@ -114,11 +114,10 @@ public class SqliteColumnMetadata {
      * "age" INTEGER(2), -- 年龄
      * "address" TEXT(500) DEFAULT 济南市, -- 地址
      * "card_id" INTEGER(11) NOT NULL, -- 身份证id
-     * "card_number" text(30) NOT NULL, -- 身份证号码
+     * "card_number" text(30) NOT NULL -- 身份证号码
      */
-    public String toColumnSql(boolean isSinglePrimaryKey) {
-        // TODO 介于sqlite的特性，列注释暂时未支持
-        return StringHelper.newInstance("\"{columnName}\" {typeAndLength} {null} {default} {primaryKey}")
+    public String toColumnSql(boolean isSinglePrimaryKey, boolean addComma) {
+        return StringHelper.newInstance("\"{columnName}\" {typeAndLength} {null} {default} {primaryKey}{comma}{columnComment}")
                 .replace("{columnName}", this.getName())
                 .replace("{typeAndLength}", this.getFullType())
                 .replace("{null}", this.isNotNull() ? "NOT NULL" : "NULL")
@@ -146,7 +145,8 @@ public class SqliteColumnMetadata {
                     }
                     return "";
                 })
-                .replace("{columnComment}", StringUtils.hasText(this.getComment()) ? "-- " + this.getComment() : "")
+                .replace("{comma}", addComma ? "," : "")
+                .replace("{columnComment}", StringUtils.hasText(this.getComment()) ? " -- " + this.getComment() : "")
                 .toString();
     }
 

@@ -28,7 +28,7 @@ public class Sqlite3Table {
     @Index
     @NotNull
     @ColumnDefault(type = DefaultValueEnum.EMPTY_STRING)
-    @ColumnType(length = 100)
+    @ColumnType(length = 120)
     @ColumnComment("用户名")
     private String username;
 
