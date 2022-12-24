@@ -1,6 +1,7 @@
 package com.tangzc.mpe.autotable;
 
 import com.tangzc.mpe.autotable.strategy.mysql.mapper.MysqlTablesMapper;
+import com.tangzc.mpe.autotable.strategy.pgsql.mapper.PgsqlTablesMapper;
 import com.tangzc.mpe.autotable.strategy.sqlite.mapper.SqliteTablesMapper;
 import org.mybatis.spring.annotation.MapperScannerRegistrar;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -26,6 +27,13 @@ public class MapperScannerConfig implements BeanDefinitionRegistryPostProcessor 
         mysqlMapperBuilder.addPropertyValue("basePackage", ClassUtils.getPackageName(MysqlTablesMapper.class));
         String mysqlMapperBeanName = MapperScannerRegistrar.class.getSimpleName() + "#" + MapperScannerConfigurer.class.getSimpleName() + "#0";
         registry.registerBeanDefinition(mysqlMapperBeanName, mysqlMapperBuilder.getBeanDefinition());
+
+        // 注册pgsql的mapper
+        BeanDefinitionBuilder pgsqlMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
+        pgsqlMapperBuilder.addPropertyValue("processPropertyPlaceHolders", true);
+        pgsqlMapperBuilder.addPropertyValue("basePackage", ClassUtils.getPackageName(PgsqlTablesMapper.class));
+        String pgsqlMapperBeanName = MapperScannerRegistrar.class.getSimpleName() + "#" + MapperScannerConfigurer.class.getSimpleName() + "#1";
+        registry.registerBeanDefinition(pgsqlMapperBeanName, pgsqlMapperBuilder.getBeanDefinition());
 
         // 注册sqlite的mapper
         BeanDefinitionBuilder sqliteMapperBuilder = BeanDefinitionBuilder.genericBeanDefinition(MapperScannerConfigurer.class);
