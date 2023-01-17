@@ -1,7 +1,7 @@
 package com.tangzc.mpe;
 
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
-import com.tangzc.mpe.autotable.strategy.mysql.handler.FieldTypeHandler;
+import com.tangzc.mpe.autotable.strategy.FieldTypeHandler;
 import com.tangzc.mpe.base.AutoFillMetaObjectHandler;
 import com.tangzc.mpe.base.BaseEntity;
 

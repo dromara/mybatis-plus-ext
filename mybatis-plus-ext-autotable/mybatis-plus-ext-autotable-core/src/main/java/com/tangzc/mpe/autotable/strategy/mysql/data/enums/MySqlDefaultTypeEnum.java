@@ -12,7 +12,7 @@ import lombok.Getter;
  * @author don
  */
 @Getter
-public enum MySqlColumnTypeEnum {
+public enum MySqlDefaultTypeEnum {
 
     /**
      * 整数
@@ -69,17 +69,12 @@ public enum MySqlColumnTypeEnum {
      */
     private final Integer decimalLengthDefault;
 
-    MySqlColumnTypeEnum(Integer lengthDefault, Integer decimalLengthDefault) {
+    MySqlDefaultTypeEnum(Integer lengthDefault, Integer decimalLengthDefault) {
         this.lengthDefault = lengthDefault;
         this.decimalLengthDefault = decimalLengthDefault;
     }
 
-    public static MySqlColumnTypeEnum parseByLowerCaseName(String name) {
-        for (MySqlColumnTypeEnum type : MySqlColumnTypeEnum.values()) {
-            if (type.name().equalsIgnoreCase(name)) {
-                return type;
-            }
-        }
-        throw new RuntimeException(name + "是MySql不支持的字段数据类型");
+    public String typeName() {
+        return name().toLowerCase();
     }
 }

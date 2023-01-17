@@ -245,7 +245,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             }
         } else {
             // 自定义值 默认值对比
-            TypeAndLength paramType = mysqlColumnMetadata.getType();
+            MysqlTypeAndLength paramType = mysqlColumnMetadata.getType();
             String defaultValue = mysqlColumnMetadata.getDefaultValue();
             // 未设置有效默认值，直接返回未变更
             if (StringUtils.isEmpty(defaultValue)) {
@@ -269,7 +269,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
      */
     private static boolean isFieldTypeChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
 
-        TypeAndLength fieldType = mysqlColumnMetadata.getType();
+        MysqlTypeAndLength fieldType = mysqlColumnMetadata.getType();
         // 整数类型，只对比类型，不对比长度
         if (fieldType.isNumber()) {
             return !fieldType.typeName().equalsIgnoreCase(informationSchemaColumn.getDataType());

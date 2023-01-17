@@ -5,8 +5,11 @@ import com.tangzc.mpe.autotable.dynamicds.define.DynamicDatasourceTableInitDefin
 import com.tangzc.mpe.autotable.mybatisplus.MybatisPlusIgnore;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.mysql.MysqlStrategy;
+import com.tangzc.mpe.autotable.strategy.mysql.converter.impl.DefaultJavaToMysqlConverterDefine;
 import com.tangzc.mpe.autotable.strategy.pgsql.PgsqlStrategy;
+import com.tangzc.mpe.autotable.strategy.pgsql.converter.impl.DefaultJavaToPgsqlConverterDefine;
 import com.tangzc.mpe.autotable.strategy.sqlite.SqliteStrategy;
+import com.tangzc.mpe.autotable.strategy.sqlite.converter.impl.DefaultJavaToSqliteConverterDefine;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,8 +33,11 @@ import java.lang.annotation.*;
         SqliteStrategy.class,
         MybatisPlusIgnore.class,
         StartUp.class,
-        DynamicDatasourceTableInitDefine.class,
         DefaultTableInitDefine.class,
+        DynamicDatasourceTableInitDefine.class,
+        DefaultJavaToMysqlConverterDefine.class,
+        DefaultJavaToPgsqlConverterDefine.class,
+        DefaultJavaToSqliteConverterDefine.class,
 })
 @EnableConfigurationProperties(AutoTableProperties.class)
 public @interface EnableAutoTable {

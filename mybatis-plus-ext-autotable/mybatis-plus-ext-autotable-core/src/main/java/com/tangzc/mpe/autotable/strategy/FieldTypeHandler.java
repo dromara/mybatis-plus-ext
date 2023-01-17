@@ -1,4 +1,4 @@
-package com.tangzc.mpe.autotable.strategy.mysql.handler;
+package com.tangzc.mpe.autotable.strategy;
 
 import java.lang.reflect.Field;
 

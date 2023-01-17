@@ -8,7 +8,7 @@ import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.impl.*;
 import com.tangzc.mpe.autotable.strategy.IgnoreExt;
-import com.tangzc.mpe.autotable.strategy.mysql.handler.FieldTypeHandler;
+import com.tangzc.mpe.autotable.strategy.FieldTypeHandler;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;

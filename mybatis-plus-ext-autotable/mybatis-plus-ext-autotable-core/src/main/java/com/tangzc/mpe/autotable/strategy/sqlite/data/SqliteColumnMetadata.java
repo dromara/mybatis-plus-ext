@@ -3,10 +3,10 @@ package com.tangzc.mpe.autotable.strategy.sqlite.data;
 import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
-import com.tangzc.mpe.autotable.strategy.sqlite.data.dbdata.JavaToSqliteType;
-import com.tangzc.mpe.autotable.strategy.sqlite.data.enums.SqliteTypeEnum;
-import com.tangzc.mpe.autotable.utils.TableBeanUtils;
+import com.tangzc.mpe.autotable.strategy.sqlite.converter.JavaToSqliteConverter;
+import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
+import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +36,7 @@ public class SqliteColumnMetadata {
     /**
      * 字段类型
      */
-    private SqliteTypeEnum type;
-    private Integer length;
-    private Integer decimalLength;
+    private SqliteTypeAndLength type;
 
     /**
      * 字段是否非空
@@ -71,13 +69,13 @@ public class SqliteColumnMetadata {
         SqliteColumnMetadata sqliteColumnMetadata = new SqliteColumnMetadata();
         sqliteColumnMetadata.setName(TableColumnNameUtil.getRealColumnName(field));
         ColumnType columnType = TableBeanUtils.getColumnType(field);
-        if (columnType != null) {
-            sqliteColumnMetadata.setType(SqliteTypeEnum.parse(columnType.value()));
-            sqliteColumnMetadata.setLength(columnType.length());
-            sqliteColumnMetadata.setDecimalLength(columnType.decimalLength());
+        if (columnType != null && StringUtils.hasText(columnType.value())) {
+            SqliteTypeAndLength sqliteTypeAndLength = new SqliteTypeAndLength(columnType.length(), columnType.decimalLength(), columnType.value());
+            sqliteColumnMetadata.setType(sqliteTypeAndLength);
         } else {
             Class<?> fieldType = TableBeanUtils.getFieldType(clazz, field);
-            sqliteColumnMetadata.setType(JavaToSqliteType.getSqlType(fieldType));
+            JavaToSqliteConverter javaToSqliteConverter = SpringContextUtil.getBeanOfType(JavaToSqliteConverter.class);
+            sqliteColumnMetadata.setType(javaToSqliteConverter.convert(fieldType));
         }
         sqliteColumnMetadata.setNotNull(TableBeanUtils.isNotNull(field));
         sqliteColumnMetadata.setPrimary(TableBeanUtils.isPrimary(field));
@@ -88,7 +86,7 @@ public class SqliteColumnMetadata {
             String defaultValue = columnDefault.value();
             Class<?> fieldType = field.getType();
             // 补偿逻辑：类型为Boolean的时候(实际数据库为bit数字类型)，兼容 true、false
-            boolean isBooleanType = (fieldType == Boolean.class || fieldType == boolean.class) && sqliteColumnMetadata.getType() == SqliteTypeEnum.INTEGER;
+            boolean isBooleanType = (fieldType == Boolean.class || fieldType == boolean.class) && sqliteColumnMetadata.getType().isInteger();
             if (isBooleanType && !"1".equals(defaultValue) && !"0".equals(defaultValue)) {
                 if (Boolean.parseBoolean(defaultValue)) {
                     defaultValue = "1";
@@ -97,7 +95,7 @@ public class SqliteColumnMetadata {
                 }
             }
             // 补偿逻辑：字符串类型，前后自动添加'
-            if (sqliteColumnMetadata.getType() == SqliteTypeEnum.TEXT && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            if (sqliteColumnMetadata.getType().isText() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             sqliteColumnMetadata.setDefaultValue(defaultValue);
@@ -119,7 +117,7 @@ public class SqliteColumnMetadata {
     public String toColumnSql(boolean isSinglePrimaryKey, boolean addComma) {
         return StringHelper.newInstance("\"{columnName}\" {typeAndLength} {null} {default} {primaryKey}{comma}{columnComment}")
                 .replace("{columnName}", this.getName())
-                .replace("{typeAndLength}", this.getFullType())
+                .replace("{typeAndLength}", this.type.getFullType())
                 .replace("{null}", this.isNotNull() ? "NOT NULL" : "NULL")
                 .replace("{default}", (key) -> {
                     // 指定NULL
@@ -148,20 +146,5 @@ public class SqliteColumnMetadata {
                 .replace("{comma}", addComma ? "," : "")
                 .replace("{columnComment}", StringUtils.hasText(this.getComment()) ? " -- " + this.getComment() : "")
                 .toString();
-    }
-
-    public String getFullType() {
-        // 例：double(4,2) unsigned zerofill
-        String typeAndLength = type.name();
-        // 类型具备长度属性 且 自定义长度不为空
-        if (length != null && length > 0) {
-            typeAndLength += "(" + length;
-            if (decimalLength != null && decimalLength > 0) {
-                typeAndLength += "," + decimalLength;
-            }
-            typeAndLength += ")";
-        }
-
-        return typeAndLength;
     }
 }

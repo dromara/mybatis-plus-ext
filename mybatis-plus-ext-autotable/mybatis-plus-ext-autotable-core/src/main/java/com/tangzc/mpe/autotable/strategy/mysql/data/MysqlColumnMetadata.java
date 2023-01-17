@@ -4,8 +4,8 @@ import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
-import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.JavaToMysqlType;
-import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlColumnTypeEnum;
+import com.tangzc.mpe.autotable.strategy.mysql.converter.JavaToMysqlConverter;
+import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
@@ -37,7 +37,7 @@ public class MysqlColumnMetadata {
     /**
      * 字段类型
      */
-    private TypeAndLength type;
+    private MysqlTypeAndLength type;
 
     /**
      * 字段是否非空
@@ -77,7 +77,7 @@ public class MysqlColumnMetadata {
         if (columnDefault != null) {
             mysqlColumnMetadata.setDefaultValueType(columnDefault.type());
             String defaultValue = columnDefault.value();
-            TypeAndLength type = mysqlColumnMetadata.getType();
+            MysqlTypeAndLength type = mysqlColumnMetadata.getType();
             // 补偿逻辑：类型为Boolean的时候(实际数据库为bit数字类型)，兼容 true、false
             if (type.isBoolean() && !"1".equals(defaultValue) && !"0".equals(defaultValue)) {
                 if (Boolean.parseBoolean(defaultValue)) {
@@ -132,23 +132,15 @@ public class MysqlColumnMetadata {
                 .toString();
     }
 
-    private static TypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
+    private static MysqlTypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
 
         ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null && StringUtils.hasText(column.value())) {
-            MySqlColumnTypeEnum columnTypeEnum = MySqlColumnTypeEnum.parseByLowerCaseName(column.value());
-            return new TypeAndLength(column.length(), column.decimalLength(), columnTypeEnum);
+            return new MysqlTypeAndLength(column.length(), column.decimalLength(), column.value());
         }
         // 类型为空根据字段类型去默认匹配类型
         Class<?> fieldType = TableBeanUtils.getFieldType(clazz, field);
-        MySqlColumnTypeEnum sqlType = JavaToMysqlType.getSqlType(fieldType);
-        if (sqlType == null) {
-            throw new RuntimeException("字段名：" + clazz.getName() + ":" + field.getName() + "不支持" + field.getGenericType() + "类型转换到mysql类型，仅支持JavaToMysqlType类中的类型默认转换，异常抛出！");
-        }
-        // 默认类型可以使用column来设置长度
-        if (column != null && column.length() > 0) {
-            return new TypeAndLength(column.length(), column.decimalLength(), sqlType);
-        }
-        return new TypeAndLength(sqlType.getLengthDefault(), sqlType.getDecimalLengthDefault(), sqlType);
+        JavaToMysqlConverter javaToMysqlConverter = SpringContextUtil.getBeanOfType(JavaToMysqlConverter.class);
+        return javaToMysqlConverter.convert(fieldType);
     }
 }
