@@ -125,7 +125,7 @@ public class CreateTableSqlBuilder {
                 })
                 .replace("{indexFunction}", (key) -> {
                     if (mysqlIndexMetadata.getFunction() != null) {
-                        return "USING " + mysqlIndexMetadata.getFunction().name();
+                        return "USING " + mysqlIndexMetadata.getFunction();
                     } else {
                         return "";
                     }

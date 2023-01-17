@@ -5,7 +5,6 @@ import com.tangzc.mpe.autotable.annotation.IndexField;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
-import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlIndexFunctionEnum;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,7 +41,7 @@ public class MysqlIndexMetadata {
     /**
      * 索引方法
      */
-    private MySqlIndexFunctionEnum function;
+    private String function;
 
     /**
      * 索引注释
@@ -76,7 +75,7 @@ public class MysqlIndexMetadata {
             mysqlIndexMetadata.setName(indexPrefix + indexName);
             mysqlIndexMetadata.setType(index.type());
             if (StringUtils.hasText(index.function())) {
-                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(index.function()));
+                mysqlIndexMetadata.setFunction(index.function());
             }
             mysqlIndexMetadata.setComment(index.comment());
             mysqlIndexMetadata.getColumns().add(MysqlIndexMetadata.IndexColumnParam.newInstance(realColumnName, null));
@@ -96,7 +95,7 @@ public class MysqlIndexMetadata {
             mysqlIndexMetadata.setName(indexPrefix + tableIndex.name());
             mysqlIndexMetadata.setType(tableIndex.type());
             if (StringUtils.hasText(tableIndex.function())) {
-                mysqlIndexMetadata.setFunction(MySqlIndexFunctionEnum.parse(tableIndex.function()));
+                mysqlIndexMetadata.setFunction(tableIndex.function());
             }
             mysqlIndexMetadata.setComment(tableIndex.comment());
             mysqlIndexMetadata.setColumns(columnParams);
