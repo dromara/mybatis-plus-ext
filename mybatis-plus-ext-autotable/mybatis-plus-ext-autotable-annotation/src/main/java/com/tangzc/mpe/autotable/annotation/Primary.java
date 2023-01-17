@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Primary {
-    boolean value() default false;
+    boolean value() default true;
 }

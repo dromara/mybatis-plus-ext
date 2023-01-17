@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Accessors(fluent = true)
 public class PrimaryImpl implements Primary {
 
-    private boolean value = false;
+    private boolean value = true;
 
     @Override
     public Class<? extends Annotation> annotationType() {
