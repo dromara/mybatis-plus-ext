@@ -66,7 +66,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     public void createTable(MysqlTableMetadata tableMetadata) {
         String sqlStr = CreateTableSqlBuilder.buildSql(tableMetadata);
         log.info("执行SQL：{}", sqlStr);
-        mysqlTablesMapper.executeSelect(sqlStr);
+        mysqlTablesMapper.executeSql(sqlStr);
         // insertExecuteSqlLog(sqlStr);
     }
 
@@ -107,7 +107,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         if (StringUtils.hasText(sqlStr)) {
             log.info("开始修改表：{}", mysqlCompareTableInfo.getName());
             log.info("执行SQL：{}", sqlStr);
-            mysqlTablesMapper.executeSelect(sqlStr);
+            mysqlTablesMapper.executeSql(sqlStr);
             // insertExecuteSqlLog(sqlStr);
             log.info("结束修改表：{}", mysqlCompareTableInfo.getName());
         }

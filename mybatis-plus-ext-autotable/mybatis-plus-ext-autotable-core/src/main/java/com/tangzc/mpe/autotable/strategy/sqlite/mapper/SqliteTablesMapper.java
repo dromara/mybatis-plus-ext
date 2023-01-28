@@ -21,7 +21,7 @@ public interface SqliteTablesMapper {
      * @param sql 待执行的sql
      */
     @Select("${sql}")
-    void executeSelect(String sql);
+    void executeSql(String sql);
 
     /**
      * 根据表名删除表

@@ -23,7 +23,7 @@ public interface MysqlTablesMapper {
      * @param sql 待执行的sql
      */
     @Select("${sql}")
-    void executeSelect(String sql);
+    void executeSql(String sql);
 
     /**
      * 根据表名查询表在库中是否存在

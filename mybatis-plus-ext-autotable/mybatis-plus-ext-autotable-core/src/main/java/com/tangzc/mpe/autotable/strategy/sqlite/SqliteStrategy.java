@@ -58,10 +58,10 @@ public class SqliteStrategy implements IStrategy<SqliteTableMetadata, SqliteComp
     @Override
     public void createTable(SqliteTableMetadata tableMetadata) {
         String createTableSql = CreateTableSqlBuilder.buildTableSql(tableMetadata.getTableName(), tableMetadata.getComment(), tableMetadata.getColumnMetadataList());
-        sqliteTablesMapper.executeSelect(createTableSql);
+        sqliteTablesMapper.executeSql(createTableSql);
         List<String> createIndexSqlList = CreateTableSqlBuilder.buildIndexSql(tableMetadata.getTableName(), tableMetadata.getIndexMetadataList());
         for (String createIndexSql : createIndexSqlList) {
-            sqliteTablesMapper.executeSelect(createIndexSql);
+            sqliteTablesMapper.executeSql(createIndexSql);
         }
     }
 
@@ -142,7 +142,7 @@ public class SqliteStrategy implements IStrategy<SqliteTableMetadata, SqliteComp
             // 备份表
             sqliteTablesMapper.backupTable(orgTableName, backupTableName);
             // 重新建表
-            sqliteTablesMapper.executeSelect(rebuildTableSql);
+            sqliteTablesMapper.executeSql(rebuildTableSql);
             // 迁移数据
             sqliteTablesMapper.migrateData(orgTableName, backupTableName);
         }
@@ -151,7 +151,7 @@ public class SqliteStrategy implements IStrategy<SqliteTableMetadata, SqliteComp
         List<String> buildIndexSqlList = sqliteCompareTableInfo.getBuildIndexSqlList();
         if (!buildIndexSqlList.isEmpty()) {
             for (String buildIndexSql : buildIndexSqlList) {
-                sqliteTablesMapper.executeSelect(buildIndexSql);
+                sqliteTablesMapper.executeSql(buildIndexSql);
             }
         }
     }

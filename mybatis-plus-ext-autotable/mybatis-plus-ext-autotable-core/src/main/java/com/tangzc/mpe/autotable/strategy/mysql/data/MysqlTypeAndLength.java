@@ -17,19 +17,6 @@ public class MysqlTypeAndLength {
     private Integer decimalLength;
     private String type;
 
-    /**
-     * 声明该字段是否为字符串，将会对字符串做特殊的补偿处理
-     */
-    private Boolean charString;
-    /**
-     * 声明该字段是否为布尔类型
-     */
-    private Boolean bool;
-    /**
-     * 声明该字段是否为数字类型
-     */
-    private Boolean number;
-
     public MysqlTypeAndLength(Integer length, Integer decimalLength, String type) {
         this.length = length;
         this.decimalLength = decimalLength;
@@ -81,14 +68,14 @@ public class MysqlTypeAndLength {
 
 
     public boolean isCharString() {
-        return charString != null ? charString : CHAR_STRING_TYPE.contains(this.typeName());
+        return CHAR_STRING_TYPE.contains(this.typeName());
     }
 
     public boolean isBoolean() {
-        return bool != null ? bool : MySqlDefaultTypeEnum.BIT.typeName().equalsIgnoreCase(this.typeName());
+        return MySqlDefaultTypeEnum.BIT.typeName().equalsIgnoreCase(this.typeName());
     }
 
     public boolean isNumber() {
-        return number != null ? number : (INTEGER_TYPE.contains(this.typeName()) || FLOAT_TYPE.contains(this.typeName()));
+        return (INTEGER_TYPE.contains(this.typeName()) || FLOAT_TYPE.contains(this.typeName()));
     }
 }
