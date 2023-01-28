@@ -1,13 +1,8 @@
 package com.tangzc.mpe.autotable.strategy.pgsql.mapper;
 
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
-import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaColumn;
-import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaStatistics;
-import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaTable;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
-
-import java.util.List;
 
 
 /**
@@ -23,5 +18,11 @@ public interface PgsqlTablesMapper {
      * @param sql 待执行的sql
      */
     @Select("${sql}")
-    void executeSelect(String sql);
+    void executeSql(String sql);
+
+    @Delete("DROP TABLE IF EXISTS #{tableName}")
+    void dropTableByName(String tableName);
+
+    @Delete("select cout(*) from pg_class where relname = #{tableName}")
+    int checkTableExist(String tableName);
 }
