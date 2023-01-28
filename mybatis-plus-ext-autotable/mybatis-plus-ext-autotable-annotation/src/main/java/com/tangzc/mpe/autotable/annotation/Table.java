@@ -9,6 +9,7 @@ import java.lang.annotation.*;
 
 /**
  * 创建表时的表名
+ *
  * @author don
  */
 @Target(ElementType.TYPE)
@@ -46,6 +47,7 @@ public @interface Table {
 
     /**
      * 需要排除的属性名，排除掉的属性不参与建表
+     * 区别于 {@link Ignore}, {@link Ignore}不仅会忽略建表，数据操作的时候也会忽略
      *
      * @return
      */
