@@ -112,7 +112,7 @@ public class CreateTableSqlBuilder {
     public static String getIndexSql(MysqlIndexMetadata mysqlIndexMetadata) {
         // 例子： UNIQUE INDEX `unique_name_age`(`name` ASC, `age` DESC) COMMENT '姓名、年龄索引' USING BTREE,
         return StringHelper.newInstance("{indexType} INDEX `{indexName}`({columns}) {indexFunction} {indexComment}")
-                .replace("{indexType}", mysqlIndexMetadata.getType() == IndexTypeEnum.NORMAL ? "" : mysqlIndexMetadata.getType().name())
+                .replace("{indexType}", mysqlIndexMetadata.getType() == IndexTypeEnum.UNIQUE ? "UNIQUE" : "")
                 .replace("{indexName}", mysqlIndexMetadata.getName())
                 .replace("{columns}", (key) -> {
                     List<MysqlIndexMetadata.IndexColumnParam> columnParams = mysqlIndexMetadata.getColumns();
