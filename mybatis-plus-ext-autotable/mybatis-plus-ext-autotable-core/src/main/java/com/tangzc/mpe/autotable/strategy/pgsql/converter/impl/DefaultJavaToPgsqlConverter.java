@@ -22,33 +22,34 @@ public class DefaultJavaToPgsqlConverter implements JavaToPgsqlConverter {
         put(Character.class, PgsqlDefaultTypeEnum.CHAR);
         put(char.class, PgsqlDefaultTypeEnum.CHAR);
 
-        put(BigInteger.class, PgsqlDefaultTypeEnum.BIGINT);
-        put(Long.class, PgsqlDefaultTypeEnum.BIGINT);
-        put(long.class, PgsqlDefaultTypeEnum.BIGINT);
+        put(BigInteger.class, PgsqlDefaultTypeEnum.INT8);
+        put(Long.class, PgsqlDefaultTypeEnum.INT8);
+        put(long.class, PgsqlDefaultTypeEnum.INT8);
 
-        put(Integer.class, PgsqlDefaultTypeEnum.INT);
-        put(int.class, PgsqlDefaultTypeEnum.INT);
+        put(Integer.class, PgsqlDefaultTypeEnum.INT4);
+        put(int.class, PgsqlDefaultTypeEnum.INT4);
 
-        put(Boolean.class, PgsqlDefaultTypeEnum.BIT);
-        put(boolean.class, PgsqlDefaultTypeEnum.BIT);
+        put(Boolean.class, PgsqlDefaultTypeEnum.BOOL);
+        put(boolean.class, PgsqlDefaultTypeEnum.BOOL);
 
-        put(Float.class, PgsqlDefaultTypeEnum.FLOAT);
-        put(float.class, PgsqlDefaultTypeEnum.FLOAT);
-        put(Double.class, PgsqlDefaultTypeEnum.DOUBLE);
-        put(double.class, PgsqlDefaultTypeEnum.DOUBLE);
-        put(BigDecimal.class, PgsqlDefaultTypeEnum.DECIMAL);
+        put(Float.class, PgsqlDefaultTypeEnum.FLOAT4);
+        put(float.class, PgsqlDefaultTypeEnum.FLOAT4);
+        put(Double.class, PgsqlDefaultTypeEnum.FLOAT8);
+        put(double.class, PgsqlDefaultTypeEnum.FLOAT8);
+        put(BigDecimal.class, PgsqlDefaultTypeEnum.NUMERIC);
 
-        put(Date.class, PgsqlDefaultTypeEnum.DATETIME);
-        put(java.sql.Date.class, PgsqlDefaultTypeEnum.DATE);
-        put(java.sql.Timestamp.class, PgsqlDefaultTypeEnum.DATETIME);
+        put(Date.class, PgsqlDefaultTypeEnum.TIMESTAMP);
+        put(java.sql.Date.class, PgsqlDefaultTypeEnum.TIMESTAMP);
+        put(java.sql.Timestamp.class, PgsqlDefaultTypeEnum.TIMESTAMP);
         put(java.sql.Time.class, PgsqlDefaultTypeEnum.TIME);
-        put(LocalDateTime.class, PgsqlDefaultTypeEnum.DATETIME);
+        put(LocalDateTime.class, PgsqlDefaultTypeEnum.TIMESTAMP);
         put(LocalDate.class, PgsqlDefaultTypeEnum.DATE);
         put(LocalTime.class, PgsqlDefaultTypeEnum.TIME);
 
-        put(Short.class, PgsqlDefaultTypeEnum.SMALLINT);
-        put(short.class, PgsqlDefaultTypeEnum.SMALLINT);
+        put(Short.class, PgsqlDefaultTypeEnum.INT2);
+        put(short.class, PgsqlDefaultTypeEnum.INT2);
     }};
+
     @Override
     public PgsqlTypeAndLength convert(Class<?> fieldClass) {
         PgsqlDefaultTypeEnum sqlType;
