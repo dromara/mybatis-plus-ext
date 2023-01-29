@@ -96,7 +96,15 @@ public class PgsqlColumnMetadata {
         // 例子："id" int4(32) NOT NULL AUTO_INCREMENT COMMENT '主键'
         return StringHelper.newInstance("\"{columnName}\" {typeAndLength} {null} {default}")
                 .replace("{columnName}", this.getName())
-                .replace("{typeAndLength}", this.getType().getFullType())
+                .replace("{typeAndLength}", (key) -> {
+                    PgsqlTypeAndLength typeAndLength = this.getType();
+                    /* 如果是自增，忽略指定的类型，交给pgsql自动处理，pgsql会设定int4(32)类型，
+                    并自动生成一个序列：表名_字段名_seq，同时设置字段的默认值为：nextval('表名_字段名_seq'::regclass) */
+                    if (this.autoIncrement) {
+                        return "serial";
+                    }
+                    return typeAndLength.getFullType();
+                })
                 .replace("{null}", this.isNotNull() ? "NOT NULL" : "")
                 .replace("{default}", (key) -> {
                     // 指定NULL
