@@ -1,5 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data.enums;
 
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
 import lombok.Getter;
 
 /**
@@ -17,48 +18,48 @@ public enum MySqlDefaultTypeEnum {
     /**
      * 整数
      */
-    INT(10, null),
-    TINYINT(3, null),
-    SMALLINT(5, null),
-    MEDIUMINT(7, null),
-    BIGINT(19, null),
+    INT(MysqlTypeConstant.INT, 10, null),
+    TINYINT(MysqlTypeConstant.TINYINT, 3, null),
+    SMALLINT(MysqlTypeConstant.SMALLINT, 5, null),
+    MEDIUMINT(MysqlTypeConstant.MEDIUMINT, 7, null),
+    BIGINT(MysqlTypeConstant.BIGINT, 19, null),
     /**
      * 小数
      */
-    FLOAT(4, 2),
-    DOUBLE(6, 2),
-    DECIMAL(10, 4),
+    FLOAT(MysqlTypeConstant.FLOAT, 4, 2),
+    DOUBLE(MysqlTypeConstant.DOUBLE, 6, 2),
+    DECIMAL(MysqlTypeConstant.DECIMAL, 10, 4),
     /**
      * 字符串
      */
-    CHAR(255, null),
-    VARCHAR(255, null),
-    TEXT(null, null),
-    TINYTEXT(null, null),
-    MEDIUMTEXT(null, null),
-    LONGTEXT(null, null),
+    CHAR(MysqlTypeConstant.CHAR, 255, null),
+    VARCHAR(MysqlTypeConstant.VARCHAR, 255, null),
+    TEXT(MysqlTypeConstant.TEXT, null, null),
+    TINYTEXT(MysqlTypeConstant.TINYTEXT, null, null),
+    MEDIUMTEXT(MysqlTypeConstant.MEDIUMTEXT, null, null),
+    LONGTEXT(MysqlTypeConstant.LONGTEXT, null, null),
     /**
      * 日期
      */
-    YEAR(null, null),
-    TIME(null, null),
-    DATE(null, null),
-    DATETIME(null, null),
-    TIMESTAMP(null, null),
+    YEAR(MysqlTypeConstant.YEAR, null, null),
+    TIME(MysqlTypeConstant.TIME, null, null),
+    DATE(MysqlTypeConstant.DATE, null, null),
+    DATETIME(MysqlTypeConstant.DATETIME, null, null),
+    TIMESTAMP(MysqlTypeConstant.TIMESTAMP, null, null),
     /**
      * 二进制
      */
-    BIT(1, null),
-    BINARY(1, null),
-    VARBINARY(1, null),
-    BLOB(null, null),
-    TINYBLOB(null, null),
-    MEDIUMBLOB(null, null),
-    LONGBLOB(null, null),
+    BIT(MysqlTypeConstant.BIT, 1, null),
+    BINARY(MysqlTypeConstant.BINARY, 1, null),
+    VARBINARY(MysqlTypeConstant.VARBINARY, 1, null),
+    BLOB(MysqlTypeConstant.BLOB, null, null),
+    TINYBLOB(MysqlTypeConstant.TINYBLOB, null, null),
+    MEDIUMBLOB(MysqlTypeConstant.MEDIUMBLOB, null, null),
+    LONGBLOB(MysqlTypeConstant.LONGBLOB, null, null),
     /**
      * json
      */
-    JSON(null, null);
+    JSON(MysqlTypeConstant.JSON, null, null);
 
     /**
      * 默认类型长度
@@ -68,13 +69,18 @@ public enum MySqlDefaultTypeEnum {
      * 默认小数点后长度
      */
     private final Integer decimalLengthDefault;
+    /**
+     * 类型名称
+     */
+    private final String typeName;
 
-    MySqlDefaultTypeEnum(Integer lengthDefault, Integer decimalLengthDefault) {
+    MySqlDefaultTypeEnum(String typeName, Integer lengthDefault, Integer decimalLengthDefault) {
+        this.typeName = typeName;
         this.lengthDefault = lengthDefault;
         this.decimalLengthDefault = decimalLengthDefault;
     }
 
     public String typeName() {
-        return name().toLowerCase();
+        return this.typeName;
     }
 }
