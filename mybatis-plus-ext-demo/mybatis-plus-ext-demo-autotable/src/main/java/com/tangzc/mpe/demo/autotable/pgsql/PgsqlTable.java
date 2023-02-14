@@ -1,11 +1,10 @@
-package com.tangzc.mpe.demo.autotable.mysql;
+package com.tangzc.mpe.demo.autotable.pgsql;
 
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
-import com.tangzc.mpe.autotable.annotation.mysql.MysqlCharset;
-import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
+import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlTypeConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -20,12 +19,11 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-@MysqlCharset(value = "utf8mb4")
-@Table(comment = "测试表", dsName = "my-mysql")
-public class MysqlTable {
+@Table(comment = "测试表", dsName = "my-pgsql")
+public class PgsqlTable {
 
     @AutoIncrement
-    @Column(comment = "ID", type = MysqlTypeConstant.BIGINT)
+    @Column(comment = "ID", type = PgsqlTypeConstant.INT8)
     private String id;
 
     @Index
@@ -51,7 +49,7 @@ public class MysqlTable {
     @Column(comment = "激活状态")
     private Boolean active;
 
-    @ColumnType(MysqlTypeConstant.TEXT)
+    @ColumnType(value = PgsqlTypeConstant.TEXT)
     @ColumnComment("个人简介")
     private String description;
 

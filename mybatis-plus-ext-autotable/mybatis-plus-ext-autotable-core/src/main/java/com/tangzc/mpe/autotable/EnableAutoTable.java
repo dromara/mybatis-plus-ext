@@ -33,8 +33,10 @@ import java.lang.annotation.*;
         SqliteStrategy.class,
         MybatisPlusIgnore.class,
         StartUp.class,
-        DefaultTableInitDefine.class,
+        // 顺序先后 1
         DynamicDatasourceTableInitDefine.class,
+        // 顺序先后 2
+        DefaultTableInitDefine.class,
         DefaultJavaToMysqlConverterDefine.class,
         DefaultJavaToPgsqlConverterDefine.class,
         DefaultJavaToSqliteConverterDefine.class,

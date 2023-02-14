@@ -23,6 +23,6 @@ public interface PgsqlTablesMapper {
     @Delete("DROP TABLE IF EXISTS #{tableName}")
     void dropTableByName(String tableName);
 
-    @Delete("select cout(*) from pg_class where relname = #{tableName}")
+    @Delete("select count(*) from pg_class where relname = #{tableName}")
     int checkTableExist(String tableName);
 }

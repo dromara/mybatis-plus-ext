@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 
 /**
  * 建表的必备注解
+ *
  * @author don
  */
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
@@ -38,20 +39,20 @@ public @interface Column {
     String type() default "";
 
     /**
-     * 字段长度
+     * 字段长度,默认是-1，小于0相当于null
      *
-     * @return 默认字段长度，默认是255
+     * @return 默认字段长度
      */
     @AliasFor(annotation = ColumnType.class, attribute = "length")
-    int length() default 0;
+    int length() default -1;
 
     /**
-     * 小数点长度，默认是0
+     * 小数点长度，默认是-1，小于0相当于null
      *
-     * @return 小数点长度，默认是0
+     * @return 小数点长度
      */
     @AliasFor(annotation = ColumnType.class, attribute = "decimalLength")
-    int decimalLength() default 0;
+    int decimalLength() default -1;
 
     /**
      * 是否为可以为null，true是可以，false是不可以，默认为true

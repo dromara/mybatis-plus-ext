@@ -50,7 +50,7 @@ public class CreateTableSqlBuilder {
 
         String tableName = pgsqlTableMetadata.getTableName();
         return pgsqlTableMetadata.getIndexMetadataList().stream()
-                .map(pgsqlIndexMetadata -> StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON \"{tableName}\" {indexFunction} ({columns})")
+                .map(pgsqlIndexMetadata -> StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON \"{tableName}\" {indexFunction} ({columns});")
                         .replace("{indexType}", pgsqlIndexMetadata.getType() == IndexTypeEnum.UNIQUE ? "UNIQUE" : "")
                         .replace("{indexName}", pgsqlIndexMetadata.getName())
                         .replace("{tableName}", tableName)
@@ -93,7 +93,7 @@ public class CreateTableSqlBuilder {
         // 字段备注
         List<PgsqlColumnMetadata> columnMetadataList = pgsqlTableMetadata.getColumnMetadataList();
         columnMetadataList.stream()
-                .map(column -> "COMMENT ON COLUMN \"{tableName}\".\"{name}\" IS '{comment}'"
+                .map(column -> "COMMENT ON COLUMN \"{tableName}\".\"{name}\" IS '{comment}';"
                         .replace("{tableName}", tableName)
                         .replace("{name}", column.getName())
                         .replace("{comment}", column.getComment()))
@@ -102,8 +102,7 @@ public class CreateTableSqlBuilder {
         // 索引备注
         List<PgsqlIndexMetadata> indexMetadataList = pgsqlTableMetadata.getIndexMetadataList();
         indexMetadataList.stream()
-                .map(index -> "COMMENT ON INDEX \"{tableName}\".\"{name}\" IS '{comment}'"
-                        .replace("{tableName}", tableName)
+                .map(index -> "COMMENT ON INDEX \"public\".\"{name}\" IS '{comment}';"
                         .replace("{name}", index.getName())
                         .replace("{comment}", index.getComment()))
                 .forEach(commentList::add);
@@ -149,7 +148,7 @@ public class CreateTableSqlBuilder {
                 .filter(StringUtils::hasText)
                 .collect(Collectors.joining(","));
 
-        return "CREATE TABLE `{tableName}` ({columnList});"
+        return "CREATE TABLE \"{tableName}\" ({columnList});"
                 .replace("{tableName}", name)
                 .replace("{columnList}", addSql);
     }

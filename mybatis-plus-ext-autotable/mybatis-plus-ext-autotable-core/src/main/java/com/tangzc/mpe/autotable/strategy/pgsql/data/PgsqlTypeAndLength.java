@@ -1,7 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.pgsql.data;
 
 import com.tangzc.mpe.autotable.strategy.pgsql.data.enums.PgsqlDefaultTypeEnum;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,12 +9,20 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class PgsqlTypeAndLength {
     private Integer length;
     private Integer decimalLength;
     private String type;
 
+    public PgsqlTypeAndLength(Integer length, Integer decimalLength, String type) {
+        if (length != null && length >= 0) {
+            this.length = length;
+        }
+        if (decimalLength != null && decimalLength >= 0) {
+            this.decimalLength = decimalLength;
+        }
+        this.type = type;
+    }
 
     public String getFullType() {
         // 例：double(4,2) unsigned zerofill

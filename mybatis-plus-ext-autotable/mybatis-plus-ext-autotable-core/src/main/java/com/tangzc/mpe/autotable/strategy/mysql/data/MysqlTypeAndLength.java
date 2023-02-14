@@ -18,8 +18,12 @@ public class MysqlTypeAndLength {
     private String type;
 
     public MysqlTypeAndLength(Integer length, Integer decimalLength, String type) {
-        this.length = length;
-        this.decimalLength = decimalLength;
+        if (length != null && length >= 0) {
+            this.length = length;
+        }
+        if (decimalLength != null && decimalLength >= 0) {
+            this.decimalLength = decimalLength;
+        }
         this.type = type;
     }
 
@@ -52,7 +56,7 @@ public class MysqlTypeAndLength {
 
     public String getFullType() {
         // 例：double(4,2) unsigned zerofill
-        String typeAndLength = typeName();
+        String typeAndLength = this.typeName();
         // 类型具备长度属性 且 自定义长度不为空
 
         if (this.length != null) {

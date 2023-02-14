@@ -23,7 +23,7 @@ public class DynamicDatasourceIDynamicDatasourceHandler implements IDynamicDatas
             // 手动指定数据源
             DynamicDataSourceContextHolder.push(dsName);
             try {
-                mysqlStrategy.start(tables);
+                this.start(tables);
             } finally {
                 // 移除数据源
                 DynamicDataSourceContextHolder.poll();

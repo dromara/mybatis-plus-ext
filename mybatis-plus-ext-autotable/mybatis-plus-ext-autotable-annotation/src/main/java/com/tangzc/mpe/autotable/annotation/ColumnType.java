@@ -22,16 +22,12 @@ public @interface ColumnType {
     String value() default "";
 
     /**
-     * 字段长度，默认是0
-     *
-     * @return 字段长度，默认是0
+     * 字段长度，默认是-1，小于0相当于null
      */
-    int length() default 0;
+    int length() default -1;
 
     /**
-     * 小数点长度，默认是0
-     *
-     * @return 小数点长度，默认是0
+     * 小数点长度，默认是-1，小于0相当于null
      */
-    int decimalLength() default 0;
+    int decimalLength() default -1;
 }
