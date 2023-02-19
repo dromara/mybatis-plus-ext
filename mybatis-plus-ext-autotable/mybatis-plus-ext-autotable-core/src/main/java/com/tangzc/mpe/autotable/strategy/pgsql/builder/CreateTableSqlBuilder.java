@@ -6,7 +6,6 @@ import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlIndexMetadata;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlTableMetadata;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class CreateTableSqlBuilder {
      * "name"
      * );
      */
-    @NotNull
     private static String getCreateIndexSql(PgsqlTableMetadata pgsqlTableMetadata) {
 
         String tableName = pgsqlTableMetadata.getTableName();
@@ -74,7 +72,6 @@ public class CreateTableSqlBuilder {
                 ).collect(Collectors.joining("\n"));
     }
 
-    @NotNull
     private static String getAddColumnCommentSql(PgsqlTableMetadata pgsqlTableMetadata) {
 
         String tableName = pgsqlTableMetadata.getTableName();
@@ -110,7 +107,6 @@ public class CreateTableSqlBuilder {
         return String.join("\n", commentList);
     }
 
-    @NotNull
     private static String getCreateTableSql(PgsqlTableMetadata pgsqlTableMetadata) {
 
         String name = pgsqlTableMetadata.getTableName();

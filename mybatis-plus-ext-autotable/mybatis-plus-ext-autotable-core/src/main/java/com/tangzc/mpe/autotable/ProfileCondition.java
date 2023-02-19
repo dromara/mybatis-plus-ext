@@ -3,7 +3,6 @@ package com.tangzc.mpe.autotable;
 import com.tangzc.mpe.autotable.utils.ClassScanner;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class ProfileCondition implements Condition {
 
     @Override
-    public boolean matches(@NotNull ConditionContext context, AnnotatedTypeMetadata metadata) {
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
 
         Class<?> applicationClass = SpringContextUtil.getApplicationClass();
         EnableAutoTable enableAutoTable = applicationClass.getAnnotation(EnableAutoTable.class);

@@ -17,6 +17,7 @@ package com.baomidou.mybatisplus.core.metadata;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
+import com.baomidou.mybatisplus.core.handlers.PostInitTableInfoHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
 import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import com.baomidou.mybatisplus.core.metadata.impl.TableIdImpl;
@@ -51,7 +52,6 @@ import static java.util.stream.Collectors.toList;
  * @since 2016-09-09
  */
 public class TableInfoHelper {
-
     private static final Log logger = LogFactory.getLog(TableInfoHelper.class);
 
     /**
@@ -177,11 +177,11 @@ public class TableInfoHelper {
         List<String> excludePropertyList = excludeProperty != null && excludeProperty.length > 0 ? Arrays.asList(excludeProperty) : Collections.emptyList();
 
         /* 初始化字段相关 */
-        initTableFields(clazz, globalConfig, tableInfo, excludePropertyList);
+        initTableFields(configuration, clazz, globalConfig, tableInfo, excludePropertyList);
 
         /* 自动构建 resultMap */
         tableInfo.initResultMapIfNeed();
-
+        globalConfig.getPostInitTableInfoHandler().postTableInfo(tableInfo, configuration);
         TABLE_INFO_CACHE.put(clazz, tableInfo);
         TABLE_NAME_INFO_CACHE.put(tableInfo.getTableName(), tableInfo);
 
@@ -282,9 +282,10 @@ public class TableInfoHelper {
      * @param globalConfig 全局配置
      * @param tableInfo    数据库表反射信息
      */
-    private static void initTableFields(Class<?> clazz, GlobalConfig globalConfig, TableInfo tableInfo, List<String> excludeProperty) {
+    private static void initTableFields(Configuration configuration, Class<?> clazz, GlobalConfig globalConfig, TableInfo tableInfo, List<String> excludeProperty) {
         /* 数据库全局配置 */
         GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
+        PostInitTableInfoHandler postInitTableInfoHandler = globalConfig.getPostInitTableInfoHandler();
         Reflector reflector = tableInfo.getReflector();
         List<Field> list = getAllFields(clazz);
         // 标记是否读取到主键
@@ -330,12 +331,16 @@ public class TableInfoHelper {
 
             /* 有 @TableField 注解的字段初始化 */
             if (tableField != null) {
-                fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, tableField, reflector, existTableLogic, isOrderBy));
+                TableFieldInfo tableFieldInfo = new TableFieldInfo(dbConfig, tableInfo, field, tableField, reflector, existTableLogic, isOrderBy);
+                fieldList.add(tableFieldInfo);
+                postInitTableInfoHandler.postFieldInfo(tableFieldInfo, configuration);
                 continue;
             }
 
             /* 无 @TableField  注解的字段初始化 */
-            fieldList.add(new TableFieldInfo(dbConfig, tableInfo, field, reflector, existTableLogic, isOrderBy));
+            TableFieldInfo tableFieldInfo = new TableFieldInfo(dbConfig, tableInfo, field, reflector, existTableLogic, isOrderBy);
+            fieldList.add(tableFieldInfo);
+            postInitTableInfoHandler.postFieldInfo(tableFieldInfo, configuration);
         }
 
         /* 字段列表 */
@@ -396,10 +401,10 @@ public class TableInfoHelper {
     private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableId tableId) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
-        if (AnnotatedElementUtilsPlus.hasAnnotation(field, TableField.class)) {
-            logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
-                    property, tableInfo.getEntityType().getName()));
-        }
+        // if (field.getAnnotation(TableField.class) != null) {
+        //     logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
+        //         property, tableInfo.getEntityType().getName()));
+        // }
         /* 主键策略（ 注解 > 全局 ） */
         // 设置 Sequence 其他策略无效
         if (IdType.NONE == tableId.type()) {
@@ -426,6 +431,12 @@ public class TableInfoHelper {
         if (keyType.isPrimitive()) {
             logger.warn(String.format("This primary key of \"%s\" is primitive !不建议如此请使用包装类 in Class: \"%s\"",
                     property, tableInfo.getEntityType().getName()));
+        }
+        if (StringUtils.isEmpty(tableId.value())) {
+            String columnFormat = dbConfig.getColumnFormat();
+            if (StringUtils.isNotBlank(columnFormat)) {
+                column = String.format(columnFormat, column);
+            }
         }
         tableInfo.setKeyRelated(checkRelated(underCamel, property, column))
                 .setKeyColumn(column)
@@ -457,6 +468,10 @@ public class TableInfoHelper {
             if (keyType.isPrimitive()) {
                 logger.warn(String.format("This primary key of \"%s\" is primitive !不建议如此请使用包装类 in Class: \"%s\"",
                         property, tableInfo.getEntityType().getName()));
+            }
+            String columnFormat = dbConfig.getColumnFormat();
+            if (StringUtils.isNotBlank(columnFormat)) {
+                column = String.format(columnFormat, column);
             }
             tableInfo.setKeyRelated(checkRelated(tableInfo.isUnderCamel(), property, column))
                     .setIdType(dbConfig.getIdType())
@@ -505,7 +520,7 @@ public class TableInfoHelper {
         return fieldList.stream()
                 .filter(field -> {
                     /* 过滤注解非表字段属性 */
-                    final TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+                    TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
                     return (tableField == null || tableField.exist());
                 }).collect(toList());
     }

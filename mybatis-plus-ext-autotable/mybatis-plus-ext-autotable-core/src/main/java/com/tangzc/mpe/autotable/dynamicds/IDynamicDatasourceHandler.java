@@ -6,7 +6,6 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.strategy.IStrategy;
 import com.tangzc.mpe.autotable.utils.SpringContextUtil;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,6 @@ public interface IDynamicDatasourceHandler {
      *
      * @return 返回数据方言
      */
-    @Nullable
     default DatabaseDialect getDatabaseDialect() {
         String driverName;
         DataSource dataSource = SpringContextUtil.getBeanOfType(DataSource.class);
@@ -77,7 +75,6 @@ public interface IDynamicDatasourceHandler {
      * @param databaseDialect 数据库方言
      * @return 策略
      */
-    @Nullable
     default IStrategy<?, ?> getDatabaseStrategy(DatabaseDialect databaseDialect) {
         return (IStrategy<?, ?>) SpringContextUtil.getBeansOfTypeList(IStrategy.class).stream()
                 // 删选出对应方言的策略

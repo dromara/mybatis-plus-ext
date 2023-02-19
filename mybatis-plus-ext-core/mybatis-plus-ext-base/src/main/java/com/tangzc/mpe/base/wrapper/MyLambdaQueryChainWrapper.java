@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
 import java.util.function.Predicate;
 
 /**
+ * 模仿{@link com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper}的实现逻辑，同时把{@link com.baomidou.mybatisplus.extension.conditions.query.ChainQuery}改为自定义的包装接口{@link BindChainQuery}
  * @author don
  */
 public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunction<T, ?>, MyLambdaQueryChainWrapper<T>, LambdaQueryWrapper<T>>
@@ -22,6 +23,24 @@ public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunct
         super();
         this.baseMapper = baseMapper;
         super.wrapperChildren = new LambdaQueryWrapper<>();
+    }
+
+    public MyLambdaQueryChainWrapper(Class<T> entityClass) {
+        super();
+        this.baseMapper = null;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entityClass);
+    }
+
+    public MyLambdaQueryChainWrapper(BaseMapper<T> baseMapper, T entity) {
+        super();
+        this.baseMapper = baseMapper;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entity);
+    }
+
+    public MyLambdaQueryChainWrapper(BaseMapper<T> baseMapper, Class<T> entityClass) {
+        super();
+        this.baseMapper = baseMapper;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entityClass);
     }
 
     @SafeVarargs
@@ -47,4 +66,8 @@ public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunct
         return baseMapper;
     }
 
+    @Override
+    public Class<T> getEntityClass() {
+        return super.wrapperChildren.getEntityClass();
+    }
 }

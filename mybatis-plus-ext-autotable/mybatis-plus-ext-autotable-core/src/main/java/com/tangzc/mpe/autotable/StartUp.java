@@ -7,7 +7,6 @@ import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.utils.ClassScanner;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
@@ -53,7 +52,6 @@ public class StartUp {
         dynamicDatasourceHandler.initTable(needHandleTableMap);
     }
 
-    @NotNull
     private String[] getModelPackage() {
         String[] packs = autoTableProperties.getModelPackage();
         if (StringUtils.isEmpty(packs)) {

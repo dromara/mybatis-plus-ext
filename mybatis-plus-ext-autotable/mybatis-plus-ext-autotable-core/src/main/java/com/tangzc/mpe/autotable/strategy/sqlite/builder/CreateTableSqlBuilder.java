@@ -5,7 +5,6 @@ import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteColumnMetadata;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteIndexMetadata;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ public class CreateTableSqlBuilder {
      * PRIMARY KEY ("id", "card_id")
      * );
      */
-    @NotNull
     public static String buildTableSql(String name, String comment, List<SqliteColumnMetadata> columnMetadataList) {
         // 获取所有主键
         List<String> primaries = new ArrayList<>();
@@ -86,7 +84,6 @@ public class CreateTableSqlBuilder {
      * "card_id" ASC
      * );
      */
-    @NotNull
     public static List<String> buildIndexSql(String name, List<SqliteIndexMetadata> indexMetadataList) {
         // sqlite索引特殊处理
         // 索引
