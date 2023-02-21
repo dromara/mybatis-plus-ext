@@ -31,11 +31,11 @@ public class AutoTableProperties {
     /**
      * 自动删除名称不匹配的字段：强烈不建议开启，会发生丢失数据等不可逆的操作。
      */
-    private boolean autoDropColumn = false;
+    private Boolean autoDropColumn = false;
     /**
      * 是否自动删除名称不匹配的索引
      */
-    private boolean autoDropIndex = true;
+    private Boolean autoDropIndex = true;
     /**
      * 打印执行结果
      */

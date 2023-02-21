@@ -24,7 +24,7 @@ public enum RunMode {
     create,
     /**
      * 系统启动时，会自动判断哪些表是新建的，哪些字段要新增修改，哪些索引/约束要新增删除等，该操作不会删除字段(更改字段名称的情况下，会认为是新增字段)
-     * 如果需要从数据库强制删除实体上不存在的字段，请参考配置 {@link AutoTableProperties#isAutoDropColumn()} 设置为 true
+     * 如果需要从数据库强制删除实体上不存在的字段，请参考配置 {@link AutoTableProperties} 中的配置项 autoDropColumn 设置为 true
      */
     update
 }
