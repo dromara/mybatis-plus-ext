@@ -1,5 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
+import com.tangzc.mpe.autotable.strategy.CompareTableInfo;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.List;
  */
 @Data
 @RequiredArgsConstructor
-public class MysqlCompareTableInfo {
+public class MysqlCompareTableInfo implements CompareTableInfo {
 
     /**
      * 表名: 不可变，变了意味着新表
@@ -63,7 +64,8 @@ public class MysqlCompareTableInfo {
     /**
      * 判断该修改参数，是不是可用，如果除了name，其他值均没有设置过，则无效，反之有效
      */
-    public boolean isValid() {
+    @Override
+    public boolean needModify() {
         return engine != null ||
                 characterSet != null ||
                 collate != null ||

@@ -6,7 +6,6 @@ import com.tangzc.mpe.autotable.mybatisplus.MybatisPlusIgnore;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.strategy.mysql.MysqlStrategy;
 import com.tangzc.mpe.autotable.strategy.mysql.converter.impl.DefaultJavaToMysqlConverterDefine;
-import com.tangzc.mpe.autotable.strategy.pgsql.PgsqlStrategy;
 import com.tangzc.mpe.autotable.strategy.pgsql.converter.impl.DefaultJavaToPgsqlConverterDefine;
 import com.tangzc.mpe.autotable.strategy.sqlite.SqliteStrategy;
 import com.tangzc.mpe.autotable.strategy.sqlite.converter.impl.DefaultJavaToSqliteConverterDefine;
@@ -29,7 +28,7 @@ import java.lang.annotation.*;
         MybatisPlusProperties.class,
         MapperScannerConfig.class,
         MysqlStrategy.class,
-        PgsqlStrategy.class,
+        // PgsqlStrategy.class,
         SqliteStrategy.class,
         MybatisPlusIgnore.class,
         StartUp.class,

@@ -128,12 +128,8 @@ public class ModifyTableSqlBuilder {
                 .filter(StringUtils::hasText)
                 .collect(Collectors.joining(","));
 
-        if (!modifySql.isEmpty()) {
-            return "ALTER TABLE `{tableName}` {modifyItems};"
-                    .replace("{tableName}", name)
-                    .replace("{modifyItems}", modifySql);
-        } else {
-            return null;
-        }
+        return "ALTER TABLE `{tableName}` {modifyItems};"
+                .replace("{tableName}", name)
+                .replace("{modifyItems}", modifySql);
     }
 }

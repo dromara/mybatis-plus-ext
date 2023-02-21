@@ -1,3 +1,6 @@
+server:
+  port: 9090
+
 spring:
   datasource:
     dynamic:
@@ -32,4 +35,4 @@ mybatis-plus:
 mpe:
   auto-table:
     auto-drop-column: true
-#    mode: create
+    mode: validate

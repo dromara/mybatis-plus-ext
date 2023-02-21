@@ -30,12 +30,14 @@ public interface IDynamicDatasourceHandler {
     default void start(Set<Class<?>> beanClasses) {
 
         DatabaseDialect databaseDialect = this.getDatabaseDialect();
-        IStrategy<?, ?> databaseStrategy = this.getDatabaseStrategy(databaseDialect);
-        if (databaseStrategy == null) {
-            log.warn("没有找到对应的数据库（" + databaseDialect + "）方言策略，无法执行自动建表");
-        } else {
-            databaseStrategy.analyseClasses(beanClasses);
+        if (databaseDialect != null) {
+            IStrategy<?, ?> databaseStrategy = this.getDatabaseStrategy(databaseDialect);
+            if (databaseStrategy != null) {
+                databaseStrategy.analyseClasses(beanClasses);
+                return;
+            }
         }
+        log.warn("没有找到对应的数据库（" + databaseDialect + "）方言策略，无法执行自动建表");
     }
 
     /**

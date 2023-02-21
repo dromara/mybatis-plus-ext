@@ -8,12 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
  * @author don
  */
-public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO> {
+public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO extends CompareTableInfo> {
 
     Logger log = LoggerFactory.getLogger(IStrategy.class);
 
@@ -32,6 +34,16 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO>
     @Transactional(rollbackFor = Exception.class)
     default void analyseClasses(Set<Class<?>> beanClasses) {
 
+        AutoTableProperties autoTableProperties = SpringContextUtil.getBeanOfType(AutoTableProperties.class);
+
+        if (autoTableProperties.getMode() == RunMode.validate) {
+            validateMode(beanClasses);
+        } else {
+            createOrUpdateMode(beanClasses, autoTableProperties.getMode());
+        }
+    }
+
+    default void createOrUpdateMode(Set<Class<?>> beanClasses, RunMode runMode) {
         for (Class<?> beanClass : beanClasses) {
 
             TABLE_META tableMetadata = this.analyseClass(beanClass);
@@ -43,8 +55,7 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO>
 
             String tableName = tableMetadata.getTableName();
 
-            AutoTableProperties autoTableProperties = SpringContextUtil.getBeanOfType(AutoTableProperties.class);
-            if (autoTableProperties.getMode() == RunMode.create) {
+            if (runMode == RunMode.create) {
                 // create模式特殊对待，如果配置文件配置的是create，表示将所有的表删掉重新创建
                 log.info("create模式，删除表：{}", tableName);
                 // 直接删除表重新生成
@@ -56,13 +67,43 @@ public interface IStrategy<TABLE_META extends TableMetadata, COMPARE_TABLE_INFO>
             if (tableIsExist) {
                 // 当表存在，比对表与Bean描述的差异
                 COMPARE_TABLE_INFO compareTableInfo = this.compareTable(tableMetadata);
-                // 修改表信息
-                this.modifyTable(compareTableInfo);
+                if (compareTableInfo.needModify()) {
+                    // 修改表信息
+                    this.modifyTable(compareTableInfo);
+                }
             } else {
                 // 当表不存在的时候，直接生成表
                 log.info("创建表：{}", tableName);
                 this.createTable(tableMetadata);
             }
+        }
+    }
+
+    default void validateMode(Set<Class<?>> beanClasses) {
+        List<String> validateResult = new ArrayList<>();
+        for (Class<?> beanClass : beanClasses) {
+
+            TABLE_META tableMetadata = this.analyseClass(beanClass);
+
+            // 构建数据模型失败跳过
+            if (tableMetadata == null) {
+                continue;
+            }
+
+            String tableName = tableMetadata.getTableName();
+            // 检查数据库数据模型与实体是否一致
+            boolean tableIsExist = this.checkTableExist(tableName);
+            if (tableIsExist) {
+                COMPARE_TABLE_INFO compareTableInfo = this.compareTable(tableMetadata);
+                if (compareTableInfo.needModify()) {
+                    validateResult.add("表" + tableName + "结构不一致");
+                }
+            } else {
+                validateResult.add("表" + tableName + "不存在");
+            }
+        }
+        if (!validateResult.isEmpty()) {
+            throw new RuntimeException("启动失败，" + this.dbDialect() + "数据库与实体模型不对应：\n" + String.join("\n", validateResult));
         }
     }
 

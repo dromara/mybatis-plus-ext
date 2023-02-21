@@ -104,13 +104,11 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     @Override
     public void modifyTable(MysqlCompareTableInfo mysqlCompareTableInfo) {
         String sqlStr = ModifyTableSqlBuilder.buildSql(mysqlCompareTableInfo);
-        if (StringUtils.hasText(sqlStr)) {
-            log.info("开始修改表：{}", mysqlCompareTableInfo.getName());
-            log.info("执行SQL：{}", sqlStr);
-            mysqlTablesMapper.executeSql(sqlStr);
-            // insertExecuteSqlLog(sqlStr);
-            log.info("结束修改表：{}", mysqlCompareTableInfo.getName());
-        }
+        log.info("开始修改表：{}", mysqlCompareTableInfo.getName());
+        log.info("执行SQL：{}", sqlStr);
+        mysqlTablesMapper.executeSql(sqlStr);
+        // insertExecuteSqlLog(sqlStr);
+        log.info("结束修改表：{}", mysqlCompareTableInfo.getName());
     }
 
     private void compareIndexes(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, Map<String, List<InformationSchemaStatistics>> tableIndexs) {
@@ -199,10 +197,11 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     }
 
     private void compareColumns(MysqlTableMetadata mysqlTableMetadata, String tableName, MysqlCompareTableInfo mysqlCompareTableInfo) {
+        // 实体全部字段描述
         List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
-        // 变形：《列名，SqliteColumnMetadata》
+        // 变形：《列名，实体字段描述》
         Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
-        // 查询所有列数据
+        // 查询数据库所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);
         for (InformationSchemaColumn informationSchemaColumn : tableColumnList) {
             String columnName = informationSchemaColumn.getColumnName();
