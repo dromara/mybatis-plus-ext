@@ -30,6 +30,8 @@
   - [x] 默认支持MySQL
   - [x] 支持SQLite
   - [ ] 支持PgSql
+* 自动建表，添加SQL执行过程留痕功能，方便生产环境直接导出使用
+  - [ ] 新增配置项：`mpe.auto-table.record-sql`配置项，配置SQL记录到数据库
 * 加密解密场景
   - [ ] 新增`@Encrypt`: {autoDecode: boolean(默认ture), mode: enum(默认BASE64), encryptHandle?: class\<IEncryptHandler>}，字段自动加密（类似密码字段的需求，内置几种常用算法）
   - [ ] 新增`IEncryptHandler`接口，开放给使用方自定义加密解密算法。
