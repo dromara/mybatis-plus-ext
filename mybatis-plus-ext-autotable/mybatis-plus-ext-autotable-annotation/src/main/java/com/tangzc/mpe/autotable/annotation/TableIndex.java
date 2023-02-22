@@ -24,11 +24,6 @@ public @interface TableIndex {
     IndexTypeEnum type() default IndexTypeEnum.NORMAL;
 
     /**
-     * 索引方法
-     */
-    String function() default "";
-
-    /**
      * <p>字段名：支持多字段
      * <p>注意，多字段的情况下，字段书序即构建索引时候的顺序，牵扯索引左匹配问题
      * <p>该配置优先级低于{@link #indexFields()}，具体可参考{@link #indexFields()}的说明

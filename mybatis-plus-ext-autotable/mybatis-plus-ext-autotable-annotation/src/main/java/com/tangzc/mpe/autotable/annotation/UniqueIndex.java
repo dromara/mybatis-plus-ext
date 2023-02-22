@@ -24,12 +24,6 @@ public @interface UniqueIndex {
     String name() default "";
 
     /**
-     * 索引方法
-     */
-    @AliasFor(annotation = Index.class, attribute = "function")
-    String function() default "";
-
-    /**
      * 索引注释
      */
     @AliasFor(annotation = Index.class, attribute = "comment")

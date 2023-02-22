@@ -110,8 +110,8 @@ public class CreateTableSqlBuilder {
     }
 
     public static String getIndexSql(MysqlIndexMetadata mysqlIndexMetadata) {
-        // 例子： UNIQUE INDEX `unique_name_age`(`name` ASC, `age` DESC) COMMENT '姓名、年龄索引' USING BTREE,
-        return StringHelper.newInstance("{indexType} INDEX `{indexName}`({columns}) {indexFunction} {indexComment}")
+        // 例子： UNIQUE INDEX `unique_name_age`(`name` ASC, `age` DESC) COMMENT '姓名、年龄索引',
+        return StringHelper.newInstance("{indexType} INDEX `{indexName}`({columns}) {indexComment}")
                 .replace("{indexType}", mysqlIndexMetadata.getType() == IndexTypeEnum.UNIQUE ? "UNIQUE" : "")
                 .replace("{indexName}", mysqlIndexMetadata.getName())
                 .replace("{columns}", (key) -> {
@@ -122,13 +122,6 @@ public class CreateTableSqlBuilder {
                                     .replace("{column}", column.getColumn())
                                     .replace("{sortMode}", column.getSort() != null ? column.getSort().name() : "")
                     ).collect(Collectors.joining(","));
-                })
-                .replace("{indexFunction}", (key) -> {
-                    if (mysqlIndexMetadata.getFunction() != null) {
-                        return "USING " + mysqlIndexMetadata.getFunction();
-                    } else {
-                        return "";
-                    }
                 })
                 .replace("{indexComment}", StringUtils.hasText(mysqlIndexMetadata.getComment()) ? "COMMENT '" + mysqlIndexMetadata.getComment() + "'" : "")
                 .toString();

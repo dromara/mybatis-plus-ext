@@ -39,11 +39,6 @@ public class PgsqlIndexMetadata {
     private IndexTypeEnum type;
 
     /**
-     * 索引方法
-     */
-    private String function;
-
-    /**
      * 索引注释
      */
     private String comment;
@@ -74,9 +69,6 @@ public class PgsqlIndexMetadata {
             }
             mysqlIndexMetadata.setName(indexPrefix + indexName);
             mysqlIndexMetadata.setType(index.type());
-            if (StringUtils.hasText(index.function())) {
-                mysqlIndexMetadata.setFunction(index.function());
-            }
             mysqlIndexMetadata.setComment(index.comment());
             mysqlIndexMetadata.getColumns().add(PgsqlIndexMetadata.IndexColumnParam.newInstance(realColumnName, null));
             return mysqlIndexMetadata;
@@ -94,9 +86,6 @@ public class PgsqlIndexMetadata {
             PgsqlIndexMetadata mysqlIndexMetadata = new PgsqlIndexMetadata();
             mysqlIndexMetadata.setName(indexPrefix + tableIndex.name());
             mysqlIndexMetadata.setType(tableIndex.type());
-            if (StringUtils.hasText(tableIndex.function())) {
-                mysqlIndexMetadata.setFunction(tableIndex.function());
-            }
             mysqlIndexMetadata.setComment(tableIndex.comment());
             mysqlIndexMetadata.setColumns(columnParams);
             return mysqlIndexMetadata;

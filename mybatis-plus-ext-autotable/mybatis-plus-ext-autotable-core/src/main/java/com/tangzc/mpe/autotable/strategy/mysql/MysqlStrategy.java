@@ -167,8 +167,12 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     private static void comparePrimary(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, List<InformationSchemaStatistics> tablePrimaries) {
         // 存在主键的话
         if (CollectionUtils.isEmpty(tablePrimaries)) {
+            boolean tableHasPrimary = mysqlTableMetadata.getColumnMetadataList().stream()
+                    .anyMatch(MysqlColumnMetadata::isPrimary);
             // 如果当前表不存在主键，则更新主键(如果Bean上有的话)
-            mysqlCompareTableInfo.setResetPrimary(true);
+            if (tableHasPrimary) {
+                mysqlCompareTableInfo.setResetPrimary(true);
+            }
         } else {
             // 获取当前Bean上指定的主键列表，顺序按照列的自然顺序排列
             List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getColumnMetadataList().stream()

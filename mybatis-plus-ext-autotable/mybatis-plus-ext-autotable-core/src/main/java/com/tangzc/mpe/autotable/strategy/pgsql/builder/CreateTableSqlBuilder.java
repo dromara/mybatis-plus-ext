@@ -48,17 +48,10 @@ public class CreateTableSqlBuilder {
 
         String tableName = pgsqlTableMetadata.getTableName();
         return pgsqlTableMetadata.getIndexMetadataList().stream()
-                .map(pgsqlIndexMetadata -> StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON \"{tableName}\" {indexFunction} ({columns});")
+                .map(pgsqlIndexMetadata -> StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON \"{tableName}\" ({columns});")
                         .replace("{indexType}", pgsqlIndexMetadata.getType() == IndexTypeEnum.UNIQUE ? "UNIQUE" : "")
                         .replace("{indexName}", pgsqlIndexMetadata.getName())
                         .replace("{tableName}", tableName)
-                        .replace("{indexFunction}", (key) -> {
-                            if (pgsqlIndexMetadata.getFunction() != null) {
-                                return "USING " + pgsqlIndexMetadata.getFunction();
-                            } else {
-                                return "";
-                            }
-                        })
                         .replace("{columns}", (key) -> {
                             List<PgsqlIndexMetadata.IndexColumnParam> columnParams = pgsqlIndexMetadata.getColumns();
                             return columnParams.stream().map(column ->

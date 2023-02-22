@@ -56,9 +56,7 @@ public class TableBeanUtils {
         List<TableIndex> tableIndices = new ArrayList<>();
         TableIndexes tableIndexes = AnnotatedElementUtils.findMergedAnnotation(clazz, TableIndexes.class);
         if (tableIndexes != null) {
-            for (TableIndex tableIndex : tableIndexes.value()) {
-                tableIndices.add(tableIndex);
-            }
+            Collections.addAll(tableIndices, tableIndexes.value());
         }
         TableIndex tableIndex = AnnotatedElementUtils.findMergedAnnotation(clazz, TableIndex.class);
         if (tableIndex != null) {
