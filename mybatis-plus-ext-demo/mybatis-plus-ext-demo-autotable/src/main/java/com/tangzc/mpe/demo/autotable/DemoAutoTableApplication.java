@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableAutoTable
 @SpringBootApplication
 public class DemoAutoTableApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(DemoAutoTableApplication.class, args);
     }
