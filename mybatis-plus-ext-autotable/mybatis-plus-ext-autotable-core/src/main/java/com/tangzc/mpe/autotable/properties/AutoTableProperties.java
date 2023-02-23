@@ -37,12 +37,8 @@ public class AutoTableProperties {
      */
     private Boolean autoDropIndex = true;
     /**
-     * 打印执行结果
-     */
-    // private boolean printRunResult = true;
-    /**
      * 记录执行的SQL
      */
-    // private ExecuteSqlLogProperties executeSqlLog = new ExecuteSqlLogProperties();
+    // private RecordSqlProperties recordSql = new RecordSqlProperties();
 
 }

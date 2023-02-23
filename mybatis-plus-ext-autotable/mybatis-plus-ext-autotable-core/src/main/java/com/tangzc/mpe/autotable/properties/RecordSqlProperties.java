@@ -6,7 +6,7 @@ import lombok.Data;
  * 执行sql日志的配置
  */
 @Data
-public class ExecuteSqlLogProperties {
+public class RecordSqlProperties {
     /**
      * 开启记录sql日志
      */

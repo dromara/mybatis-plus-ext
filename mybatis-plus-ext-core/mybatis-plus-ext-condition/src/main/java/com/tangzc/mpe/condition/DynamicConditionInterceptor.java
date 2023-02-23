@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.tangzc.mpe.base.util.SpringContextUtil;
-import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.EnumUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
@@ -151,11 +152,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
                     condExpr = TableColumnNameUtil.getRealColumnName(entityField) + " is null";
                 } else {
                     // 字符串的话，两边追加'
-                    if (entityField.getType() == String.class) {
-                        values = values.stream()
-                                .map(value -> "'" + value.toString() + "'")
-                                .collect(Collectors.toList());
-                    }
+                    values = autoFillStrVal(entityField, values);
                     if (values.size() == 1) {
                         condExpr = TableColumnNameUtil.getRealColumnName(entityField) + "=" + values.get(0) + "";
                     } else {
@@ -173,5 +170,27 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
             e.printStackTrace();
         }
         return where;
+    }
+
+    /**
+     * 字符串的话，两边追加'
+     */
+    private static List<Object> autoFillStrVal(Field entityField, List<Object> values) {
+        Class<?> type = entityField.getType();
+        if (type.isEnum()) {
+            type = EnumUtil.getEnumFieldSaveDbType(type);
+        }
+        if (type == String.class) {
+            values = values.stream()
+                    .map(value -> {
+                        String valStr = value.toString();
+                        if (valStr.startsWith("'") && valStr.endsWith("'")) {
+                            return valStr;
+                        }
+                        return "'" + valStr + "'";
+                    })
+                    .collect(Collectors.toList());
+        }
+        return values;
     }
 }

@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 
 public class BeanClassUtil {
 
+    /**
+     * 根据字段的get方法，获取字段名称
+     */
     public static <E> String getFieldName(SFunction<E, ?> sf) {
         LambdaMeta lambda = LambdaUtils.extract(sf);
         return PropertyNamer.methodToProperty(lambda.getImplMethodName());

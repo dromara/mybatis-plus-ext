@@ -3,6 +3,7 @@ package com.tangzc.mpe.autotable.strategy.mysql.converter.impl;
 import com.tangzc.mpe.autotable.strategy.mysql.converter.JavaToMysqlConverter;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeAndLength;
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlDefaultTypeEnum;
+import com.tangzc.mpe.magic.util.EnumUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -54,13 +55,11 @@ public class DefaultJavaToMysqlConverter implements JavaToMysqlConverter {
     @Override
     public MysqlTypeAndLength convert(Class<?> fieldClass) {
 
-        MySqlDefaultTypeEnum sqlType;
         if (fieldClass.isEnum()) {
             // 枚举默认设置字符串类型
-            sqlType = MySqlDefaultTypeEnum.VARCHAR;
-        } else {
-            sqlType = JAVA_TO_MYSQL_TYPE_MAP.getOrDefault(fieldClass, MySqlDefaultTypeEnum.VARCHAR);
+            fieldClass = EnumUtil.getEnumFieldSaveDbType(fieldClass);
         }
+        MySqlDefaultTypeEnum sqlType = JAVA_TO_MYSQL_TYPE_MAP.getOrDefault(fieldClass, MySqlDefaultTypeEnum.VARCHAR);
 
         if (sqlType == null) {
             throw new RuntimeException(fieldClass + "默认情况下，不支持转换到mysql类型，如有需要请自行实现" + JavaToMysqlConverter.class.getName());

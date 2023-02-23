@@ -3,6 +3,7 @@ package com.tangzc.mpe.autotable.strategy.sqlite.converter.impl;
 import com.tangzc.mpe.autotable.strategy.sqlite.converter.JavaToSqliteConverter;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteTypeAndLength;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.enums.SqliteDefaultTypeEnum;
+import com.tangzc.mpe.magic.util.EnumUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @author don
  */
 public class DefaultJavaToSqliteConverter implements JavaToSqliteConverter {
-    private static final Map<Class<?>, SqliteDefaultTypeEnum> TYPE_MAP = new HashMap<Class<?>, SqliteDefaultTypeEnum>() {
+    private static final Map<Class<?>, SqliteDefaultTypeEnum> JAVA_TO_SQLITE_TYPE_MAP = new HashMap<Class<?>, SqliteDefaultTypeEnum>() {
         {
             put(String.class, SqliteDefaultTypeEnum.TEXT);
             put(Character.class, SqliteDefaultTypeEnum.TEXT);
@@ -54,13 +55,13 @@ public class DefaultJavaToSqliteConverter implements JavaToSqliteConverter {
 
     @Override
     public SqliteTypeAndLength convert(Class<?> fieldClass) {
-        SqliteDefaultTypeEnum sqlType;
-        // 枚举默认设置字符串类型
+
         if (fieldClass.isEnum()) {
-            sqlType = SqliteDefaultTypeEnum.TEXT;
-        } else {
-            sqlType = TYPE_MAP.getOrDefault(fieldClass, SqliteDefaultTypeEnum.TEXT);
+            // 枚举默认设置字符串类型
+            fieldClass = EnumUtil.getEnumFieldSaveDbType(fieldClass);
         }
+        SqliteDefaultTypeEnum sqlType = JAVA_TO_SQLITE_TYPE_MAP.getOrDefault(fieldClass, SqliteDefaultTypeEnum.TEXT);
+
 
         if (sqlType == null) {
             throw new RuntimeException(fieldClass + "默认情况下，不支持转换到sqlite类型，如有需要请自行实现" + JavaToSqliteConverter.class.getName());

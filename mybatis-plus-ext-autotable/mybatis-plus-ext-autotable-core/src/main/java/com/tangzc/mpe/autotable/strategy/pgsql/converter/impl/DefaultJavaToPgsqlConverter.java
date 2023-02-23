@@ -3,6 +3,7 @@ package com.tangzc.mpe.autotable.strategy.pgsql.converter.impl;
 import com.tangzc.mpe.autotable.strategy.pgsql.converter.JavaToPgsqlConverter;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlTypeAndLength;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.enums.PgsqlDefaultTypeEnum;
+import com.tangzc.mpe.magic.util.EnumUtil;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @author don
  */
 public class DefaultJavaToPgsqlConverter implements JavaToPgsqlConverter {
-    public static final Map<Class<?>, PgsqlDefaultTypeEnum> JAVA_TO_MYSQL_TYPE_MAP = new HashMap<Class<?>, PgsqlDefaultTypeEnum>() {{
+    public static final Map<Class<?>, PgsqlDefaultTypeEnum> JAVA_TO_PGSQL_TYPE_MAP = new HashMap<Class<?>, PgsqlDefaultTypeEnum>() {{
         put(String.class, PgsqlDefaultTypeEnum.VARCHAR);
         put(Character.class, PgsqlDefaultTypeEnum.CHAR);
         put(char.class, PgsqlDefaultTypeEnum.CHAR);
@@ -52,13 +53,13 @@ public class DefaultJavaToPgsqlConverter implements JavaToPgsqlConverter {
 
     @Override
     public PgsqlTypeAndLength convert(Class<?> fieldClass) {
-        PgsqlDefaultTypeEnum sqlType;
-        // 枚举默认设置字符串类型
+
         if (fieldClass.isEnum()) {
-            sqlType = PgsqlDefaultTypeEnum.VARCHAR;
-        } else {
-            sqlType = JAVA_TO_MYSQL_TYPE_MAP.getOrDefault(fieldClass, PgsqlDefaultTypeEnum.VARCHAR);
+            // 枚举默认设置字符串类型
+            fieldClass = EnumUtil.getEnumFieldSaveDbType(fieldClass);
         }
+        PgsqlDefaultTypeEnum sqlType = JAVA_TO_PGSQL_TYPE_MAP.getOrDefault(fieldClass, PgsqlDefaultTypeEnum.VARCHAR);
+
 
         if (sqlType == null) {
             throw new RuntimeException(fieldClass + "默认情况下，不支持转换到pgsql类型，如有需要请自行实现" + JavaToPgsqlConverter.class.getName());

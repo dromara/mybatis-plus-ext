@@ -51,8 +51,8 @@ public interface IDynamicDatasourceHandler {
         // 多数据源模式
         String dynamicDsClassName = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource";
         if (dynamicDsClassName.equals(dataSource.getClass().getName())) {
-            // 纯属为了校验，防止DynamicRoutingDataSource类的签名有变更
-            assert com.baomidou.dynamic.datasource.DynamicRoutingDataSource.class.getName().equals(dynamicDsClassName);
+            // 上面的if判断只能用字符串，因为如果没有引入类的话，通过类取名字会报错，所以为了防止DynamicRoutingDataSource类的签名有变更，下面通过全名称引用下该类，便于编译期间发现类的签名变了。
+            log.info("开启多数据源模式：" + com.baomidou.dynamic.datasource.DynamicRoutingDataSource.class.getName());
             dataSource = ((DynamicRoutingDataSource) dataSource).getDataSource(DynamicDataSourceContextHolder.peek());
             DataSource realDataSource = ((ItemDataSource) dataSource).getRealDataSource();
             try {
