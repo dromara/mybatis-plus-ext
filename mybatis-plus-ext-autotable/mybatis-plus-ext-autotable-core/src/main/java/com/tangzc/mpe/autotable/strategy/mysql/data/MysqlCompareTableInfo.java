@@ -39,7 +39,7 @@ public class MysqlCompareTableInfo implements CompareTableInfo {
     /**
      * 新的主键
      */
-    private List<MysqlColumnMetadata> newPrimaries;
+    private List<MysqlColumnMetadata> newPrimaries = new ArrayList<>();
     /**
      * 是否删除主键
      */

@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
@@ -19,7 +20,7 @@ public class MysqlTable3 {
     //
     // 指定主键自增注释、类型（数据库数字类型可以跟java字符串类型相互转化）、长度
     // 注意字段名称id会被自动认定为主键不需要再额外指定
-    @ColumnId(comment = "id主键", type = MysqlTypeConstant.BIGINT, length = 32)
+    @ColumnId(mode = IdType.AUTO, comment = "id主键", type = MysqlTypeConstant.BIGINT, length = 32)
     private String id;
 
     // id2与id形成联合主键。
