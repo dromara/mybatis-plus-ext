@@ -17,7 +17,6 @@ import java.lang.annotation.*;
 @TableField
 @ColumnType
 @NotNull
-@Primary
 @ColumnDefault
 @ColumnComment("")
 public @interface Column {
@@ -61,14 +60,6 @@ public @interface Column {
      */
     @AliasFor(annotation = NotNull.class, attribute = "value")
     boolean notNull() default false;
-
-    /**
-     * 是否是主键，默认false
-     *
-     * @return 是否是主键，默认false
-     */
-    @AliasFor(annotation = Primary.class, attribute = "value")
-    boolean isPrimary() default false;
 
     /**
      * 默认值，默认为null

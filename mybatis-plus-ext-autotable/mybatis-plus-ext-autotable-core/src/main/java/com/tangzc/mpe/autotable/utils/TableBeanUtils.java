@@ -68,11 +68,7 @@ public class TableBeanUtils {
 
     public static boolean isPrimary(Field field) {
 
-        if (AnnotatedElementUtilsPlus.hasAnnotation(field, TableId.class)) {
-            return true;
-        }
-        Primary column = AnnotatedElementUtilsPlus.findMergedAnnotation(field, Primary.class, PrimaryImpl.class);
-        if (column != null && column.value()) {
+        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class) != null) {
             return true;
         }
 

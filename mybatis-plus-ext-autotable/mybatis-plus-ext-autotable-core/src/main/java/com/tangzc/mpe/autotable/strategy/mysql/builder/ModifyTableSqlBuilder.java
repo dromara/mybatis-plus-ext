@@ -1,8 +1,8 @@
 package com.tangzc.mpe.autotable.strategy.mysql.builder;
 
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
-import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlCompareTableInfo;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -23,8 +23,6 @@ public class ModifyTableSqlBuilder {
      * @return sql
      */
     public static String buildSql(MysqlCompareTableInfo mysqlCompareTableInfo) {
-
-        List<String> primaries = new ArrayList<>();
 
         String name = mysqlCompareTableInfo.getName();
 
@@ -56,7 +54,6 @@ public class ModifyTableSqlBuilder {
                     // 判断是主键，自动设置为NOT NULL，并记录
                     if (modifyColumn.isPrimary()) {
                         modifyColumn.setNotNull(true);
-                        primaries.add(modifyColumn.getName());
                     }
                     // 拼接每个字段的sql片段
                     String columnSql = modifyColumn.toColumnSql();
@@ -70,7 +67,6 @@ public class ModifyTableSqlBuilder {
                     // 判断是主键，自动设置为NOT NULL，并记录
                     if (addColumn.isPrimary()) {
                         addColumn.setNotNull(true);
-                        primaries.add(addColumn.getName());
                     }
                     // 拼接每个字段的sql片段
                     String columnSql = addColumn.toColumnSql();
@@ -78,13 +74,20 @@ public class ModifyTableSqlBuilder {
                 }).collect(Collectors.joining(","))
         );
 
-        // 主键, 同时判断主键是否有改变，有的话，删除原来的主键，重新创建
-        // 改变的情况：现有主键集合与最新主键集合不能完全匹配，忽略顺序。
-        if (mysqlCompareTableInfo.isResetPrimary() && !primaries.isEmpty()) {
+        /*
+        处理主键
+         */
+        // 判断是否需要删除原有主键
+        if (mysqlCompareTableInfo.isDropPrimary()) {
+            modifyItems.add("DROP PRIMARY KEY");
+        }
+        // 判断是否存在新的主键，添加
+        if (!mysqlCompareTableInfo.getNewPrimaries().isEmpty()) {
+            List<String> primaries = mysqlCompareTableInfo.getNewPrimaries().stream()
+                    .map(MysqlColumnMetadata::getName)
+                    .collect(Collectors.toList());
             String primaryKeySql = CreateTableSqlBuilder.getPrimaryKeySql(primaries);
-            modifyItems.add(
-                    "DROP PRIMARY KEY, ADD PRIMARY " + primaryKeySql
-            );
+            modifyItems.add("ADD " + primaryKeySql);
         }
 
         // 删除索引

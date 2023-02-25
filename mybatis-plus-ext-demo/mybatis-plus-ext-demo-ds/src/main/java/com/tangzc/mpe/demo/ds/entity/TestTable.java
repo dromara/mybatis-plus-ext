@@ -1,13 +1,14 @@
 package com.tangzc.mpe.demo.ds.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.tangzc.mpe.autotable.annotation.ColumnComment;
-import com.tangzc.mpe.autotable.annotation.AutoIncrement;
 import com.tangzc.mpe.autotable.annotation.Table;
 
 @Table(comment = "表1")
 public class TestTable {
 
-    @AutoIncrement
+    @TableId(type = IdType.AUTO)
     @ColumnComment("ID")
     private Long id;
 

@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.pgsql;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
@@ -22,8 +23,7 @@ import java.time.LocalDateTime;
 @Table(comment = "测试表", dsName = "my-pgsql")
 public class PgsqlTable {
 
-    @AutoIncrement
-    @Column(comment = "ID", type = PgsqlTypeConstant.INT8)
+    @ColumnId(mode = IdType.AUTO, comment = "ID", type = PgsqlTypeConstant.INT8)
     private String id;
 
     @Index

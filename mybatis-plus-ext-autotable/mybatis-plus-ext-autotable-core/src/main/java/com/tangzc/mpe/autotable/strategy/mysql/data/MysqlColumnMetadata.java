@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
 public class MysqlColumnMetadata {
 
     /**
-     * 字段名: 不可变，变了意味着新字段
+     * 列名: 不可变，变了意味着新列
      */
     private String name;
 

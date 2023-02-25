@@ -165,24 +165,32 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
     }
 
     private static void comparePrimary(MysqlTableMetadata mysqlTableMetadata, MysqlCompareTableInfo mysqlCompareTableInfo, List<InformationSchemaStatistics> tablePrimaries) {
-        // 存在主键的话
-        if (CollectionUtils.isEmpty(tablePrimaries)) {
-            boolean tableHasPrimary = mysqlTableMetadata.getColumnMetadataList().stream()
-                    .anyMatch(MysqlColumnMetadata::isPrimary);
-            // 如果当前表不存在主键，则更新主键(如果Bean上有的话)
-            if (tableHasPrimary) {
-                mysqlCompareTableInfo.setResetPrimary(true);
-            }
-        } else {
-            // 获取当前Bean上指定的主键列表，顺序按照列的自然顺序排列
-            List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getColumnMetadataList().stream()
-                    .filter(MysqlColumnMetadata::isPrimary)
-                    .collect(Collectors.toList());
-            if (tablePrimaries.size() != primaries.size()) {
-                // 主键数量不一致，需要更新
-                mysqlCompareTableInfo.setResetPrimary(true);
-            } else {
-                // 主键数量一致的情况下，逐个比对每个位置的列名
+
+        // 获取当前Bean上指定的主键列表，顺序按照列的自然顺序排列
+        List<MysqlColumnMetadata> primaries = mysqlTableMetadata.getColumnMetadataList().stream()
+                .filter(MysqlColumnMetadata::isPrimary)
+                .collect(Collectors.toList());
+
+        // 库里不存在主键，实体上指定了
+        boolean tableNoPrimary = CollectionUtils.isEmpty(tablePrimaries);
+        boolean entityHasPrimary = !primaries.isEmpty();
+        if (tableNoPrimary && entityHasPrimary) {
+            // 添加新主键
+            mysqlCompareTableInfo.setNewPrimaries(primaries);
+        }
+        // 库里存在主键，实体上不存在主键
+        if (!tableNoPrimary && !entityHasPrimary) {
+            // 删除已有主键
+            mysqlCompareTableInfo.setDropPrimary(true);
+        }
+        // 库里存在主键，且实体上指定了主键，开始比对
+        if (!tableNoPrimary && entityHasPrimary) {
+
+            boolean sameSize = tablePrimaries.size() == primaries.size();
+            // 主键数量不一致，主键全盘更新
+            boolean needResetPrimary = !sameSize;
+            // 主键数量一致的情况下，逐个比对每个位置的列名
+            if (sameSize) {
                 // 先按照顺序排好数据库主键的顺序
                 tablePrimaries = tablePrimaries.stream()
                         .sorted(Comparator.comparing(InformationSchemaStatistics::getSeqInIndex))
@@ -192,10 +200,15 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
                     InformationSchemaStatistics tablePrimary = tablePrimaries.get(i);
                     if (!tablePrimary.getColumnName().equals(primaries.get(i).getName())) {
                         // 主键列中按顺序比较，存在顺序不一致的情况，需要更新
-                        mysqlCompareTableInfo.setResetPrimary(true);
+                        needResetPrimary = true;
                         break;
                     }
                 }
+            }
+
+            if (needResetPrimary) {
+                mysqlCompareTableInfo.setNewPrimaries(primaries);
+                mysqlCompareTableInfo.setDropPrimary(true);
             }
         }
     }

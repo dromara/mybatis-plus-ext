@@ -37,9 +37,13 @@ public class MysqlCompareTableInfo implements CompareTableInfo {
      */
     private String comment;
     /**
-     * 重新设置主键
+     * 新的主键
      */
-    private boolean resetPrimary;
+    private List<MysqlColumnMetadata> newPrimaries;
+    /**
+     * 是否删除主键
+     */
+    private boolean dropPrimary;
     /**
      * 删除的列：谨慎，会导致数据丢失
      */
@@ -70,7 +74,8 @@ public class MysqlCompareTableInfo implements CompareTableInfo {
                 characterSet != null ||
                 collate != null ||
                 comment != null ||
-                resetPrimary ||
+                dropPrimary ||
+                !newPrimaries.isEmpty() ||
                 !dropColumnList.isEmpty() ||
                 !modifyMysqlColumnMetadataList.isEmpty() ||
                 !mysqlColumnMetadataList.isEmpty() ||

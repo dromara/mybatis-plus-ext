@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
@@ -12,18 +13,19 @@ import java.time.LocalDateTime;
  * @author don
  */
 @Data
-// @Table
+@Table
 public class MysqlTable3 {
 
-    // 主键自增
-    @AutoIncrement
-    // 指定字段注释、类型（数据库数字类型可以跟java字符串类型相互转化）、长度
+    //
+    // 指定主键自增注释、类型（数据库数字类型可以跟java字符串类型相互转化）、长度
     // 注意字段名称id会被自动认定为主键不需要再额外指定
-    @Column(comment = "id主键", type = MysqlTypeConstant.BIGINT, length = 32)
+    @ColumnId(comment = "id主键", type = MysqlTypeConstant.BIGINT, length = 32)
     private String id;
 
-    // 通过isPrimary指定 是否主键。id2与id形成联合主键。
-    @Column(comment = "id主键2", type = MysqlTypeConstant.BIGINT, length = 32, isPrimary = true)
+    // id2与id形成联合主键。
+    @TableId
+    @ColumnComment("id主键2")
+    @ColumnType(value = MysqlTypeConstant.BIGINT, length = 32)
     private String id2;
 
     // 字段非NULL

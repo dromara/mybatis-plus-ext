@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.sqlite;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
@@ -21,8 +22,7 @@ import java.time.LocalDateTime;
 @Table(comment = "测试表", dsName = "my-sqlite")
 public class Sqlite3Table {
 
-    @AutoIncrement
-    @Column(comment = "ID", type = "bigint")
+    @ColumnId(mode = IdType.AUTO, comment = "ID", type = "bigint")
     private String id;
 
     @Index

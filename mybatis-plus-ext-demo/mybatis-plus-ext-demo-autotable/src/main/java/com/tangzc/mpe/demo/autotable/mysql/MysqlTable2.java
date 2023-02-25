@@ -18,8 +18,11 @@ import lombok.Data;
         // 声明唯一联合索引，单独指定phone的索引排序方式，构建索引的时候indexFields中字段的顺序权重高于fields中的字段
         @TableIndex(name = "username_phone_uni_index", fields = {"username"}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE),
 })
-@Table
+// @Table
 public class MysqlTable2 {
+
+    @ColumnId
+    private String xx;
 
     // 唯一索引
     @Index(type = IndexTypeEnum.UNIQUE)

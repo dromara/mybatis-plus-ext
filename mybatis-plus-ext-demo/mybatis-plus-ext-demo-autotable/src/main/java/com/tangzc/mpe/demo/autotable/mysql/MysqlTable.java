@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.tangzc.mpe.autotable.annotation.*;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
@@ -21,11 +22,10 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @MysqlCharset(value = "utf8mb4")
-@Table(comment = "测试表", dsName = "my-mysql")
+// @Table(comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 
-    @AutoIncrement
-    @Column(comment = "ID", type = MysqlTypeConstant.BIGINT)
+    @ColumnId(mode = IdType.AUTO, comment = "ID", type = MysqlTypeConstant.BIGINT)
     private String id;
 
     @Index
