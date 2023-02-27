@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * 标志字段不作为数据库维护的列，同时数据操作的时候也会忽略
- * 区别于 {@link Table#excludeFields()}, {@link Table#excludeFields()}仅会忽略建表
+ * 区别于 {@link Table#excludeProperty()}, {@link Table#excludeProperty()}仅会忽略建表
  *
  * @author don
  */

@@ -51,5 +51,6 @@ public @interface Table {
      *
      * @return
      */
-    String[] excludeFields() default {"serialVersionUID"};
+    @AliasFor(annotation = TableName.class, attribute = "excludeProperty")
+    String[] excludeProperty() default {"serialVersionUID"};
 }

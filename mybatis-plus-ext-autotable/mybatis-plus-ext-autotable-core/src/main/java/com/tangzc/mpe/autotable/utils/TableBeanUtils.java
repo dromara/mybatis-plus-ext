@@ -44,7 +44,7 @@ public class TableBeanUtils {
             HashSet<String> excludes = new HashSet<>();
             Table table = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
             if (table != null) {
-                excludes = Sets.newHashSet(table.excludeFields());
+                excludes = Sets.newHashSet(table.excludeProperty());
             }
             return excludes;
         });

@@ -16,13 +16,13 @@ public class MysqlTableController {
 
     @GetMapping("add")
     public void add(String username) {
-        MysqlTable entity = new MysqlTable();
+        MysqlTable3 entity = new MysqlTable3();
         entity.setUsername(username);
         mysqlTableRepository.save(entity);
     }
 
     @GetMapping("list")
-    public List<MysqlTable> list() {
+    public List<MysqlTable3> list() {
         return mysqlTableRepository.list();
     }
 }
