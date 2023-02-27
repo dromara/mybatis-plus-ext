@@ -19,9 +19,6 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.handlers.PostInitTableInfoHandler;
 import com.baomidou.mybatisplus.core.incrementer.IKeyGenerator;
-import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
-import com.baomidou.mybatisplus.core.metadata.impl.TableIdImpl;
-import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import com.baomidou.mybatisplus.core.toolkit.*;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.apache.ibatis.builder.StaticSqlSource;
@@ -35,7 +32,6 @@ import org.apache.ibatis.mapping.SqlCommandType;
 import org.apache.ibatis.reflection.Reflector;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.SimpleTypeRegistry;
-import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -203,7 +199,7 @@ public class TableInfoHelper {
     private static String[] initTableName(Class<?> clazz, GlobalConfig globalConfig, TableInfo tableInfo) {
         /* 数据库全局配置 */
         GlobalConfig.DbConfig dbConfig = globalConfig.getDbConfig();
-        TableName table = AnnotatedElementUtilsPlus.findMergedAnnotation(clazz, TableName.class, TableNameImpl.class);
+        TableName table = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
 
         String tableName = clazz.getSimpleName();
         String tablePrefix = dbConfig.getTablePrefix();
@@ -245,7 +241,7 @@ public class TableInfoHelper {
 
         /* 开启了自定义 KEY 生成器 */
         if (CollectionUtils.isNotEmpty(dbConfig.getKeyGenerators())) {
-            tableInfo.setKeySequence(AnnotatedElementUtils.findMergedAnnotation(clazz, KeySequence.class));
+            tableInfo.setKeySequence(AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, KeySequence.class));
         }
         return excludeProperty;
     }
@@ -302,11 +298,11 @@ public class TableInfoHelper {
             }
 
             boolean isPK = false;
-            boolean isOrderBy = field.getAnnotation(OrderBy.class) != null;
+            boolean isOrderBy = AnnotatedElementUtilsPlus.hasAnnotation(field, OrderBy.class);
 
             /* 主键ID 初始化 */
             if (existTableId) {
-                TableId tableId = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class);
+                TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
                 if (tableId != null) {
                     if (isReadPK) {
                         throw ExceptionUtils.mpe("@TableId can't more than one in Class: \"%s\".", clazz.getName());
@@ -327,7 +323,7 @@ public class TableInfoHelper {
                 continue;
             }
 
-            final TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+            final TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
 
             /* 有 @TableField 注解的字段初始化 */
             if (tableField != null) {
@@ -401,10 +397,10 @@ public class TableInfoHelper {
     private static void initTableIdWithAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field, TableId tableId) {
         boolean underCamel = tableInfo.isUnderCamel();
         final String property = field.getName();
-        // if (field.getAnnotation(TableField.class) != null) {
-        //     logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
-        //         property, tableInfo.getEntityType().getName()));
-        // }
+        if (AnnotatedElementUtilsPlus.hasAnnotation(field, TableField.class)) {
+            logger.warn(String.format("This \"%s\" is the table primary key by @TableId annotation in Class: \"%s\",So @TableField annotation will not work!",
+                property, tableInfo.getEntityType().getName()));
+        }
         /* 主键策略（ 注解 > 全局 ） */
         // 设置 Sequence 其他策略无效
         if (IdType.NONE == tableId.type()) {
@@ -456,10 +452,10 @@ public class TableInfoHelper {
     private static boolean initTableIdWithoutAnnotation(GlobalConfig.DbConfig dbConfig, TableInfo tableInfo, Field field) {
         final String property = field.getName();
         if (DEFAULT_ID_NAME.equalsIgnoreCase(property)) {
-            // if (field.getAnnotation(TableField.class) != null) {
-            //     logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
-            //             property, tableInfo.getEntityType().getName()));
-            // }
+            if (AnnotatedElementUtilsPlus.hasAnnotation(field, TableField.class)) {
+                logger.warn(String.format("This \"%s\" is the table primary key by default name for `id` in Class: \"%s\",So @TableField will not work!",
+                        property, tableInfo.getEntityType().getName()));
+            }
             String column = property;
             if (dbConfig.isCapitalMode()) {
                 column = column.toUpperCase();
@@ -520,7 +516,7 @@ public class TableInfoHelper {
         return fieldList.stream()
                 .filter(field -> {
                     /* 过滤注解非表字段属性 */
-                    TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+                    TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
                     return (tableField == null || tableField.exist());
                 }).collect(toList());
     }

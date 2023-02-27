@@ -3,12 +3,10 @@ package com.tangzc.mpe.autotable.utils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.impl.TableIdImpl;
 import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.annotation.*;
-import com.tangzc.mpe.autotable.annotation.impl.*;
-import com.tangzc.mpe.autotable.strategy.IgnoreExt;
 import com.tangzc.mpe.autotable.strategy.FieldTypeHandler;
+import com.tangzc.mpe.autotable.strategy.IgnoreExt;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
@@ -68,7 +66,7 @@ public class TableBeanUtils {
 
     public static boolean isPrimary(Field field) {
 
-        if (AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class) != null) {
+        if (AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class) != null) {
             return true;
         }
 
@@ -76,7 +74,7 @@ public class TableBeanUtils {
     }
 
     public static boolean isAutoIncrement(Field field) {
-        TableId tableId = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableId.class, TableIdImpl.class);
+        TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
         return tableId != null && tableId.type() == IdType.AUTO;
     }
 
@@ -86,7 +84,7 @@ public class TableBeanUtils {
             return true;
         }
 
-        NotNull column = AnnotatedElementUtilsPlus.findMergedAnnotation(field, NotNull.class, NotNullImpl.class);
+        NotNull column = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, NotNull.class);
         if (column != null) {
             return column.value();
         }
@@ -94,7 +92,7 @@ public class TableBeanUtils {
     }
 
     public static String getComment(Field field) {
-        ColumnComment column = AnnotatedElementUtilsPlus.findMergedAnnotation(field, ColumnComment.class, ColumnCommentImpl.class);
+        ColumnComment column = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, ColumnComment.class);
         if (column != null) {
             return column.value();
         }
@@ -102,11 +100,11 @@ public class TableBeanUtils {
     }
 
     public static ColumnDefault getDefaultValue(Field field) {
-        return AnnotatedElementUtilsPlus.findMergedAnnotation(field, ColumnDefault.class, ColumnDefaultImpl.class);
+        return AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, ColumnDefault.class);
     }
 
     public static ColumnType getColumnType(Field field) {
-        return AnnotatedElementUtilsPlus.findMergedAnnotation(field, ColumnType.class, ColumnTypeImpl.class);
+        return AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, ColumnType.class);
     }
 
     public static Class<?> getFieldType(Class<?> clazz, Field field) {

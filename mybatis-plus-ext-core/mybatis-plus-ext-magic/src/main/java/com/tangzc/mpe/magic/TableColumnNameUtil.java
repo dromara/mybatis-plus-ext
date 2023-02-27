@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
-import com.baomidou.mybatisplus.core.metadata.impl.TableNameImpl;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,7 +22,7 @@ public class TableColumnNameUtil {
 
         String finalTableName = "";
 
-        TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findMergedAnnotation(clazz, TableName.class, TableNameImpl.class);
+        TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
         if (mybatisPlusTableName != null && !StringUtils.isEmpty(mybatisPlusTableName.value())) {
             finalTableName = mybatisPlusTableName.value();
         }
@@ -45,7 +43,7 @@ public class TableColumnNameUtil {
      * @return
      */
     public static String getRealColumnName(Field field) {
-        TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
@@ -66,7 +64,7 @@ public class TableColumnNameUtil {
     public static String getRealColumnName(Class<?> beanClazz, String fieldName) {
 
         Field field = BeanClassUtil.getField(beanClazz, fieldName);
-        TableField tableField = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
 import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
@@ -69,8 +68,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         List<Field> fieldList = fields.stream()
                 .filter(field -> metaObject.hasSetter(field.getName()))
                 .filter(field -> {
-                    TableField annotation = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
-
+                    TableField annotation = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
                     return annotation != null &&
                             (annotation.fill() == option || annotation.fill() == FieldFill.INSERT_UPDATE);
                 })
