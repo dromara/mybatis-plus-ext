@@ -19,11 +19,6 @@ public class BindEntityByMidDescription extends FieldDescription<BindEntityByMid
 
     private final MidConditionDescription condition;
 
-    /**
-     * 注解绑定的字段：是否深度绑定数据
-     */
-    private final boolean deepBind;
-
     public BindEntityByMidDescription(Field field,
                                       Method setMethod,
                                       boolean isCollection,
@@ -34,7 +29,6 @@ public class BindEntityByMidDescription extends FieldDescription<BindEntityByMid
         super(field, setMethod, isCollection, bindEntityByMid, entityClass,
                 bindEntityByMid.customCondition(), orderBys, bindEntityByMid.last());
         this.condition = condition;
-        this.deepBind = bindEntityByMid.deepBind();
     }
 
     @Override

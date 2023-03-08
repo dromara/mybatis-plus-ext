@@ -10,21 +10,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 绑定Entity （one to one）（one to many）
+ * 绑定聚合函数
  *
  * @author don
  */
-@Inherited
-@Documented
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @TableField(exist = false)
-public @interface BindEntity {
+@Inherited
+@Documented
+public @interface BindAggFunc {
 
     /**
-     * 被关联的Entity，不再需要显示的指明，默认取字段上的声明类型
+     * 被关联的Entity
      */
-    Class<?> entity() default Void.class;
+    Class<?> entity();
+
+    /**
+     * 需要聚合的字段
+     */
+    AggFuncField aggField();
 
     /**
      * 关联Entity所需要的条件
@@ -36,14 +41,4 @@ public @interface BindEntity {
      * 通常指被关联的Entity自身的特殊条件，例如：enable=1 and is_deleted=0
      */
     String customCondition() default "";
-
-    /**
-     * 被关联的Entity的结果集，排序条件
-     */
-    JoinOrderBy[] orderBy() default {};
-
-    /**
-     * 最后的sql拼接，通常是limit ?
-     */
-    String last() default "";
 }

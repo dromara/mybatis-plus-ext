@@ -65,8 +65,8 @@ public class QueryWrapperBuilder<ENTITY> {
             for (BEAN bean : beans) {
                 List<WhereItem> whereItemList = new ArrayList<>();
                 for (JoinConditionDescription condition : conditions) {
-                    String column = condition.getJoinColumnName();
                     try {
+                        String column = condition.getJoinColumnName();
                         Object val = condition.getSelfFieldGetMethod().invoke(bean);
                         whereItemList.add(new WhereItem(column, val));
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -81,6 +81,7 @@ public class QueryWrapperBuilder<ENTITY> {
         if (StringUtils.isEmpty(customCondition)) {
             joinCondition(queryWrapper, whereSet);
         } else {
+            // 存在自定义条件的情况下，由于自定义条件是固定死的，可以通用，提取出来
             // 优先根据自定义查询条件分组，同一个自定义查询条件下的 规范查询 彼此之间就是或的关系了
             Map<String, List<Where>> whereMap = whereSet.stream().collect(Collectors.groupingBy(Where::getCustomCondition));
 

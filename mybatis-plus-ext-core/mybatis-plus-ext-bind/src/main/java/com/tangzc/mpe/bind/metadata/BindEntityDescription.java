@@ -22,11 +22,6 @@ public class BindEntityDescription extends FieldDescription<BindEntity, JoinCond
      */
     private final List<JoinConditionDescription> conditions;
 
-    /**
-     * 注解绑定的字段：是否深度绑定数据
-     */
-    private final boolean deepBind;
-
     public BindEntityDescription(Field field,
                                  Method setMethod,
                                  boolean isCollection,
@@ -37,7 +32,6 @@ public class BindEntityDescription extends FieldDescription<BindEntity, JoinCond
         super(field, setMethod, isCollection, bindEntity, entityClass,
                 bindEntity.customCondition(), orderBys, bindEntity.last());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
-        this.deepBind = bindEntity.deepBind();
     }
 
     @Override

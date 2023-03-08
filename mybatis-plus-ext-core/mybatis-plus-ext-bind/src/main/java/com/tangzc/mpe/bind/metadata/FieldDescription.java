@@ -27,6 +27,7 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
     protected Class<?> fieldClass;
     /**
      * 被修饰字段：set方法
+     * 最终赋值的时候调用
      */
     protected Method setMethod;
     /**

@@ -24,6 +24,11 @@ public class BindFieldByMidDescription extends FieldDescription<BindFieldByMid, 
      */
     private final Method bindFieldGetMethod;
 
+    /**
+     * 注解绑定的字段：真是字段名
+     */
+    private final String realColumnName;
+
     public BindFieldByMidDescription(Field field,
                                      Method setMethod,
                                      boolean isCollection,
@@ -31,10 +36,12 @@ public class BindFieldByMidDescription extends FieldDescription<BindFieldByMid, 
                                      Class<?> entityClass,
                                      MidConditionDescription condition,
                                      List<OrderByDescription> orderBys,
+                                     String realColumnName,
                                      Method bindFieldGetMethod) {
         super(field, setMethod, isCollection, bindFieldByMid, entityClass,
                 bindFieldByMid.customCondition(), orderBys, bindFieldByMid.last());
         this.condition = condition;
+        this.realColumnName = realColumnName;
         this.bindFieldGetMethod = bindFieldGetMethod;
     }
 

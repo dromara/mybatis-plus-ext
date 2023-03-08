@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata.builder;
 
-import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.bind.metadata.BindAggFuncDescription;
 import com.tangzc.mpe.bind.metadata.BindEntityByMidDescription;
 import com.tangzc.mpe.bind.metadata.BindEntityDescription;
 import com.tangzc.mpe.bind.metadata.BindFieldByMidDescription;
@@ -8,6 +8,7 @@ import com.tangzc.mpe.bind.metadata.BindFieldDescription;
 import com.tangzc.mpe.bind.metadata.JoinConditionDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
 import com.tangzc.mpe.bind.metadata.OrderByDescription;
+import com.tangzc.mpe.bind.metadata.annotation.BindAggFunc;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
@@ -15,6 +16,8 @@ import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
 import com.tangzc.mpe.bind.metadata.annotation.JoinOrderBy;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
+import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,17 +37,27 @@ import java.util.stream.Collectors;
 @Getter
 public class FieldDescriptionBuilder {
 
-    public static <BEAN> BindFieldDescription build(Class<BEAN> beanClass, Field field, BindField bindField) {
+    public static <BEAN> BindAggFuncDescription build(Class<BEAN> beanClass, Field field, BindAggFunc bindAggFunc) {
 
-        boolean isCollection = Collection.class.isAssignableFrom(field.getType());
-        Class<?> entityClass = bindField.entity();
+        Class<?> entityClass = bindAggFunc.entity();
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
-        Method readMethod = BeanClassUtil.getReadMethod(entityClass, bindField.field());
-        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindField.conditions());
-        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindField.orderBy());
-        return new BindFieldDescription(field, setMethod, isCollection, bindField,
-                entityClass, conditionList, orderByList, readMethod);
+        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindAggFunc.conditions());
+        return new BindAggFuncDescription(field, setMethod, bindAggFunc, entityClass, conditionList);
+    }
+
+    public static <BEAN> BindFieldDescription build(Class<BEAN> beanClass, Field field, BindField bindFieldAnno) {
+
+        boolean isCollection = Collection.class.isAssignableFrom(field.getType());
+        Class<?> entityClass = bindFieldAnno.entity();
+        Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
+
+        String realColumnName = TableColumnNameUtil.getRealColumnName(entityClass, bindFieldAnno.field());
+        Method readMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldAnno.field());
+        List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindFieldAnno.conditions());
+        List<OrderByDescription> orderByList = getOrderByList(entityClass, bindFieldAnno.orderBy());
+        return new BindFieldDescription(field, setMethod, isCollection, bindFieldAnno,
+                entityClass, conditionList, orderByList, realColumnName, readMethod);
     }
 
     public static <BEAN> BindEntityDescription build(Class<BEAN> beanClass, Field field, BindEntity bindEntity) {
@@ -74,12 +87,13 @@ public class FieldDescriptionBuilder {
         }
 
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
+        String realColumnName = TableColumnNameUtil.getRealColumnName(entityClass, bindFieldByMid.field());
         Method bindFieldGetMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldByMid.field());
 
         MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindFieldByMid.conditions());
         List<OrderByDescription> orderByList = getOrderByList(entityClass, bindFieldByMid.orderBy());
         return new BindFieldByMidDescription(field, setMethod, isCollection, bindFieldByMid,
-                entityClass, conditionList, orderByList, bindFieldGetMethod);
+                entityClass, conditionList, orderByList, realColumnName, bindFieldGetMethod);
     }
 
 

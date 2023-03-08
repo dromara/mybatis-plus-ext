@@ -1,5 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
+import com.tangzc.mpe.bind.metadata.annotation.BindAggFunc;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
@@ -21,6 +22,11 @@ import java.util.List;
 public class BeanDescription<BEAN> {
 
     private final Class<BEAN> beanClass;
+
+    /**
+     * 关联聚合函数注解
+     */
+    private final List<BindAggFuncDescription> bindAggFuncAnnotations = new ArrayList<>();
 
     /**
      * 字段关联注解
@@ -47,6 +53,12 @@ public class BeanDescription<BEAN> {
     }
 
     public <BIND_ANNOTATION extends Annotation> void tryAddBindAnnotation(Field field, BIND_ANNOTATION annotation) {
+
+        if (annotation instanceof BindAggFunc) {
+            BindAggFuncDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindAggFunc) annotation);
+            this.bindAggFuncAnnotations.add(fieldDescription);
+            return;
+        }
 
         if (annotation instanceof BindField) {
             BindFieldDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindField) annotation);
