@@ -155,8 +155,12 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // 构建查询器
         QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
         // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
-        queryWrapper.select(midConditionDescription.getJoinMidColumnName(), midConditionDescription.getSelfMidColumnName());
-        queryWrapper.in(midConditionDescription.getSelfMidColumnName(), selfFieldVals);
+        String joinMidColumnName = midConditionDescription.getJoinMidColumnName();
+        String selfMidColumnName = midConditionDescription.getSelfMidColumnName();
+
+        queryWrapper.select(joinMidColumnName + " as " + midConditionDescription.getJoinMidFieldName(),
+                selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
+        queryWrapper.in(selfMidColumnName, selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
 
