@@ -1,12 +1,12 @@
 package com.tangzc.mpe.bind.binder;
 
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.BindAggFuncDescription;
-import com.tangzc.mpe.bind.metadata.JoinConditionDescription;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 执行字段绑定的绑定器
@@ -15,18 +15,21 @@ import java.util.List;
  */
 @Slf4j
 @NoArgsConstructor(staticName = "newInstance")
-public class BindAggFuncBinder<BEAN> implements IBinder<BEAN, BindAggFuncDescription, JoinConditionDescription> {
+public class BindAggFuncBinder<BEAN> {
 
     /**
-     * @param beans                 待填充的bean
-     * @param conditionSign         被关联的表的查询描述
-     * @param bindCountDescriptions 需要填充数据的表的字段集合
+     * @param beans             待填充的bean
+     * @param fieldDescriptions 待绑定的字段
      */
-    @Override
-    public <ENTITY> void fillData(List<BEAN> beans,
-                                  ConditionSign<ENTITY, JoinConditionDescription> conditionSign,
-                                  List<BindAggFuncDescription> bindCountDescriptions) {
+    public void doBind(List<BEAN> beans, List<BindAggFuncDescription> fieldDescriptions) {
 
+        Map<BindAggFuncDescription.ConditionSign, List<BindAggFuncDescription>> groupByDesc =
+                fieldDescriptions.stream().collect(Collectors.groupingBy(BindAggFuncDescription::groupBy));
+
+        // groupByDesc.forEach();
         // TODO 构建结果并赋值到beans中
+        System.out.println(beans.size());
+
+        throw new RuntimeException("暂未支持函数绑定功能");
     }
 }

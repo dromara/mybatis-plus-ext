@@ -1,7 +1,6 @@
 package com.tangzc.mpe.bind.binder;
 
 import com.tangzc.mpe.bind.builder.ByMidResultBuilder;
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.BindFieldByMidDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
@@ -21,12 +20,12 @@ import java.util.stream.Collectors;
 public class BindFieldByMidBinder<BEAN> implements IBinder<BEAN, BindFieldByMidDescription, MidConditionDescription> {
 
     @Override
-    public <ENTITY> void fillData(List<BEAN> beans, ConditionSign<ENTITY, MidConditionDescription> conditionSign,
+    public <ENTITY> void fillData(List<BEAN> beans, FieldDescription.ConditionSign<ENTITY, MidConditionDescription> conditionSign,
                                   List<BindFieldByMidDescription> fieldAnnotations) {
 
         ByMidResultBuilder.FillDataCallback fillDataCallback = new ByMidResultBuilder.FillDataCallback() {
             @Override
-            public String[] selectColumns(List<?> beans, ConditionSign<?, MidConditionDescription> conditionSign,
+            public String[] selectColumns(List<?> beans, FieldDescription.ConditionSign<?, MidConditionDescription> conditionSign,
                                           List<? extends FieldDescription<?, MidConditionDescription>> fieldDescriptions) {
 
                 List<String> columns = fieldAnnotations.stream()

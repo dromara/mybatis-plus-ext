@@ -1,6 +1,5 @@
 package com.tangzc.mpe.bind.binder;
 
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.builder.ResultBuilder;
 import com.tangzc.mpe.bind.metadata.BindEntityDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
@@ -30,7 +29,7 @@ public class BindEntityBinder<BEAN> implements IBinder<BEAN, BindEntityDescripti
      */
     @Override
     public <ENTITY> void fillData(List<BEAN> beans,
-                                  ConditionSign<ENTITY, JoinConditionDescription> conditionSign,
+                                  FieldDescription.ConditionSign<ENTITY, JoinConditionDescription> conditionSign,
                                   List<BindEntityDescription> fieldAnnotations) {
 
         ResultBuilder.FillDataCallback fillDataCallback = new ResultBuilder.FillDataCallback() {

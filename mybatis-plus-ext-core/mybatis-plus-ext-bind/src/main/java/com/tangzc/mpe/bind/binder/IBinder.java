@@ -1,6 +1,5 @@
 package com.tangzc.mpe.bind.binder;
 
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 
 import java.lang.annotation.Annotation;
@@ -23,7 +22,7 @@ public interface IBinder<BEAN, FD extends FieldDescription<? extends Annotation,
         }
 
         // 合并相同条件的关联，减少查询
-        Map<ConditionSign<?, CONDITION_DESC>, List<FD>> fieldDescriptionsGroupByCondition =
+        Map<FieldDescription.ConditionSign<?, CONDITION_DESC>, List<FD>> fieldDescriptionsGroupByCondition =
                 fieldDescriptions.stream().collect(Collectors.groupingBy(fd -> fd.conditionUniqueKey()));
 
         // 填充数据
@@ -40,5 +39,5 @@ public interface IBinder<BEAN, FD extends FieldDescription<? extends Annotation,
      * @param fieldAnnotationList 相同条件的字段集合
      * @param <ENTITY>            关联的对象类型
      */
-    <ENTITY> void fillData(List<BEAN> beans, ConditionSign<ENTITY, CONDITION_DESC> entityJoinCondition, List<FD> fieldAnnotationList);
+    <ENTITY> void fillData(List<BEAN> beans, FieldDescription.ConditionSign<ENTITY, CONDITION_DESC> entityJoinCondition, List<FD> fieldAnnotationList);
 }

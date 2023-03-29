@@ -22,10 +22,10 @@ public class Role {
     private String name;
 
     @BindEntityByMid(
-            conditions = @MidCondition(midEntity = RoleMenu.class, selfMidField = "ruleId", joinMidField = "menuId"),
-            customCondition = "`name` in ('1','3','5')",
-            orderBy = @JoinOrderBy(field = "name", isAsc = false),
-            last = "limit 2"
+            conditions = @MidCondition(midEntity = RoleMenu.class, selfMidField = "sysRuleId", joinMidField = "sysMenuId")
+            , customCondition = "`name` in ('1','3','5')"
+            , orderBy = @JoinOrderBy(field = "name", isAsc = false)
+            , last = "limit 2"
     )
     private List<Menu> menus;
 }

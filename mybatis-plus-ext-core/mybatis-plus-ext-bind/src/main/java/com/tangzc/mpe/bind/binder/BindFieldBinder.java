@@ -1,6 +1,5 @@
 package com.tangzc.mpe.bind.binder;
 
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.builder.ResultBuilder;
 import com.tangzc.mpe.bind.metadata.BindFieldDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
@@ -27,21 +26,21 @@ public class BindFieldBinder<BEAN> implements IBinder<BEAN, BindFieldDescription
      */
     @Override
     public <ENTITY> void fillData(List<BEAN> beans,
-                                  ConditionSign<ENTITY, JoinConditionDescription> conditionSign,
+                                  FieldDescription.ConditionSign<ENTITY, JoinConditionDescription> conditionSign,
                                   List<BindFieldDescription> bindFieldDescriptions) {
 
         ResultBuilder.FillDataCallback fillDataCallback = new ResultBuilder.FillDataCallback() {
             @Override
-            public String[] selectColumns(List<?> beans, ConditionSign<?, JoinConditionDescription> entityJoinCondition,
+            public String[] selectColumns(List<?> beans, FieldDescription.ConditionSign<?, JoinConditionDescription> entityJoinCondition,
                                           List<? extends FieldDescription<?, JoinConditionDescription>> fieldAnnotationList) {
 
                 List<String> columns = bindFieldDescriptions.stream()
-                        .map(BindFieldDescription::getRealColumnName)
+                        .map(desc -> desc.getRealColumnName() + " as " + desc.getBindAnnotation().field())
                         .collect(Collectors.toList());
 
                 // 追加条件查询字段，用于标识查询数据的
                 for (JoinConditionDescription condition : entityJoinCondition.getConditions()) {
-                    columns.add(condition.getJoinColumnName());
+                    columns.add(condition.getJoinColumnName() + " as " + condition.getJoinFieldName());
                 }
 
                 return columns.toArray(new String[0]);

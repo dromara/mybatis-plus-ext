@@ -28,5 +28,5 @@ public @interface AggFuncField {
     /**
      * 被聚合函数聚合的字段，默认为id，例如：count(1)、sum(1)
      */
-    String field() default "1";
+    String field() default "";
 }

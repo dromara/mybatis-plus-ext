@@ -1,7 +1,6 @@
 package com.tangzc.mpe.bind.binder;
 
 import com.tangzc.mpe.bind.builder.ByMidResultBuilder;
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.BindEntityByMidDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 public class BindEntityByMidBinder<BEAN> implements IBinder<BEAN, BindEntityByMidDescription, MidConditionDescription> {
 
     @Override
-    public <ENTITY> void fillData(List<BEAN> beans, ConditionSign<ENTITY, MidConditionDescription> conditionSign,
+    public <ENTITY> void fillData(List<BEAN> beans, FieldDescription.ConditionSign<ENTITY, MidConditionDescription> conditionSign,
                                   List<BindEntityByMidDescription> fieldAnnotations) {
 
         ByMidResultBuilder.FillDataCallback fillDataCallback = new ByMidResultBuilder.FillDataCallback() {

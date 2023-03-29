@@ -1,6 +1,5 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.bind.builder.ConditionSign;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import lombok.Getter;
 

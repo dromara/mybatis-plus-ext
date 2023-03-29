@@ -10,7 +10,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,7 +29,7 @@ import java.util.stream.Collectors;
 public class ByMidResultBuilder<BEAN, ENTITY> {
 
     private final List<BEAN> beans;
-    private final ConditionSign<ENTITY, MidConditionDescription> conditionSign;
+    private final FieldDescription.ConditionSign<ENTITY, MidConditionDescription> conditionSign;
     private final List<? extends FieldDescription<?, MidConditionDescription>> fieldDescriptions;
     private final FillDataCallback fillDataCallback;
 
@@ -155,8 +163,11 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // 构建查询器
         QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
         // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
-        queryWrapper.select(midConditionDescription.getJoinMidColumnName(), midConditionDescription.getSelfMidColumnName());
-        queryWrapper.in(midConditionDescription.getSelfMidColumnName(), selfFieldVals);
+        String joinMidColumnName = midConditionDescription.getJoinMidColumnName();
+        String selfMidColumnName = midConditionDescription.getSelfMidColumnName();
+        queryWrapper.select(joinMidColumnName + " as " + midConditionDescription.getJoinMidFieldName(),
+                selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
+        queryWrapper.in(selfMidColumnName, selfFieldVals);
 
         BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
 
@@ -212,7 +223,7 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
          * 只查询指定的字段，null或者长度0查询全部
          */
         default String[] selectColumns(List<?> beans,
-                                       ConditionSign<?, MidConditionDescription> conditionSign,
+                                       FieldDescription.ConditionSign<?, MidConditionDescription> conditionSign,
                                        List<? extends FieldDescription<?, MidConditionDescription>> fieldAnnotationList) {
             return null;
         }

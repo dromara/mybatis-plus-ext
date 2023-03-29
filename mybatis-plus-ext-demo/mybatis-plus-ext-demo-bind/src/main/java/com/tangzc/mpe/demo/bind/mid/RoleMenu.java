@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.bind.mid;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
 
@@ -11,6 +12,8 @@ import lombok.Data;
 public class RoleMenu {
 
     private String id;
-    private String ruleId;
-    private String menuId;
+    @TableField("rule_id")
+    private String sysRuleId;
+    @TableField("menu_id")
+    private String sysMenuId;
 }

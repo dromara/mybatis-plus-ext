@@ -86,7 +86,8 @@ public class BeanDescription<BEAN> {
 
     public boolean isValid() {
 
-        return !this.bindFieldAnnotations.isEmpty()
+        return !this.bindAggFuncAnnotations.isEmpty()
+                || !this.bindFieldAnnotations.isEmpty()
                 || !this.bindEntityAnnotations.isEmpty()
                 || !this.bindFieldByMidDescriptions.isEmpty()
                 || !this.bindEntityByMidAnnotations.isEmpty();

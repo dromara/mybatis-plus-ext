@@ -26,7 +26,7 @@ public class ResultBuilder<BEAN, ENTITY> {
     /**
      * 某一分组依据：根据BEAN上的所有绑定关系，进行分组的条件
      */
-    private final ConditionSign<ENTITY, JoinConditionDescription> conditionSign;
+    private final FieldDescription.ConditionSign<ENTITY, JoinConditionDescription> conditionSign;
     /**
      * 某一条件分组下的所有字段描述
      */
@@ -113,7 +113,7 @@ public class ResultBuilder<BEAN, ENTITY> {
         }
     }
 
-    private String getConditionSignatureBySelf(BEAN bean, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
+    private String getConditionSignatureBySelf(BEAN bean, FieldDescription.ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
 
         return conditionSign.getConditions().stream()
                 .map(condition -> {
@@ -126,7 +126,7 @@ public class ResultBuilder<BEAN, ENTITY> {
                 }).collect(Collectors.joining("|"));
     }
 
-    private String getConditionSignatureByJoin(ENTITY entity, ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
+    private String getConditionSignatureByJoin(ENTITY entity, FieldDescription.ConditionSign<ENTITY, JoinConditionDescription> conditionSign) {
 
         return conditionSign.getConditions().stream()
                 .map(condition -> {
@@ -145,7 +145,7 @@ public class ResultBuilder<BEAN, ENTITY> {
          * 只查询指定的字段，null或者长度0查询全部
          */
         default String[] selectColumns(List<?> beans,
-                                       ConditionSign<?, JoinConditionDescription> entityJoinCondition,
+                                       FieldDescription.ConditionSign<?, JoinConditionDescription> entityJoinCondition,
                                        List<? extends FieldDescription<?, JoinConditionDescription>> fieldAnnotationList) {
             return null;
         }

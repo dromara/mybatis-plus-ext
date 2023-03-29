@@ -1,4 +1,4 @@
-package com.tangzc.mpe.demo.bind;
+package com.tangzc.mpe.demo.bind.daily;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangzc.mpe.base.repository.BaseRepository;
@@ -10,6 +10,3 @@ public class DailyRepository extends BaseRepository<DailyMapper, Daily> {
 
 }
 
-@Mapper
-interface DailyMapper extends BaseMapper<Daily> {
-}

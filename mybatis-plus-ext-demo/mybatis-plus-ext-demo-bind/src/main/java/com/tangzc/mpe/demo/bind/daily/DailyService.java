@@ -1,5 +1,7 @@
-package com.tangzc.mpe.demo.bind;
+package com.tangzc.mpe.demo.bind.daily;
 
+import com.tangzc.mpe.demo.bind.daily.Daily;
+import com.tangzc.mpe.demo.bind.daily.DailyRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

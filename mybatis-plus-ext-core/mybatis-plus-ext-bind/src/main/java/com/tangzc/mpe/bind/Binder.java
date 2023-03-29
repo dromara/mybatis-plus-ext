@@ -2,6 +2,7 @@ package com.tangzc.mpe.bind;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import com.tangzc.mpe.bind.binder.BindAggFuncBinder;
 import com.tangzc.mpe.bind.binder.BindEntityBinder;
 import com.tangzc.mpe.bind.binder.BindEntityByMidBinder;
 import com.tangzc.mpe.bind.binder.BindFieldBinder;
@@ -104,6 +105,7 @@ public class Binder {
         Class<BEAN> beanClass = (Class<BEAN>) beans.get(0).getClass();
         BeanDescription<BEAN> beanAnnotation = BeanAnnotationManager.getBeanAnnotation(beanClass, includeField, ignoreField);
         if (beanAnnotation.isValid()) {
+            BindAggFuncBinder.<BEAN>newInstance().doBind(beans, beanAnnotation.getBindAggFuncAnnotations());
             BindFieldBinder.<BEAN>newInstance().doBind(beans, beanAnnotation.getBindFieldAnnotations());
             BindEntityBinder.<BEAN>newInstance().doBind(beans, beanAnnotation.getBindEntityAnnotations());
             BindFieldByMidBinder.<BEAN>newInstance().doBind(beans, beanAnnotation.getBindFieldByMidDescriptions());
