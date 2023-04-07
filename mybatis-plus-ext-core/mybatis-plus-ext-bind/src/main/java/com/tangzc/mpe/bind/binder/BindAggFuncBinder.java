@@ -26,10 +26,9 @@ public class BindAggFuncBinder<BEAN> {
         Map<BindAggFuncDescription.ConditionSign, List<BindAggFuncDescription>> groupByDesc =
                 fieldDescriptions.stream().collect(Collectors.groupingBy(BindAggFuncDescription::groupBy));
 
-        // groupByDesc.forEach();
         // TODO 构建结果并赋值到beans中
-        System.out.println(beans.size());
-
-        throw new RuntimeException("暂未支持函数绑定功能");
+        if (groupByDesc.size() > 0) {
+            throw new RuntimeException("暂未支持函数绑定功能");
+        }
     }
 }
