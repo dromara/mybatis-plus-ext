@@ -2,9 +2,9 @@ package com.tangzc.mpe.condition;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
@@ -56,7 +56,7 @@ public class DynamicConditionManager {
             String mapperProxyClassName = null;
             for (int i = 0; i < stackTrace.length; i++) {
                 // 找到MP的代理类，下一个就是Mapper的代理类
-                if ("com.baomidou.mybatisplus.core.override.MybatisMapperProxy".equals(stackTrace[i].getClassName())) {
+                if (com.baomidou.mybatisplus.core.override.MybatisMapperProxy.class.getName().equals(stackTrace[i].getClassName())) {
                     mapperProxyClassName = stackTrace[i + 1].getClassName();
                     break;
                 }

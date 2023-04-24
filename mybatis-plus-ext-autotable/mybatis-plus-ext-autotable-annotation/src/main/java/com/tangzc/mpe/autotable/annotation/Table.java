@@ -46,9 +46,8 @@ public @interface Table {
     String dsName() default "";
 
     /**
-     * 需要排除的属性名，排除掉的属性不参与建表
-     * 区别于 {@link Ignore}, {@link Ignore}不仅会忽略建表，数据操作的时候也会忽略
-     *
+     * 需要排除的属性名，字段不作为数据库维护的列，同时数据操作的时候也会忽略
+     * 具备{@link TableName#excludeProperty()}的作用
      * @return
      */
     @AliasFor(annotation = TableName.class, attribute = "excludeProperty")

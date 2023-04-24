@@ -22,7 +22,7 @@ spring:
         my-pgsql:
           driver-class-name: org.postgresql.Driver
           username: postgres
-          password: 12345678
+#          password: 12345678
           url: jdbc:postgresql://127.0.0.1:5432/mybatis-plus-ext
 
 mybatis-plus:

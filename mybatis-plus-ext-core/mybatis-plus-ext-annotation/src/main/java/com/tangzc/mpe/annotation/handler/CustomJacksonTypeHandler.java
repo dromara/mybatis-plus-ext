@@ -17,6 +17,9 @@ import org.apache.ibatis.type.MappedTypes;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 
+/**
+ * 序列化实现类
+ */
 @Slf4j
 @MappedTypes({Object.class})
 @MappedJdbcTypes(JdbcType.VARCHAR)

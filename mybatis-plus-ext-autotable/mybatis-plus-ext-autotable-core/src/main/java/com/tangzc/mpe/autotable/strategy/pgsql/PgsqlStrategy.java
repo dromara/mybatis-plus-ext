@@ -53,7 +53,8 @@ public class PgsqlStrategy implements IStrategy<PgsqlTableMetadata, PgsqlCompare
     @Override
     public PgsqlCompareTableInfo compareTable(PgsqlTableMetadata tableMetadata) {
         // TODO
-        return null;
+        log.warn("表自动更新功能暂未实现，敬请期待，欢迎贡献代码");
+        return new PgsqlCompareTableInfo(tableMetadata.getTableName());
     }
 
     @Override

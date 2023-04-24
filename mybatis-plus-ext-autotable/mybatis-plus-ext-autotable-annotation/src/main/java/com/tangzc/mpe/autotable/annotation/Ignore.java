@@ -2,13 +2,16 @@ package com.tangzc.mpe.autotable.annotation;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 
 /**
  * 标志字段不作为数据库维护的列，同时数据操作的时候也会忽略
- * 区别于 {@link Table#excludeProperty()}, {@link Table#excludeProperty()}仅会忽略建表
- *
+ * 具备{@link TableField#exist()}=false的作用
  * @author don
  */
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
