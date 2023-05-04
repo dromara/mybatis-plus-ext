@@ -8,7 +8,7 @@ import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -137,7 +137,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     private AutoFillHandler getAutoFillHandler(Class<? extends AutoFillHandler> autoFillHandler) {
 
         try {
-            return SpringContextUtil.getApplicationContext().getBean(autoFillHandler);
+            return SpringContextUtil.getBeanOfType(autoFillHandler);
         } catch (NoUniqueBeanDefinitionException ignore) {
             throw new RuntimeException("发现了多个" + autoFillHandler.getName() + "的实现，请保持spring中只有一个实例。");
         } catch (NoSuchBeanDefinitionException ignore) {

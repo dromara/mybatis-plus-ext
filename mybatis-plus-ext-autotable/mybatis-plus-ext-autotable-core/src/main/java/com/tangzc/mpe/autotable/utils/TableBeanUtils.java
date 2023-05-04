@@ -4,13 +4,26 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
 import com.google.common.collect.Sets;
-import com.tangzc.mpe.autotable.annotation.*;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.ColumnDefault;
+import com.tangzc.mpe.autotable.annotation.ColumnType;
+import com.tangzc.mpe.autotable.annotation.NotNull;
+import com.tangzc.mpe.autotable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.TableIndex;
+import com.tangzc.mpe.autotable.annotation.TableIndexes;
 import com.tangzc.mpe.autotable.strategy.FieldTypeHandler;
 import com.tangzc.mpe.autotable.strategy.IgnoreExt;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author don

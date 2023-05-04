@@ -36,7 +36,7 @@ public class AnnotatedElementUtilsPlus extends AnnotatedElementUtils {
                 try {
                     defaultVal = AnnotationUtils.getAnnotationAttributes(defaultAnno).get(annoFieldName);
                 } catch (Exception ignore) {
-                    log.info("{}的{}无默认值", annoClass, annoFieldName);
+                    log.debug("{}的{}无默认值", annoClass, annoFieldName);
                 }
                 // 从当前所有注解中，寻找fieldName属性第一个不同于默认值且不为null的值
                 // 获取第一个符合的值，在字段的表现上就是：按照从上(前)到下(后)的注解找

@@ -3,7 +3,7 @@ package com.tangzc.mpe.condition;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
 import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
@@ -139,7 +139,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
             for (DynamicConditionDescription description : descriptions) {
                 Field entityField = description.getEntityField();
                 Class<? extends IDynamicConditionHandler> handlerClass = description.getDynamicCondition().value();
-                IDynamicConditionHandler conditionHandler = SpringContextUtil.getApplicationContext().getBean(handlerClass);
+                IDynamicConditionHandler conditionHandler = SpringContextUtil.getBeanOfType(handlerClass);
 
                 // 表示该条件跳过，不参与过滤
                 if (!conditionHandler.enable()) {

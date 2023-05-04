@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tangzc.mpe.base.event.EntityUpdateEvent;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 
 import java.util.Collection;
 

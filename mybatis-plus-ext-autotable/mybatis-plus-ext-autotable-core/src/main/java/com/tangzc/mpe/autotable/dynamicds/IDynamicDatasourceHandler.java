@@ -5,7 +5,7 @@ import com.baomidou.dynamic.datasource.ds.ItemDataSource;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.strategy.IStrategy;
-import com.tangzc.mpe.autotable.utils.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

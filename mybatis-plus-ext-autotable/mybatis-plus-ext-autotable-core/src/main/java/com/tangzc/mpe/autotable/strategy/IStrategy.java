@@ -3,7 +3,7 @@ package com.tangzc.mpe.autotable.strategy;
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.constants.RunMode;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
-import com.tangzc.mpe.autotable.utils.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;

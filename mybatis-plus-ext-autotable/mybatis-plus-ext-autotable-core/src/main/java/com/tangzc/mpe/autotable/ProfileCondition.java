@@ -1,7 +1,7 @@
 package com.tangzc.mpe.autotable;
 
 import com.tangzc.mpe.autotable.utils.ClassScanner;
-import com.tangzc.mpe.autotable.utils.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

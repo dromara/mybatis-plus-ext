@@ -5,7 +5,7 @@ import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
 import com.tangzc.mpe.autotable.strategy.mysql.converter.JavaToMysqlConverter;
-import com.tangzc.mpe.autotable.utils.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;

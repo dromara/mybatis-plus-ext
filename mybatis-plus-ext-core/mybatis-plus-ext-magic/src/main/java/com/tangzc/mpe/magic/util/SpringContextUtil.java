@@ -1,4 +1,4 @@
-package com.tangzc.mpe.autotable.utils;
+package com.tangzc.mpe.magic.util;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.ChainQuery;
 import com.tangzc.mpe.base.event.BindEvent;
 import com.tangzc.mpe.base.event.BindIPageEvent;
 import com.tangzc.mpe.base.event.BindListEvent;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 
 import java.util.*;
 
