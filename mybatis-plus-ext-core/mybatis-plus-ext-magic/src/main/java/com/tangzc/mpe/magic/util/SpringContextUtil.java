@@ -1,8 +1,15 @@
 package com.tangzc.mpe.magic.util;
 
+import com.sun.xml.internal.ws.util.UtilException;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.DefaultSingletonBeanRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.ClassUtils;
 
 import java.util.ArrayList;
@@ -14,29 +21,101 @@ import java.util.Map;
  * @author don
  */
 //@Component
-public class SpringContextUtil implements ApplicationContextAware {
+public class SpringContextUtil implements BeanFactoryPostProcessor, ApplicationContextAware {
+    private static ConfigurableListableBeanFactory beanFactory;
+    private static ApplicationContext applicationContext;
 
-    private static ApplicationContext APPLICATION_CONTEXT;
-
-    /***
-     * 获取ApplicationContext上下文
-     */
-    public static ApplicationContext getApplicationContext() {
-
-        if (APPLICATION_CONTEXT == null) {
-            throw new RuntimeException("无法获取ApplicationContext，请在Spring初始化之后调用!");
-        }
-        return APPLICATION_CONTEXT;
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        SpringContextUtil.beanFactory = beanFactory;
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        SpringContextUtil.APPLICATION_CONTEXT = applicationContext;
+        SpringContextUtil.applicationContext = applicationContext;
     }
+
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public static ListableBeanFactory getBeanFactory() {
+        ListableBeanFactory factory = null == beanFactory ? applicationContext : beanFactory;
+        if (null == factory) {
+            throw new UtilException("No ConfigurableListableBeanFactory or ApplicationContext injected, maybe not in the Spring environment?");
+        } else {
+            return factory;
+        }
+    }
+
+    public static ConfigurableListableBeanFactory getConfigurableBeanFactory() throws UtilException {
+        ConfigurableListableBeanFactory factory;
+        if (null != beanFactory) {
+            factory = beanFactory;
+        } else {
+            if (!(applicationContext instanceof ConfigurableApplicationContext)) {
+                throw new UtilException("No ConfigurableListableBeanFactory from context!");
+            }
+
+            factory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
+        }
+
+        return factory;
+    }
+    public static String getProperty(String key) {
+        return null == applicationContext ? null : applicationContext.getEnvironment().getProperty(key);
+    }
+
+    public static String getApplicationName() {
+        return getProperty("spring.application.name");
+    }
+
+    public static String[] getActiveProfiles() {
+        return null == applicationContext ? null : applicationContext.getEnvironment().getActiveProfiles();
+    }
+
+    public static String getActiveProfile() {
+        String[] activeProfiles = getActiveProfiles();
+        if (activeProfiles != null && activeProfiles.length > 0) {
+            return activeProfiles[0];
+        }
+        return null;
+    }
+
+    public static <T> void registerBean(String beanName, T bean) {
+        ConfigurableListableBeanFactory factory = getConfigurableBeanFactory();
+        factory.autowireBean(bean);
+        factory.registerSingleton(beanName, bean);
+    }
+
+    public static void unregisterBean(String beanName) {
+        ConfigurableListableBeanFactory factory = getConfigurableBeanFactory();
+        if (factory instanceof DefaultSingletonBeanRegistry) {
+            DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) factory;
+            registry.destroySingleton(beanName);
+        } else {
+            throw new UtilException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
+        }
+    }
+
+    public static void publishEvent(ApplicationEvent event) {
+        if (null != applicationContext) {
+            applicationContext.publishEvent(event);
+        }
+
+    }
+
+    public static void publishEvent(Object event) {
+        if (null != applicationContext) {
+            applicationContext.publishEvent(event);
+        }
+
+    }
+
 
     public static <T> List<T> getBeansOfTypeList(Class<T> clazz) {
 
-        Map<String, T> beansOfTypeMap = getApplicationContext().getBeansOfType(clazz);
+        Map<String, T> beansOfTypeMap = getBeanFactory().getBeansOfType(clazz);
         if (beansOfTypeMap.isEmpty()) {
             return Collections.emptyList();
         }
@@ -45,7 +124,7 @@ public class SpringContextUtil implements ApplicationContextAware {
     }
 
     public static <T> T getBeanOfType(Class<T> clazz) {
-        return getApplicationContext().getBean(clazz);
+        return getBeanFactory().getBean(clazz);
     }
 
     public static String getBootPackage() {
@@ -70,9 +149,5 @@ public class SpringContextUtil implements ApplicationContextAware {
             }
         }
         throw new RuntimeException("未找到主默认包");
-    }
-
-    public static void publishEvent(ApplicationEvent applicationEvent) {
-        APPLICATION_CONTEXT.publishEvent(applicationEvent);
     }
 }
