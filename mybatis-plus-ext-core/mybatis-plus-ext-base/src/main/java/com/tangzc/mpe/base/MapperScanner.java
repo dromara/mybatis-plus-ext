@@ -1,9 +1,9 @@
 package com.tangzc.mpe.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.base.event.InitScanMapperEvent;
-import com.tangzc.mpe.base.util.ReflectionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -27,7 +27,7 @@ public class MapperScanner {
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
     @Autowired(required = false)
-    private List<BaseMapper<?>> proxyMapperList;
+    private List<? extends BaseMapper<?>> proxyMapperList;
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -37,7 +37,7 @@ public class MapperScanner {
             return;
         }
         for (BaseMapper<?> proxyMapper : proxyMapperList) {
-            Class<?> entityClass = ReflectionUtil.getEntityClass(proxyMapper);
+            Class<?> entityClass = ReflectionKit.getSuperClassGenericType(proxyMapper.getClass(), BaseMapper.class, 0);
             if (entityClass != null) {
                 applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));
                 applicationEventPublisher.publishEvent(new InitScanEntityEvent(entityClass));
