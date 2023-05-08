@@ -1,6 +1,5 @@
 package com.tangzc.mpe.magic.util;
 
-import com.sun.xml.internal.ws.util.UtilException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -42,19 +41,19 @@ public class SpringContextUtil implements BeanFactoryPostProcessor, ApplicationC
     public static ListableBeanFactory getBeanFactory() {
         ListableBeanFactory factory = null == beanFactory ? applicationContext : beanFactory;
         if (null == factory) {
-            throw new UtilException("No ConfigurableListableBeanFactory or ApplicationContext injected, maybe not in the Spring environment?");
+            throw new RuntimeException("No ConfigurableListableBeanFactory or ApplicationContext injected, maybe not in the Spring environment?");
         } else {
             return factory;
         }
     }
 
-    public static ConfigurableListableBeanFactory getConfigurableBeanFactory() throws UtilException {
+    public static ConfigurableListableBeanFactory getConfigurableBeanFactory() throws RuntimeException {
         ConfigurableListableBeanFactory factory;
         if (null != beanFactory) {
             factory = beanFactory;
         } else {
             if (!(applicationContext instanceof ConfigurableApplicationContext)) {
-                throw new UtilException("No ConfigurableListableBeanFactory from context!");
+                throw new RuntimeException("No ConfigurableListableBeanFactory from context!");
             }
 
             factory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
@@ -94,7 +93,7 @@ public class SpringContextUtil implements BeanFactoryPostProcessor, ApplicationC
             DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) factory;
             registry.destroySingleton(beanName);
         } else {
-            throw new UtilException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
+            throw new RuntimeException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
         }
     }
 
