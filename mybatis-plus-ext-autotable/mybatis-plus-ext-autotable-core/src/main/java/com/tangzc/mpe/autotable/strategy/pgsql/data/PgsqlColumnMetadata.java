@@ -137,8 +137,11 @@ public class PgsqlColumnMetadata {
 
         ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null) {
-            if (!column.value().isEmpty()) {
+            // 如果重新设置了类型，则长度也需要重新设置
+            if (!column.value().isEmpty() && !column.value().equals(typeAndLength.getType())) {
                 typeAndLength.setType(column.value());
+                typeAndLength.setLength(null);
+                typeAndLength.setDecimalLength(null);
             }
             if (column.length() >= 0) {
                 typeAndLength.setLength(column.length());
