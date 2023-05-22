@@ -78,7 +78,7 @@ public class QueryWrapperBuilder<ENTITY> {
         }
 
         // 如果没有用户自定义条件，只有固定条件。所有固定条件之间是 OR 的关系
-        if (StringUtils.isEmpty(customCondition)) {
+        if (!StringUtils.hasText(customCondition)) {
             joinCondition(queryWrapper, whereSet);
         } else {
             // 存在自定义条件的情况下，由于自定义条件是固定死的，可以通用，提取出来

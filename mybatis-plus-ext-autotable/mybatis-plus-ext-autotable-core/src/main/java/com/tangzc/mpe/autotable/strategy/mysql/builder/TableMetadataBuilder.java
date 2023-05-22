@@ -9,10 +9,10 @@ import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTableMetadata;
 import com.tangzc.mpe.autotable.utils.IndexRepeatChecker;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 

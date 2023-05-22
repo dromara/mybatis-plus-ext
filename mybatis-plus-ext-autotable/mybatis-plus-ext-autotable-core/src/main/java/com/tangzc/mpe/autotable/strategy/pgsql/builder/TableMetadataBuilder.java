@@ -7,10 +7,10 @@ import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlColumnMetadata;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlIndexMetadata;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlTableMetadata;
 import com.tangzc.mpe.autotable.utils.IndexRepeatChecker;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 

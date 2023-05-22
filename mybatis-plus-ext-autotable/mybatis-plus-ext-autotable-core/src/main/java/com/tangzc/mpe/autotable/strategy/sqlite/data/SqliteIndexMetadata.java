@@ -13,8 +13,12 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author don
@@ -64,7 +68,7 @@ public class SqliteIndexMetadata {
             String realColumnName = TableColumnNameUtil.getRealColumnName(field);
             SqliteIndexMetadata sqliteIndexMetadata = new SqliteIndexMetadata();
             String indexName = index.name();
-            if (StringUtils.isEmpty(indexName)) {
+            if (!StringUtils.hasText(indexName)) {
                 indexName = TableColumnNameUtil.getRealColumnName(field);
             }
             sqliteIndexMetadata.setName(indexPrefix + indexName);
@@ -112,7 +116,7 @@ public class SqliteIndexMetadata {
                                 return IndexColumnParam.of(realColumnName, sortField.sort());
                             })
                             .filter(Objects::nonNull)
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
         // 其次获取 简单模式的字段，如果重复了，跳过，以带排序方式的为准
@@ -130,7 +134,7 @@ public class SqliteIndexMetadata {
                                 return IndexColumnParam.of(realColumnName, null);
                             })
                             .filter(Objects::nonNull)
-                            .collect(Collectors.toList())
+                            .toList()
             );
         }
 

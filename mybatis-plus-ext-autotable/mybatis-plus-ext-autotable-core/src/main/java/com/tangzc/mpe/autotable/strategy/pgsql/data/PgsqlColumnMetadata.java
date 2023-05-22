@@ -4,10 +4,10 @@ import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.pgsql.converter.JavaToPgsqlConverter;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -118,7 +118,7 @@ public class PgsqlColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && StringUtils.hasText(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";
@@ -137,8 +137,11 @@ public class PgsqlColumnMetadata {
 
         ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null) {
-            if (!column.value().isEmpty()) {
+            // 如果重新设置了类型，则长度也需要重新设置
+            if (!column.value().isEmpty() && !column.value().equals(typeAndLength.getType())) {
                 typeAndLength.setType(column.value());
+                typeAndLength.setLength(null);
+                typeAndLength.setDecimalLength(null);
             }
             if (column.length() >= 0) {
                 typeAndLength.setLength(column.length());

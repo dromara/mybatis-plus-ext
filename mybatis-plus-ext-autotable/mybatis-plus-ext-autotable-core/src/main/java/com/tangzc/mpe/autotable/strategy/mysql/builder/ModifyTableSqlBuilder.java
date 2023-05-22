@@ -107,15 +107,15 @@ public class ModifyTableSqlBuilder {
         );
 
         // 引擎，相较于新增表，多了","前缀
-        if (!StringUtils.isEmpty(engine)) {
+        if (StringUtils.hasText(engine)) {
             modifyItems.add("ENGINE = " + engine);
         }
         // 字符集，相较于新增表，多了","前缀
-        if (!StringUtils.isEmpty(characterSet)) {
+        if (StringUtils.hasText(characterSet)) {
             modifyItems.add("CHARACTER SET = " + characterSet);
         }
         // 排序，相较于新增表，多了","前缀
-        if (!StringUtils.isEmpty(collate)) {
+        if (StringUtils.hasText(collate)) {
             modifyItems.add("COLLATE = " + collate);
         }
         // 备注，相较于新增表，多了","前缀

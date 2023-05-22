@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.event.EntityUpdateEvent;
-import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.datasource.annotation.DataSource;
 import com.tangzc.mpe.datasource.description.DataSourceConditionDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateFieldDescription;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class DataSourceManager {
     public static void addDataSource(Class<?> entityClass, Field entityField, DataSource dataSource) {
 
         Class<?> sourceClass = dataSource.source();
-        if (StringUtils.isEmpty(dataSource.sourceName()) && sourceClass == Void.class) {
+        if (!StringUtils.hasText(dataSource.sourceName()) && sourceClass == Void.class) {
             log.error("{}类上的{}字段，@DataSource缺少`source`或`sourceName`属性，" +
                     "自动更新数据功能将被忽略", entityClass, entityField.getName());
             return;
@@ -57,7 +57,7 @@ public class DataSourceManager {
 
         // 获取冗余数据的源的名称（全路径）
         String sourceName = dataSource.sourceName();
-        if (StringUtils.isEmpty(sourceName)) {
+        if (!StringUtils.hasText(sourceName)) {
             sourceName = sourceClass.getName();
         }
 

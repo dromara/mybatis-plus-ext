@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,7 +57,7 @@ public class StartUp {
 
     private String[] getModelPackage() {
         String[] packs = autoTableProperties.getModelPackage();
-        if (StringUtils.isEmpty(packs)) {
+        if (packs == null) {
             packs = new String[]{getBootPackage()};
         }
         return packs;
@@ -80,7 +79,7 @@ public class StartUp {
             if (sameClasses.size() > 1) {
                 List<Class<?>> primaryClasses = sameClasses.stream()
                         .filter(StartUp::isPrimary)
-                        .collect(Collectors.toList());
+                        .toList();
                 if (primaryClasses.isEmpty()) {
                     throw new RuntimeException("表名[" + tableName + "]出现重复，必须为其中一个@Table指定primary！");
                 }
@@ -92,6 +91,7 @@ public class StartUp {
                 primaryClass = sameClasses.get(0);
             }
             Table tableAnno = AnnotatedElementUtils.findMergedAnnotation(primaryClass, Table.class);
+            assert tableAnno != null;
             needHandleTableMap.computeIfAbsent(tableAnno.dsName(), k -> new HashSet<>()).add(primaryClass);
         });
         return needHandleTableMap;

@@ -61,7 +61,7 @@ public class DynamicConditionManager {
                     break;
                 }
             }
-            if (StringUtils.isEmpty(mapperProxyClassName)) {
+            if (!StringUtils.hasText(mapperProxyClassName)) {
                 throw new RuntimeException("未找到执行操作的Mapper类。");
             }
             Class<?> mapperClass = ((Class<?>) Class.forName(mapperProxyClassName).getGenericInterfaces()[0]);
