@@ -5,15 +5,12 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tangzc.mpe.bind.Binder;
 import com.tangzc.mpe.demo.bind.user.User;
 import com.tangzc.mpe.demo.bind.user.UserMapper;
+import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.util.List;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes= DemoBindApplication.class)
 public class MyTest {
 

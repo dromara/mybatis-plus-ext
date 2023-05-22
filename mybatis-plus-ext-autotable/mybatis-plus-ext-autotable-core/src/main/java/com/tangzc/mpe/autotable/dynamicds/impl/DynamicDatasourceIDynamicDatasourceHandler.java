@@ -3,9 +3,9 @@ package com.tangzc.mpe.autotable.dynamicds.impl;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
+import jakarta.annotation.Resource;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
 

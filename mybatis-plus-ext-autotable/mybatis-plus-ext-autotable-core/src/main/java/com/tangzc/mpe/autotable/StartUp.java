@@ -6,15 +6,19 @@ import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.utils.ClassScanner;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

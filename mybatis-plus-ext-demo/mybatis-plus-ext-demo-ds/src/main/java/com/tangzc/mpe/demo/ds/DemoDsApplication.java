@@ -2,12 +2,12 @@ package com.tangzc.mpe.demo.ds;
 
 import com.tangzc.mpe.autotable.EnableAutoTable;
 import com.tangzc.mpe.demo.ds.repository.TestTableRepository;
+import jakarta.annotation.Resource;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
-import javax.annotation.Resource;
 
 @EnableAutoTable
 @SpringBootApplication

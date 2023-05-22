@@ -1,11 +1,9 @@
 package com.tangzc.mpe.demo.bind.daily;
 
-import com.tangzc.mpe.demo.bind.daily.Daily;
-import com.tangzc.mpe.demo.bind.daily.DailyRepository;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @RestController

@@ -1,10 +1,10 @@
 package com.tangzc.mpe.demo.condition;
 
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 

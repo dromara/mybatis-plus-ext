@@ -2,11 +2,11 @@ package com.tangzc.mpe.demo.datasource;
 
 import com.tangzc.mpe.demo.datasource.repository.SourceObjectRepository;
 import com.tangzc.mpe.demo.datasource.repository.TargetObjectRepository;
+import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 @RestController

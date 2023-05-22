@@ -2,16 +2,16 @@ package com.tangzc.mpe.autotable.strategy.sqlite;
 
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
 import com.tangzc.mpe.autotable.strategy.IStrategy;
+import com.tangzc.mpe.autotable.strategy.sqlite.builder.CreateTableSqlBuilder;
 import com.tangzc.mpe.autotable.strategy.sqlite.builder.TableMetadataBuilder;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteCompareTableInfo;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteIndexMetadata;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.SqliteTableMetadata;
-import com.tangzc.mpe.autotable.strategy.sqlite.builder.CreateTableSqlBuilder;
 import com.tangzc.mpe.autotable.strategy.sqlite.data.dbdata.SqliteMaster;
 import com.tangzc.mpe.autotable.strategy.sqlite.mapper.SqliteTablesMapper;
+import jakarta.annotation.Resource;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

@@ -7,8 +7,8 @@ import com.tangzc.mpe.autotable.strategy.pgsql.builder.TableMetadataBuilder;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlCompareTableInfo;
 import com.tangzc.mpe.autotable.strategy.pgsql.data.PgsqlTableMetadata;
 import com.tangzc.mpe.autotable.strategy.pgsql.mapper.PgsqlTablesMapper;
+import jakarta.annotation.Resource;
 
-import javax.annotation.Resource;
 
 /**
  * @author don
