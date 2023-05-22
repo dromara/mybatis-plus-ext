@@ -5,10 +5,10 @@ import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.ParamValidChecker;
 import com.tangzc.mpe.autotable.strategy.mysql.converter.JavaToMysqlConverter;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -87,7 +87,7 @@ public class MysqlColumnMetadata {
                 }
             }
             // 补偿逻辑：字符串类型，前后自动添加'
-            if (type.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             mysqlColumnMetadata.setDefaultValue(defaultValue);
@@ -122,7 +122,7 @@ public class MysqlColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isInvalid(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";
@@ -134,13 +134,23 @@ public class MysqlColumnMetadata {
 
     private static MysqlTypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
 
-        ColumnType column = TableBeanUtils.getColumnType(field);
-        if (column != null && StringUtils.hasText(column.value())) {
-            return new MysqlTypeAndLength(column.length(), column.decimalLength(), column.value());
-        }
         // 类型为空根据字段类型去默认匹配类型
         Class<?> fieldType = TableBeanUtils.getFieldType(clazz, field);
         JavaToMysqlConverter javaToMysqlConverter = SpringContextUtil.getBeanOfType(JavaToMysqlConverter.class);
-        return javaToMysqlConverter.convert(fieldType);
+        MysqlTypeAndLength typeAndLength = javaToMysqlConverter.convert(fieldType);
+
+        ColumnType column = TableBeanUtils.getColumnType(field);
+        if (column != null) {
+            if (!column.value().isEmpty()) {
+                typeAndLength.setType(column.value());
+            }
+            if (column.length() >= 0) {
+                typeAndLength.setLength(column.length());
+            }
+            if (column.decimalLength() >= 0) {
+                typeAndLength.setDecimalLength(column.decimalLength());
+            }
+        }
+        return typeAndLength;
     }
 }

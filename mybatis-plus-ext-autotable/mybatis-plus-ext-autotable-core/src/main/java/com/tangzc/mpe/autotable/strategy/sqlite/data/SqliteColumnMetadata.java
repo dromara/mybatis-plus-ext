@@ -95,7 +95,7 @@ public class SqliteColumnMetadata {
                 }
             }
             // 补偿逻辑：字符串类型，前后自动添加'
-            if (sqliteColumnMetadata.getType().isText() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            if (sqliteColumnMetadata.getType().isText() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             sqliteColumnMetadata.setDefaultValue(defaultValue);
@@ -131,7 +131,7 @@ public class SqliteColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isInvalid(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";

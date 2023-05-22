@@ -1,6 +1,5 @@
 package com.tangzc.mpe.base;
 
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        SpringContextUtil.class,
         AutoFillMetaObjectHandler.class,
         AutoFillMetaObjectHandler.AutoFillMetaObjectHandlerChecker.class,
         MapperScanner.class,

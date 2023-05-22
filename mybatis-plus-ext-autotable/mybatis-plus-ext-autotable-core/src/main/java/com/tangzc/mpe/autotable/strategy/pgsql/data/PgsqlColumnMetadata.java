@@ -78,7 +78,7 @@ public class PgsqlColumnMetadata {
             String defaultValue = columnDefault.value();
             PgsqlTypeAndLength type = pgsqlColumnMetadata.getType();
             // 补偿逻辑：字符串类型，前后自动添加'
-            if (type.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             pgsqlColumnMetadata.setDefaultValue(defaultValue);
@@ -118,7 +118,7 @@ public class PgsqlColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isInvalid(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";
@@ -128,15 +128,26 @@ public class PgsqlColumnMetadata {
 
     private static PgsqlTypeAndLength getTypeAndLength(Field field, Class<?> clazz) {
 
-        ColumnType column = TableBeanUtils.getColumnType(field);
-        if (column != null && StringUtils.hasText(column.value())) {
-            return new PgsqlTypeAndLength(column.length(), column.decimalLength(), column.value());
-        }
+
         // 类型为空根据字段类型去默认匹配类型
         Class<?> fieldType = TableBeanUtils.getFieldType(clazz, field);
-
         // 获取外部注入的自定义
         JavaToPgsqlConverter javaToPgsqlConverter = SpringContextUtil.getBeanOfType(JavaToPgsqlConverter.class);
-        return javaToPgsqlConverter.convert(fieldType);
+        PgsqlTypeAndLength typeAndLength = javaToPgsqlConverter.convert(fieldType);
+
+        ColumnType column = TableBeanUtils.getColumnType(field);
+        if (column != null) {
+            if (!column.value().isEmpty()) {
+                typeAndLength.setType(column.value());
+            }
+            if (column.length() >= 0) {
+                typeAndLength.setLength(column.length());
+            }
+            if (column.decimalLength() >= 0) {
+                typeAndLength.setDecimalLength(column.decimalLength());
+            }
+        }
+
+        return typeAndLength;
     }
 }

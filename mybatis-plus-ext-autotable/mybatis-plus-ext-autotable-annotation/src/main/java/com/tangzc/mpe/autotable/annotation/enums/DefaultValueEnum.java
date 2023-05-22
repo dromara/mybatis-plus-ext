@@ -24,7 +24,7 @@ public enum DefaultValueEnum {
         return defaultValueEnum != null && defaultValueEnum != UNDEFINED;
     }
 
-    public static boolean isInvalid(DefaultValueEnum defaultValueEnum) {
+    public static boolean isCustom(DefaultValueEnum defaultValueEnum) {
         return !isValid(defaultValueEnum);
     }
 }
