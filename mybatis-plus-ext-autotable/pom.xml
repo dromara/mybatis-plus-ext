@@ -3,7 +3,7 @@
     <parent>
         <artifactId>mybatis-plus-ext</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.3.1-EXT307</version>
+        <version>3.5.3.1-EXT307.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
