@@ -3,7 +3,12 @@ package com.tangzc.mpe.autotable.annotation;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
  * 设置字段唯一索引 {@link Index}的快捷方式

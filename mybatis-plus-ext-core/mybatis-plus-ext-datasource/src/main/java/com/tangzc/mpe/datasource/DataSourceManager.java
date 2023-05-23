@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.event.EntityUpdateEvent;
-import com.tangzc.mpe.magic.BeanClassUtil;
 import com.tangzc.mpe.datasource.annotation.DataSource;
 import com.tangzc.mpe.datasource.description.DataSourceConditionDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateFieldDescription;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,11 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**

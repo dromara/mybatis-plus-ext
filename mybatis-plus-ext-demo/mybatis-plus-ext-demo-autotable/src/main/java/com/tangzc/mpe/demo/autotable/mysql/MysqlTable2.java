@@ -1,6 +1,11 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
-import com.tangzc.mpe.autotable.annotation.*;
+import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Index;
+import com.tangzc.mpe.autotable.annotation.IndexField;
+import com.tangzc.mpe.autotable.annotation.TableIndex;
+import com.tangzc.mpe.autotable.annotation.TableIndexes;
+import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
 import lombok.Data;

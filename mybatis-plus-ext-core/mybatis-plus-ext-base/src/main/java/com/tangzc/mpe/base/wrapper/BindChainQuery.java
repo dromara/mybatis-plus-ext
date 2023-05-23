@@ -8,7 +8,12 @@ import com.tangzc.mpe.base.event.BindIPageEvent;
 import com.tangzc.mpe.base.event.BindListEvent;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 
 /**
  * 自定义ChainQuery，拓展了关于Bind的相关方法

@@ -4,7 +4,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
  * 建表的必备注解

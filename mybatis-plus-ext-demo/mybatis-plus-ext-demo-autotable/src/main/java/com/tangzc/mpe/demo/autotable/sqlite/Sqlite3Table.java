@@ -1,7 +1,19 @@
 package com.tangzc.mpe.demo.autotable.sqlite;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.tangzc.mpe.autotable.annotation.*;
+import com.tangzc.mpe.autotable.annotation.Column;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.ColumnDefault;
+import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.ColumnType;
+import com.tangzc.mpe.autotable.annotation.Ignore;
+import com.tangzc.mpe.autotable.annotation.Index;
+import com.tangzc.mpe.autotable.annotation.IndexField;
+import com.tangzc.mpe.autotable.annotation.NotNull;
+import com.tangzc.mpe.autotable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.TableIndex;
+import com.tangzc.mpe.autotable.annotation.TableIndexes;
+import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;

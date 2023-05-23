@@ -9,7 +9,11 @@ import com.tangzc.mpe.autotable.strategy.IStrategy;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.CreateTableSqlBuilder;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.ModifyTableSqlBuilder;
 import com.tangzc.mpe.autotable.strategy.mysql.builder.TableMetadataBuilder;
-import com.tangzc.mpe.autotable.strategy.mysql.data.*;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlColumnMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlCompareTableInfo;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlIndexMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTableMetadata;
+import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeAndLength;
 import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaColumn;
 import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaStatistics;
 import com.tangzc.mpe.autotable.strategy.mysql.data.dbdata.InformationSchemaTable;
@@ -19,7 +23,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
