@@ -1,6 +1,5 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
-import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlDefaultTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +26,7 @@ public class MysqlTypeAndLength {
         this.type = type;
     }
 
-    private static final Set<String> CHAR_STRING_TYPE = Sets.newHashSet(
+    private static final Set<String> CHAR_STRING_TYPE = Set.of(
             MySqlDefaultTypeEnum.CHAR.typeName(),
             MySqlDefaultTypeEnum.VARCHAR.typeName(),
             MySqlDefaultTypeEnum.TEXT.typeName(),
@@ -36,7 +35,7 @@ public class MysqlTypeAndLength {
             MySqlDefaultTypeEnum.LONGTEXT.typeName()
     );
 
-    private static final Set<String> INTEGER_TYPE = Sets.newHashSet(
+    private static final Set<String> INTEGER_TYPE = Set.of(
             MySqlDefaultTypeEnum.INT.typeName(),
             MySqlDefaultTypeEnum.TINYINT.typeName(),
             MySqlDefaultTypeEnum.SMALLINT.typeName(),
@@ -44,7 +43,7 @@ public class MysqlTypeAndLength {
             MySqlDefaultTypeEnum.BIGINT.typeName()
     );
 
-    private static final Set<String> FLOAT_TYPE = Sets.newHashSet(
+    private static final Set<String> FLOAT_TYPE = Set.of(
             MySqlDefaultTypeEnum.FLOAT.typeName(),
             MySqlDefaultTypeEnum.DOUBLE.typeName(),
             MySqlDefaultTypeEnum.DECIMAL.typeName()

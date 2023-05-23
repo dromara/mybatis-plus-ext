@@ -5,7 +5,12 @@ import com.tangzc.mpe.annotation.handler.CustomJacksonTypeHandler;
 import org.apache.ibatis.type.TypeHandler;
 import org.springframework.core.annotation.AliasFor;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 
 /**
  * 此种方式有一个弊端：会将类的签名（全名称）序列化到数据中，所以使用该注解的字段所在的类不能随意变更目录和名称。

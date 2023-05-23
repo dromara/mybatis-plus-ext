@@ -2,7 +2,14 @@ package com.tangzc.mpe.demo.autotable.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.tangzc.mpe.autotable.annotation.*;
+import com.tangzc.mpe.autotable.annotation.Column;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.ColumnDefault;
+import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.ColumnType;
+import com.tangzc.mpe.autotable.annotation.Ignore;
+import com.tangzc.mpe.autotable.annotation.NotNull;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
 import lombok.Data;

@@ -3,7 +3,6 @@ package com.tangzc.mpe.autotable.utils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
@@ -24,13 +23,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author don
  */
 public class TableBeanUtils {
 
-    private static Map<Class<?>, HashSet<String>> excludeFieldsMap = new HashMap<>();
+    private static Map<Class<?>, Set<String>> excludeFieldsMap = new HashMap<>();
 
     private static List<IgnoreExt> ignoreExts;
 
@@ -51,11 +51,11 @@ public class TableBeanUtils {
         }
 
         // 不参与建表的字段: 增加缓存策略，提升性能
-        HashSet<String> excludeFields = excludeFieldsMap.computeIfAbsent(clazz, (k) -> {
-            HashSet<String> excludes = new HashSet<>();
+        Set<String> excludeFields = excludeFieldsMap.computeIfAbsent(clazz, (k) -> {
+            Set<String> excludes = new HashSet<>();
             Table table = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
             if (table != null) {
-                excludes = Sets.newHashSet(table.excludeProperty());
+                excludes = Set.of(table.excludeProperty());
             }
             return excludes;
         });
