@@ -10,6 +10,7 @@ import com.tangzc.mpe.autotable.annotation.Ignore;
 import com.tangzc.mpe.autotable.annotation.Index;
 import com.tangzc.mpe.autotable.annotation.IndexField;
 import com.tangzc.mpe.autotable.annotation.NotNull;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.TableIndexes;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
@@ -33,7 +34,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @MysqlCharset(value = "utf8mb4")
-// @Table(comment = "测试表", dsName = "my-mysql")
+@Table(value = "MysqlTable", comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 
     @ColumnId(mode = IdType.AUTO, comment = "ID", type = MysqlTypeConstant.BIGINT)
