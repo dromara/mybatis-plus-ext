@@ -1,19 +1,18 @@
 package com.tangzc.mpe.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.core.metadata.TableInfo;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
-import com.tangzc.mpe.base.event.InitScanMapperEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author don
@@ -22,38 +21,39 @@ import java.util.concurrent.ConcurrentHashMap;
 //@Component
 public class MapperScanner {
 
-    private static final Map<String, BaseMapper<?>> ENTITY_MAPPER_CACHE_MAP = new ConcurrentHashMap<>();
-
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
-    @Autowired(required = false)
-    private List<? extends BaseMapper<?>> proxyMapperList;
 
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
+        List<TableInfo> tableInfos = TableInfoHelper.getTableInfos();
+
         // 初始化所有的Entity和Mapper
-        if (proxyMapperList == null) {
+        if (tableInfos.isEmpty()) {
             return;
         }
-        for (BaseMapper<?> proxyMapper : proxyMapperList) {
-            Class<?> entityClass = ReflectionKit.getSuperClassGenericType(proxyMapper.getClass(), BaseMapper.class, 0);
+        for (TableInfo tableInfo : tableInfos) {
+
+            Class<?> entityClass = tableInfo.getEntityType();
             if (entityClass != null) {
-                applicationEventPublisher.publishEvent(new InitScanMapperEvent(proxyMapper));
                 applicationEventPublisher.publishEvent(new InitScanEntityEvent(entityClass));
-                ENTITY_MAPPER_CACHE_MAP.put(entityClass.getName(), proxyMapper);
             }
         }
     }
 
     public static <ENTITY> BaseMapper<ENTITY> getMapper(Class<ENTITY> entityClass) {
 
+        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
+
         String entityClassName = entityClass.getName();
-        BaseMapper<?> baseMapper = ENTITY_MAPPER_CACHE_MAP.get(entityClassName);
-        if (baseMapper == null) {
+        BaseMapper<?> mapper;
+        try (SqlSession sqlSession = SqlHelper.sqlSession(entityClass)) {
+            mapper = (BaseMapper<?>) tableInfo.getConfiguration().getMapper(entityClass, sqlSession);
+        }
+        if (mapper == null) {
             throw new RuntimeException("未发现" + entityClassName + "的BaseMapper实现");
         }
-        return (BaseMapper<ENTITY>) baseMapper;
+        return (BaseMapper<ENTITY>) mapper;
     }
-
 }
