@@ -1,6 +1,7 @@
 package com.tangzc.mpe.demo.bind.mid;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @Table(comment = "中间表")
+@AutoRepository
 public class RoleMenu {
 
     private String id;

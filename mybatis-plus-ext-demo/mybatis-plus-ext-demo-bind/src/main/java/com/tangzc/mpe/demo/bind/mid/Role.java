@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.bind.mid;
 
+import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 @Data
 @Table(comment = "角色")
+@AutoRepository
 public class Role {
 
     @Column(comment = "id")

@@ -15,9 +15,6 @@
         <module>mybatis-plus-ext-magic</module>
         <module>mybatis-plus-ext-base</module>
         <module>mybatis-plus-ext-annotation</module>
-        <module>mybatis-plus-ext-bind</module>
-        <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-condition</module>
     </modules>
 
     <dependencies>

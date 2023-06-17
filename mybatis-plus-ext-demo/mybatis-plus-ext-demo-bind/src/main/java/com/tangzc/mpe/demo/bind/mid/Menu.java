@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.bind.mid;
 
+import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.Data;
  */
 @Data
 @Table(comment = "菜单")
+@AutoRepository
 public class Menu {
 
     @Column(comment = "id")

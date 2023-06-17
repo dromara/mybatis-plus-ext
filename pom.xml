@@ -53,6 +53,9 @@
         <module>mybatis-plus-ext-demo</module>
         <module>mybatis-plus-ext-autotable</module>
         <module>mybatis-plus-ext-automapper</module>
+        <module>mybatis-plus-ext-bind</module>
+        <module>mybatis-plus-ext-datasource</module>
+        <module>mybatis-plus-ext-condition</module>
     </modules>
 
     <dependencyManagement>

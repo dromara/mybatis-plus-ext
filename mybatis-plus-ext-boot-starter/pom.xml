@@ -19,33 +19,23 @@
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-annotation</artifactId>
+            <artifactId>mybatis-plus-ext-bind-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-bind</artifactId>
+            <artifactId>mybatis-plus-ext-datasource-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-datasource</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-condition</artifactId>
+            <artifactId>mybatis-plus-ext-condition-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-autotable-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

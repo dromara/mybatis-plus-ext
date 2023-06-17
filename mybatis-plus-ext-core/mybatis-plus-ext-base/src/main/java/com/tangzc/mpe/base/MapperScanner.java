@@ -3,6 +3,7 @@ package com.tangzc.mpe.base;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import jakarta.annotation.Resource;
@@ -47,10 +48,9 @@ public class MapperScanner {
         TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
 
         String entityClassName = entityClass.getName();
-        BaseMapper<?> mapper;
-        try (SqlSession sqlSession = SqlHelper.sqlSession(entityClass)) {
-            mapper = (BaseMapper<?>) tableInfo.getConfiguration().getMapper(entityClass, sqlSession);
-        }
+        SqlSession sqlSession = SqlHelper.sqlSession(entityClass);
+        Class<?> mapperClass = ClassUtils.toClassConfident(tableInfo.getCurrentNamespace());
+        BaseMapper<?> mapper = (BaseMapper<?>) tableInfo.getConfiguration().getMapper(mapperClass, sqlSession);
         if (mapper == null) {
             throw new RuntimeException("未发现" + entityClassName + "的BaseMapper实现");
         }

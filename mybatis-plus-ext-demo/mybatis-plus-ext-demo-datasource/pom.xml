@@ -19,7 +19,7 @@
         <!-- 只引入单项功能 -->
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-datasource</artifactId>
+            <artifactId>mybatis-plus-ext-datasource-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- 只引入建表功能 -->
