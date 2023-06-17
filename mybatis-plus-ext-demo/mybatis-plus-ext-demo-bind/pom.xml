@@ -21,21 +21,8 @@
         <!-- 只引入bind功能 -->
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-bind</artifactId>
+            <artifactId>mybatis-plus-ext-boot-starter</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <!-- 只引入建表功能 -->
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- mybatis plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
 

@@ -3,39 +3,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.tangzc</groupId>
-        <artifactId>mybatis-plus-ext</artifactId>
+        <artifactId>mybatis-plus-ext-bind</artifactId>
         <version>3.5.3.1-EXT400</version>
     </parent>
 
-    <artifactId>mybatis-plus-ext-automapper</artifactId>
+    <artifactId>mybatis-plus-ext-bind-core</artifactId>
     <packaging>jar</packaging>
 
-    <name>mybatis-plus-ext-automapper</name>
+    <name>mybatis-plus-ext-bind-core</name>
 
     <dependencies>
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.1.0</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.squareup</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>1.13.0</version>
-        </dependency>
-
+        <!-- 为了获取spring的上下文，进而获取bean管理 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot</artifactId>
-            <version>${spring-boot.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
-            <version>${mybatis-plus.version}</version>
+            <artifactId>spring-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -43,7 +25,18 @@
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-base</artifactId>
             <version>${project.version}</version>
-            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-core</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-bind-annotation</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
