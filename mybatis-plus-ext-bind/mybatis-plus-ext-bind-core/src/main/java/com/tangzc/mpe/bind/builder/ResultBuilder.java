@@ -1,7 +1,6 @@
 package com.tangzc.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.JoinConditionDescription;
@@ -71,8 +70,7 @@ public class ResultBuilder<BEAN, ENTITY> {
                 .build(beans);
 
         Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-        BaseMapper<ENTITY> joinEntityMapper = MapperScanner.getMapper(joinEntityClass);
-        List<ENTITY> entities = joinEntityMapper.selectList(queryWrapper);
+        List<ENTITY> entities = MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
 
         return entities.stream()
                 .collect(Collectors.groupingBy(

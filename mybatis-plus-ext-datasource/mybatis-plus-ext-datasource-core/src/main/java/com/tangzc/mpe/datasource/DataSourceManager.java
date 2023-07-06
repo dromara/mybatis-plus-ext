@@ -1,7 +1,6 @@
 package com.tangzc.mpe.datasource;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.base.event.EntityUpdateEvent;
@@ -155,8 +154,8 @@ public class DataSourceManager {
 
             // 获取mapper， 执行sql
             Class<E> waitUpdateEntityClass = (Class<E>) waitUpdateDescription.getEntityClass();
-            BaseMapper<E> waitUpdateEntityMapper = MapperScanner.getMapper(waitUpdateEntityClass);
-            waitUpdateEntityMapper.update(null, updateWrapper);
+            UpdateWrapper<E> finalUpdateWrapper = updateWrapper;
+            MapperScanner.getMapperExecute(waitUpdateEntityClass, mapper -> mapper.update(null, finalUpdateWrapper));
         }
     }
 
