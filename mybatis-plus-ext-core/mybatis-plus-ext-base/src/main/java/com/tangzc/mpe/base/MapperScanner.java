@@ -3,11 +3,10 @@ package com.tangzc.mpe.base;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
-import com.baomidou.mybatisplus.core.toolkit.ClassUtils;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
@@ -43,17 +42,7 @@ public class MapperScanner {
         }
     }
 
-    public static <ENTITY> BaseMapper<ENTITY> getMapper(Class<ENTITY> entityClass) {
-
-        TableInfo tableInfo = TableInfoHelper.getTableInfo(entityClass);
-
-        String entityClassName = entityClass.getName();
-        SqlSession sqlSession = SqlHelper.sqlSession(entityClass);
-        Class<?> mapperClass = ClassUtils.toClassConfident(tableInfo.getCurrentNamespace());
-        BaseMapper<?> mapper = (BaseMapper<?>) tableInfo.getConfiguration().getMapper(mapperClass, sqlSession);
-        if (mapper == null) {
-            throw new RuntimeException("未发现" + entityClassName + "的BaseMapper实现");
-        }
-        return (BaseMapper<ENTITY>) mapper;
+    public static <ENTITY, R> R getMapperExecute(Class<ENTITY> entityClass, SFunction<BaseMapper<ENTITY>, R> sFunction) {
+        return SqlHelper.execute(entityClass, sFunction);
     }
 }

@@ -1,7 +1,6 @@
 package com.tangzc.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
@@ -137,8 +136,8 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         // last sql
         queryWrapper.last(conditionSign.getLast());
 
-        return MapperScanner.getMapper(conditionSign.getJoinEntityClass())
-                .selectList(queryWrapper);
+        Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
+        return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
     }
 
     /**
@@ -169,9 +168,8 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
                 selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
         queryWrapper.in(selfMidColumnName, selfFieldVals);
 
-        BaseMapper<MID> baseMapper = MapperScanner.getMapper((Class<MID>) midConditionDescription.getMidEntity());
-
-        return baseMapper.selectList(queryWrapper);
+        Class<MID> entity = (Class<MID>) midConditionDescription.getMidEntity();
+        return MapperScanner.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
     }
 
     private void fullDataToBeanField(BEAN bean,
