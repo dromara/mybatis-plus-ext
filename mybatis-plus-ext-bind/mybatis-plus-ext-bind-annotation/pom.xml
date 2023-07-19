@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-bind</artifactId>
-        <version>3.5.3.1-jdk17-EXT420</version>
+        <version>3.5.3.1-jdk17-EXT421</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-bind-annotation</artifactId>

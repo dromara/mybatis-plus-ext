@@ -32,7 +32,7 @@ public @interface AutoMapper {
      * 要求：
      * 1、值需要是类的全路径
      * 2、自定义的父类Mapper必须继承自com.baomidou.mybatisplus.core.mapper.BaseMapper
-     * 3、自定义的父类Mapper必须保留泛型<T>
+     * 3、自定义的父类Mapper必须保留泛型T
      */
     String baseMapperClassName() default "";
 }
