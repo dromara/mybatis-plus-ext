@@ -26,4 +26,13 @@ public @interface AutoMapper {
      * 生成Mapper所在的包名，默认与Entity包名一致
      */
     String packageName() default "";
+
+    /**
+     * 指定的Mapper的父类，通常用于自定义Mapper的场景，
+     * 要求：
+     * 1、值需要是类的全路径
+     * 2、自定义的父类Mapper必须继承自com.baomidou.mybatisplus.core.mapper.BaseMapper
+     * 3、自定义的父类Mapper必须保留泛型<T>
+     */
+    String baseMapperClassName() default "";
 }

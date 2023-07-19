@@ -10,11 +10,10 @@ import com.tangzc.mpe.demo.bind.user.User;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-@AutoMapper
 @Data
 @Accessors(chain = true)
+@AutoRepository(autoMapper = @AutoMapper(baseMapperClassName = "com.tangzc.mpe.demo.bind.daily.MyMapper"))
 @Table
-@AutoRepository
 public class Daily {
 
     private String id;
