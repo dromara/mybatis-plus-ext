@@ -10,12 +10,7 @@ import com.tangzc.mpe.base.repository.BaseRepository;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
-import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -95,11 +90,20 @@ public class AutoBuildProcessor extends AbstractProcessor {
         String mapperName = getTargetName(autoMapper.value(), entityName, autoMapper.suffix());
         String mapperPackageName = getTargetPackageName(entityPackageName, autoMapper.packageName());
 
+        ClassName mapperClassName = ClassName.get(BaseMapper.class);
+        String baseMapperClassName = autoMapper.baseMapperClassName();
+        if (!baseMapperClassName.isEmpty()) {
+            int lastIndexOf = baseMapperClassName.lastIndexOf(".");
+            String baseMapperPackageName = baseMapperClassName.substring(0, lastIndexOf);
+            String baseMapperName = baseMapperClassName.substring(lastIndexOf + 1);
+            mapperClassName = ClassName.get(baseMapperPackageName, baseMapperName);
+        }
+
         /* 生成Mapper */
         TypeSpec mapper = TypeSpec.interfaceBuilder(mapperName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(
-                        ClassName.get(BaseMapper.class),
+                        mapperClassName,
                         ClassName.get(entityPackageName, entityName)))
                 .addAnnotation(ClassName.get(Mapper.class))
                 .build();
