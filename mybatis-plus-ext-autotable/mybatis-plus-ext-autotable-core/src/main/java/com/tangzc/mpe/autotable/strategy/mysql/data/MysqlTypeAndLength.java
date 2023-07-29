@@ -36,6 +36,13 @@ public class MysqlTypeAndLength {
             MySqlDefaultTypeEnum.LONGTEXT.typeName()
     );
 
+    private static final Set<String> DATE_TIME_TYPE = Sets.newHashSet(
+            MySqlDefaultTypeEnum.DATE.typeName(),
+            MySqlDefaultTypeEnum.DATETIME.typeName(),
+            MySqlDefaultTypeEnum.YEAR.typeName(),
+            MySqlDefaultTypeEnum.TIME.typeName()
+    );
+
     private static final Set<String> INTEGER_TYPE = Sets.newHashSet(
             MySqlDefaultTypeEnum.INT.typeName(),
             MySqlDefaultTypeEnum.TINYINT.typeName(),
@@ -70,9 +77,16 @@ public class MysqlTypeAndLength {
         return typeAndLength;
     }
 
-
     public boolean isCharString() {
         return CHAR_STRING_TYPE.contains(this.typeName());
+    }
+
+    public boolean isDateTime() {
+        return DATE_TIME_TYPE.contains(this.typeName());
+    }
+
+    public boolean needStringCompatibility() {
+        return isCharString() || isDateTime();
     }
 
     public boolean isBoolean() {

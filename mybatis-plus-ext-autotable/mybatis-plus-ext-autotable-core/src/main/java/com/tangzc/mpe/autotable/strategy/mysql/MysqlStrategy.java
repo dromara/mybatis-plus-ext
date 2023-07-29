@@ -279,8 +279,8 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             if (paramType.isBoolean() && columnDefault.startsWith("b'") && columnDefault.endsWith("'")) {
                 columnDefault = columnDefault.substring(2, columnDefault.length() - 1);
             }
-            // 兼容逻辑：如果是字符串类型，使用者在默认值前后携带了''，则在比对的时候自动去掉
-            if (paramType.isCharString() && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
+            // 兼容逻辑：如果是需要字符串兼容的类型（字符串、日期），使用者在默认值前后携带了''，则在比对的时候自动去掉
+            if (paramType.needStringCompatibility() && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
                 defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
             }
             return !defaultValue.equals(columnDefault);
