@@ -86,8 +86,8 @@ public class MysqlColumnMetadata {
                     defaultValue = "0";
                 }
             }
-            // 补偿逻辑：字符串类型，前后自动添加'
-            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            // 补偿逻辑：需要兼容字符串的类型，前后自动添加'
+            if (type.needStringCompatibility() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             mysqlColumnMetadata.setDefaultValue(defaultValue);

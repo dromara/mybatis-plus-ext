@@ -1,5 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
+import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlDefaultTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class MysqlTypeAndLength {
         this.type = type;
     }
 
-    private static final Set<String> CHAR_STRING_TYPE = Set.of(
+    private static final Set<String> CHAR_STRING_TYPE = Sets.newHashSet(
             MySqlDefaultTypeEnum.CHAR.typeName(),
             MySqlDefaultTypeEnum.VARCHAR.typeName(),
             MySqlDefaultTypeEnum.TEXT.typeName(),
@@ -35,7 +36,14 @@ public class MysqlTypeAndLength {
             MySqlDefaultTypeEnum.LONGTEXT.typeName()
     );
 
-    private static final Set<String> INTEGER_TYPE = Set.of(
+    private static final Set<String> DATE_TIME_TYPE = Sets.newHashSet(
+            MySqlDefaultTypeEnum.DATE.typeName(),
+            MySqlDefaultTypeEnum.DATETIME.typeName(),
+            MySqlDefaultTypeEnum.YEAR.typeName(),
+            MySqlDefaultTypeEnum.TIME.typeName()
+    );
+
+    private static final Set<String> INTEGER_TYPE = Sets.newHashSet(
             MySqlDefaultTypeEnum.INT.typeName(),
             MySqlDefaultTypeEnum.TINYINT.typeName(),
             MySqlDefaultTypeEnum.SMALLINT.typeName(),
@@ -43,7 +51,7 @@ public class MysqlTypeAndLength {
             MySqlDefaultTypeEnum.BIGINT.typeName()
     );
 
-    private static final Set<String> FLOAT_TYPE = Set.of(
+    private static final Set<String> FLOAT_TYPE = Sets.newHashSet(
             MySqlDefaultTypeEnum.FLOAT.typeName(),
             MySqlDefaultTypeEnum.DOUBLE.typeName(),
             MySqlDefaultTypeEnum.DECIMAL.typeName()
@@ -69,9 +77,16 @@ public class MysqlTypeAndLength {
         return typeAndLength;
     }
 
-
     public boolean isCharString() {
         return CHAR_STRING_TYPE.contains(this.typeName());
+    }
+
+    public boolean isDateTime() {
+        return DATE_TIME_TYPE.contains(this.typeName());
+    }
+
+    public boolean needStringCompatibility() {
+        return isCharString() || isDateTime();
     }
 
     public boolean isBoolean() {
