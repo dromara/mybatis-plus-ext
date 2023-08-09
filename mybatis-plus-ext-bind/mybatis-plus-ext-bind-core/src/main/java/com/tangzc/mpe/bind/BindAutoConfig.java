@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        BindEventListeners.class
+        MyBindHandler.class
 })
 public class BindAutoConfig {
 
