@@ -1,4 +1,4 @@
-package com.baomidou.mybatisplus.core.metadata;
+package com.tangzc.mpe.magic;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotatedElementUtils;

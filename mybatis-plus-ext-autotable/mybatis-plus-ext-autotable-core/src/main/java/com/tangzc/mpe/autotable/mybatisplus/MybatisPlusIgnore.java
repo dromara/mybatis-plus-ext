@@ -1,7 +1,7 @@
 package com.tangzc.mpe.autotable.mybatisplus;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.autotable.strategy.IgnoreExt;
 
 import java.lang.reflect.Field;

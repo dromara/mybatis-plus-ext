@@ -2,7 +2,7 @@ package com.tangzc.mpe.autotable.utils;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;

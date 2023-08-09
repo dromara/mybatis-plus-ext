@@ -3,7 +3,7 @@ package com.tangzc.mpe.base;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -43,10 +44,9 @@ public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunct
         super.wrapperChildren = new LambdaQueryWrapper<>(entityClass);
     }
 
-    @SafeVarargs
     @Override
-    public final MyLambdaQueryChainWrapper<T> select(SFunction<T, ?>... columns) {
-        wrapperChildren.select(columns);
+    public MyLambdaQueryChainWrapper<T> select(boolean condition, List<SFunction<T, ?>> columns) {
+        wrapperChildren.select(condition, columns);
         return typedThis;
     }
 
