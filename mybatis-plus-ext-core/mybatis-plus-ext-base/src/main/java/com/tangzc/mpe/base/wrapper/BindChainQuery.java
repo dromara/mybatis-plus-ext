@@ -2,7 +2,7 @@ package com.tangzc.mpe.base.wrapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.baomidou.mybatisplus.extension.conditions.ChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.ChainQuery;
 import com.tangzc.mpe.base.ext.BindHandler;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
 
@@ -18,7 +18,7 @@ import java.util.Optional;
  *
  * @author don
  */
-public interface BindChainQuery<T> extends ChainWrapper<T> {
+public interface BindChainQuery<T> extends ChainQuery<T> {
 
     /**
      * 获取集合
