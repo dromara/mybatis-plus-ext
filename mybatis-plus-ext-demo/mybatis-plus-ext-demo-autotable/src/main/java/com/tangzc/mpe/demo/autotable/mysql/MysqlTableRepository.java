@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
  */
 @DS("my-mysql")
 @Component
-public class MysqlTableRepository extends BaseRepository<MysqlTableMapper, MysqlTable3> {
+public class MysqlTableRepository extends BaseRepository<MysqlTableMapper, MysqlTable> {
 }
 
 @Mapper
-interface MysqlTableMapper extends BaseMapper<MysqlTable3> {
+interface MysqlTableMapper extends BaseMapper<MysqlTable> {
 
 }

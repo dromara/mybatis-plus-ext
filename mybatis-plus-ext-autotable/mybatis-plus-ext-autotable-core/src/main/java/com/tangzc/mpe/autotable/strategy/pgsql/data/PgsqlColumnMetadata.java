@@ -65,6 +65,30 @@ public class PgsqlColumnMetadata {
      */
     private boolean primary;
 
+    public String getDefaultValue() {
+
+        if (!StringUtils.hasText(defaultValue)) {
+            return defaultValue;
+        }
+
+        if (this.type.isBoolean()) {
+            if ("1".equals(defaultValue)) {
+                return "true";
+            } else if ("0".equals(defaultValue)) {
+                return "false";
+            }
+        }
+        // 兼容逻辑：如果是字符串的类型，自动包一层''（如果没有的话）
+        if (this.type.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            return "'" + defaultValue + "'";
+        }
+        // 兼容逻辑：如果是日期，且非函数，自动包一层''（如果没有的话）
+        if (this.type.isTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            return "'" + defaultValue + "'";
+        }
+        return defaultValue;
+    }
+
     public static PgsqlColumnMetadata create(Class<?> clazz, Field field) {
         PgsqlColumnMetadata pgsqlColumnMetadata = new PgsqlColumnMetadata();
         pgsqlColumnMetadata.setName(TableColumnNameUtil.getRealColumnName(field));
@@ -118,7 +142,7 @@ public class PgsqlColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isCustom(defaultValueType) && StringUtils.hasText(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";
@@ -138,7 +162,7 @@ public class PgsqlColumnMetadata {
         ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null) {
             // 如果重新设置了类型，则长度也需要重新设置
-            if (!column.value().isEmpty() && !column.value().equals(typeAndLength.getType())) {
+            if (StringUtils.hasText(column.value()) && !column.value().equalsIgnoreCase(typeAndLength.getType())) {
                 typeAndLength.setType(column.value());
                 typeAndLength.setLength(null);
                 typeAndLength.setDecimalLength(null);

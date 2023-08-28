@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,11 +27,14 @@ public class CreateTableSqlBuilder {
      */
     public static String buildSql(PgsqlTableMetadata pgsqlTableMetadata) {
 
+        String tableName = pgsqlTableMetadata.getTableName();
+
         // 建表语句
         String createTableSql = getCreateTableSql(pgsqlTableMetadata);
 
         // 创建索引语句
-        String createIndexSql = getCreateIndexSql(pgsqlTableMetadata);
+        List<PgsqlIndexMetadata> indexMetadataList = pgsqlTableMetadata.getIndexMetadataList();
+        String createIndexSql = getCreateIndexSql(tableName, indexMetadataList);
 
         // 为 表、字段、索引 添加注释
         String addCommentSql = getAddColumnCommentSql(pgsqlTableMetadata);
@@ -44,10 +48,9 @@ public class CreateTableSqlBuilder {
      * "name"
      * );
      */
-    private static String getCreateIndexSql(PgsqlTableMetadata pgsqlTableMetadata) {
+    public static String getCreateIndexSql(String tableName, List<PgsqlIndexMetadata> indexMetadataList) {
 
-        String tableName = pgsqlTableMetadata.getTableName();
-        return pgsqlTableMetadata.getIndexMetadataList().stream()
+        return indexMetadataList.stream()
                 .map(pgsqlIndexMetadata -> StringHelper.newInstance("CREATE {indexType} INDEX \"{indexName}\" ON \"{tableName}\" ({columns});")
                         .replace("{indexType}", pgsqlIndexMetadata.getType() == IndexTypeEnum.UNIQUE ? "UNIQUE" : "")
                         .replace("{indexName}", pgsqlIndexMetadata.getName())
@@ -68,33 +71,40 @@ public class CreateTableSqlBuilder {
     private static String getAddColumnCommentSql(PgsqlTableMetadata pgsqlTableMetadata) {
 
         String tableName = pgsqlTableMetadata.getTableName();
+        String comment = pgsqlTableMetadata.getComment();
+        List<PgsqlColumnMetadata> columnMetadataList = pgsqlTableMetadata.getColumnMetadataList();
+        List<PgsqlIndexMetadata> indexMetadataList = pgsqlTableMetadata.getIndexMetadataList();
+
+        return getAddColumnCommentSql(tableName, comment,
+                columnMetadataList.stream().collect(Collectors.toMap(PgsqlColumnMetadata::getName, PgsqlColumnMetadata::getComment)),
+                indexMetadataList.stream().collect(Collectors.toMap(PgsqlIndexMetadata::getName, PgsqlIndexMetadata::getComment)));
+    }
+
+    public static String getAddColumnCommentSql(String tableName, String tableComment, Map<String, String> columnCommentMap, Map<String, String> indexCommentMap) {
 
         List<String> commentList = new ArrayList<>();
 
         // 表备注
-        String comment = pgsqlTableMetadata.getComment();
-        if (StringUtils.hasText(comment)) {
+        if (StringUtils.hasText(tableComment)) {
             String addTableComment = "COMMENT ON TABLE \"{tableName}\" IS '{comment}';"
                     .replace("{tableName}", tableName)
-                    .replace("{comment}", comment);
+                    .replace("{comment}", tableComment);
             commentList.add(addTableComment);
         }
 
         // 字段备注
-        List<PgsqlColumnMetadata> columnMetadataList = pgsqlTableMetadata.getColumnMetadataList();
-        columnMetadataList.stream()
-                .map(column -> "COMMENT ON COLUMN \"{tableName}\".\"{name}\" IS '{comment}';"
+        columnCommentMap.entrySet().stream()
+                .map(columnComment -> "COMMENT ON COLUMN \"{tableName}\".\"{name}\" IS '{comment}';"
                         .replace("{tableName}", tableName)
-                        .replace("{name}", column.getName())
-                        .replace("{comment}", column.getComment()))
+                        .replace("{name}", columnComment.getKey())
+                        .replace("{comment}", columnComment.getValue()))
                 .forEach(commentList::add);
 
         // 索引备注
-        List<PgsqlIndexMetadata> indexMetadataList = pgsqlTableMetadata.getIndexMetadataList();
-        indexMetadataList.stream()
-                .map(index -> "COMMENT ON INDEX \"public\".\"{name}\" IS '{comment}';"
-                        .replace("{name}", index.getName())
-                        .replace("{comment}", index.getComment()))
+        indexCommentMap.entrySet().stream()
+                .map(indexComment -> "COMMENT ON INDEX \"public\".\"{name}\" IS '{comment}';"
+                        .replace("{name}", indexComment.getKey())
+                        .replace("{comment}", indexComment.getValue()))
                 .forEach(commentList::add);
 
         return String.join("\n", commentList);

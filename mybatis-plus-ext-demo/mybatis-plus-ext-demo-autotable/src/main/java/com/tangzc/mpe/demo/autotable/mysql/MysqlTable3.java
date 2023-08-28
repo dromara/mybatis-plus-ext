@@ -9,7 +9,6 @@ import com.tangzc.mpe.autotable.annotation.ColumnId;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.Ignore;
 import com.tangzc.mpe.autotable.annotation.NotNull;
-import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
 import lombok.Data;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
  * @author don
  */
 @Data
-@Table
+// @Table
 public class MysqlTable3 {
 
     // 指定主键自增注释、类型（数据库数字类型可以跟java字符串类型相互转化）、长度

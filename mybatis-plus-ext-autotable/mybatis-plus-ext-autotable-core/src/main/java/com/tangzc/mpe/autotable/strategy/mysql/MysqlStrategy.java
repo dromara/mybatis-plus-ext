@@ -1,5 +1,6 @@
 package com.tangzc.mpe.autotable.strategy.mysql;
 
+import com.google.common.base.Functions;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
@@ -27,7 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -225,7 +225,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         // 实体全部字段描述
         List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
         // 变形：《列名，实体字段描述》
-        Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Function.identity()));
+        Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
         // 查询数据库所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);
         for (InformationSchemaColumn informationSchemaColumn : tableColumnList) {
@@ -269,18 +269,18 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             }
         } else {
             // 自定义值 默认值对比
-            MysqlTypeAndLength paramType = mysqlColumnMetadata.getType();
             String defaultValue = mysqlColumnMetadata.getDefaultValue();
             // 未设置有效默认值，直接返回未变更
             if (!StringUtils.hasText(defaultValue)) {
                 return false;
             }
+            MysqlTypeAndLength columnType = mysqlColumnMetadata.getType();
             // 如果是数据库是bit类型，默认值是b'1' 或者 b'0' 的形式
-            if (paramType.isBoolean() && columnDefault.startsWith("b'") && columnDefault.endsWith("'")) {
+            if (columnType.isBoolean() && columnDefault.startsWith("b'") && columnDefault.endsWith("'")) {
                 columnDefault = columnDefault.substring(2, columnDefault.length() - 1);
             }
             // 兼容逻辑：如果是需要字符串兼容的类型（字符串、日期），使用者在默认值前后携带了''，则在比对的时候自动去掉
-            if (paramType.needStringCompatibility() && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
+            if (columnType.needStringCompatibility() && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
                 defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
             }
             return !defaultValue.equals(columnDefault);
@@ -305,7 +305,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
 
     private static boolean isCommentChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
         String fieldComment = mysqlColumnMetadata.getComment();
-        return StringUtils.hasText(fieldComment) && !fieldComment.equals(informationSchemaColumn.getColumnComment());
+        return !StringUtils.isEmpty(fieldComment) && !fieldComment.equals(informationSchemaColumn.getColumnComment());
     }
 
     private static void compareTableProperties(MysqlTableMetadata mysqlTableMetadata, InformationSchemaTable tableInformation, MysqlCompareTableInfo mysqlCompareTableInfo) {
@@ -314,13 +314,13 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         String tableCollate = mysqlTableMetadata.getCollate();
         String tableEngine = mysqlTableMetadata.getEngine();
         // 判断表注释是否要更新
-        if (StringUtils.hasText(tableComment) && !tableComment.equals(tableInformation.getTableComment())) {
+        if (!StringUtils.isEmpty(tableComment) && !tableComment.equals(tableInformation.getTableComment())) {
             mysqlCompareTableInfo.setComment(tableComment);
         }
         // 判断表字符集是否要更新
-        if (StringUtils.hasText(tableCharset)) {
+        if (!StringUtils.isEmpty(tableCharset)) {
             String collate = tableInformation.getTableCollation();
-            if (StringUtils.hasText(collate)) {
+            if (!StringUtils.isEmpty(collate)) {
                 String charset = collate.substring(0, collate.indexOf("_"));
                 if (!tableCharset.equals(charset) || !tableCollate.equals(collate)) {
                     mysqlCompareTableInfo.setCharacterSet(tableCharset);
@@ -329,7 +329,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             }
         }
         // 判断表引擎是否要更新
-        if (StringUtils.hasText(tableEngine) && !tableEngine.equals(tableInformation.getEngine())) {
+        if (!StringUtils.isEmpty(tableEngine) && !tableEngine.equals(tableInformation.getEngine())) {
             mysqlCompareTableInfo.setEngine(tableEngine);
         }
     }

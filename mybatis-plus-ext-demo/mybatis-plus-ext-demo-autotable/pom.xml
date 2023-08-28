@@ -5,16 +5,11 @@
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.3.2-jdk17-EXT501</version>
+        <version>3.5.3.2-EXT510-jdk17</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-ext-demo-autotable</artifactId>
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
 
     <dependencies>
         <dependency>
