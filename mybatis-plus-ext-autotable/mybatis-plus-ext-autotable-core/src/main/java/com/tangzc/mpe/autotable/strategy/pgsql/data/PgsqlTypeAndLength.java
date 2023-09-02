@@ -25,7 +25,6 @@ public class PgsqlTypeAndLength {
     }
 
     public String getFullType() {
-        // 例：double(4,2) unsigned zerofill
         String typeAndLength = this.type;
         // 类型具备长度属性 且 自定义长度不为空
         if (this.length != null) {
@@ -47,5 +46,15 @@ public class PgsqlTypeAndLength {
         return PgsqlDefaultTypeEnum.CHAR.typeName().equalsIgnoreCase(this.typeName()) ||
                 PgsqlDefaultTypeEnum.VARCHAR.typeName().equalsIgnoreCase(this.typeName()) ||
                 PgsqlDefaultTypeEnum.TEXT.typeName().equalsIgnoreCase(this.typeName());
+    }
+
+    public boolean isBoolean() {
+        return PgsqlDefaultTypeEnum.BOOL.typeName().equalsIgnoreCase(this.typeName());
+    }
+
+    public boolean isTime() {
+        return PgsqlDefaultTypeEnum.DATE.typeName().equalsIgnoreCase(this.typeName())
+                || PgsqlDefaultTypeEnum.TIMESTAMP.typeName().equalsIgnoreCase(this.typeName())
+                || PgsqlDefaultTypeEnum.TIME.typeName().equalsIgnoreCase(this.typeName());
     }
 }

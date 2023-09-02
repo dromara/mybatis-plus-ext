@@ -87,7 +87,11 @@ public class MysqlColumnMetadata {
                 }
             }
             // 补偿逻辑：需要兼容字符串的类型，前后自动添加'
-            if (type.needStringCompatibility() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+                defaultValue = "'" + defaultValue + "'";
+            }
+            // 补偿逻辑：时间类型，非函数的值，前后自动添加'
+            if (type.isDateTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
                 defaultValue = "'" + defaultValue + "'";
             }
             mysqlColumnMetadata.setDefaultValue(defaultValue);

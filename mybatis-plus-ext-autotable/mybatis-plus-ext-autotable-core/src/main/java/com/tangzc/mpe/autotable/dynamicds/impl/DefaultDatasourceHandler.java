@@ -1,6 +1,6 @@
 package com.tangzc.mpe.autotable.dynamicds.impl;
 
-import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
+import com.tangzc.mpe.autotable.dynamicds.IDatasourceHandler;
 
 import java.util.Collection;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
  * @author don
  */
-public class DefaultIDynamicDatasourceHandler implements IDynamicDatasourceHandler {
+public class DefaultDatasourceHandler implements IDatasourceHandler {
     
     @Override
     public void initTable(Map<String, Set<Class<?>>> needCreateTableMap) {

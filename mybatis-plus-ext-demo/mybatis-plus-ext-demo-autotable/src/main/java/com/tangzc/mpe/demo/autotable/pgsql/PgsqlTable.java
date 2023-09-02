@@ -45,16 +45,16 @@ public class PgsqlTable {
     @ColumnComment("用户名")
     private String username;
 
-    @ColumnDefault("0")
+    @ColumnDefault("12")
     @ColumnComment("年龄")
     private Integer age;
 
     @UniqueIndex
     @ColumnType(length = 20)
-    @Column(comment = "电话", defaultValue = "+00 00000000", notNull = true)
+    @Column(comment = "电话", notNull = true)
     private String phone;
 
-    @Column(comment = "资产", length = 12, decimalLength = 6)
+    @Column(comment = "资产", length = 12, decimalLength = 4)
     private BigDecimal money;
 
     @ColumnDefault("true")

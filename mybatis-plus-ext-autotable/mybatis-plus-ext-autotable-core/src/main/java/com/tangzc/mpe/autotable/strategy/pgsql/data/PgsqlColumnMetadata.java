@@ -4,10 +4,10 @@ import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.strategy.pgsql.converter.JavaToPgsqlConverter;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import com.tangzc.mpe.autotable.utils.StringHelper;
 import com.tangzc.mpe.autotable.utils.TableBeanUtils;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -64,6 +64,30 @@ public class PgsqlColumnMetadata {
      * 字段是否是主键
      */
     private boolean primary;
+
+    public String getDefaultValue() {
+
+        if (!StringUtils.hasText(defaultValue)) {
+            return defaultValue;
+        }
+
+        if (this.type.isBoolean()) {
+            if ("1".equals(defaultValue)) {
+                return "true";
+            } else if ("0".equals(defaultValue)) {
+                return "false";
+            }
+        }
+        // 兼容逻辑：如果是字符串的类型，自动包一层''（如果没有的话）
+        if (this.type.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            return "'" + defaultValue + "'";
+        }
+        // 兼容逻辑：如果是日期，且非函数，自动包一层''（如果没有的话）
+        if (this.type.isTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+            return "'" + defaultValue + "'";
+        }
+        return defaultValue;
+    }
 
     public static PgsqlColumnMetadata create(Class<?> clazz, Field field) {
         PgsqlColumnMetadata pgsqlColumnMetadata = new PgsqlColumnMetadata();
@@ -138,7 +162,7 @@ public class PgsqlColumnMetadata {
         ColumnType column = TableBeanUtils.getColumnType(field);
         if (column != null) {
             // 如果重新设置了类型，则长度也需要重新设置
-            if (!column.value().isEmpty() && !column.value().equals(typeAndLength.getType())) {
+            if (StringUtils.hasText(column.value()) && !column.value().equalsIgnoreCase(typeAndLength.getType())) {
                 typeAndLength.setType(column.value());
                 typeAndLength.setLength(null);
                 typeAndLength.setDecimalLength(null);
