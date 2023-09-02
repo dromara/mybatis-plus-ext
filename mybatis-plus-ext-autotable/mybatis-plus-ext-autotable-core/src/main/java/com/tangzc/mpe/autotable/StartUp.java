@@ -2,7 +2,7 @@ package com.tangzc.mpe.autotable;
 
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.constants.RunMode;
-import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
+import com.tangzc.mpe.autotable.dynamicds.IDatasourceHandler;
 import com.tangzc.mpe.autotable.properties.AutoTableProperties;
 import com.tangzc.mpe.autotable.utils.ClassScanner;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
@@ -32,7 +32,7 @@ public class StartUp {
     @Resource
     private AutoTableProperties autoTableProperties;
     @Resource
-    private IDynamicDatasourceHandler dynamicDatasourceHandler;
+    private IDatasourceHandler dynamicDatasourceHandler;
 
     @PostConstruct
     public void startHandler() {

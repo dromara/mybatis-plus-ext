@@ -2,7 +2,7 @@ package com.tangzc.mpe.autotable.dynamicds.impl;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
-import com.tangzc.mpe.autotable.dynamicds.IDynamicDatasourceHandler;
+import com.tangzc.mpe.autotable.dynamicds.IDatasourceHandler;
 import jakarta.annotation.Resource;
 import org.springframework.util.StringUtils;
 
@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * @author don
  */
-public class DynamicDatasourceIDynamicDatasourceHandler implements IDynamicDatasourceHandler {
+public class DynamicDatasourceHandler implements IDatasourceHandler {
 
     @Resource
     private DynamicDataSourceProperties dynamicDataSourceProperties;

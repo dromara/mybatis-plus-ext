@@ -1,7 +1,7 @@
 package com.tangzc.mpe.autotable.dynamicds.define;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
-import com.tangzc.mpe.autotable.dynamicds.impl.DynamicDatasourceIDynamicDatasourceHandler;
+import com.tangzc.mpe.autotable.dynamicds.impl.DynamicDatasourceHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class DynamicDatasourceTableInitDefine {
 
     @Bean
-    public DynamicDatasourceIDynamicDatasourceHandler dynamicDatasourceTableInitHandler() {
-        return new DynamicDatasourceIDynamicDatasourceHandler();
+    public DynamicDatasourceHandler dynamicDatasourceTableInitHandler() {
+        return new DynamicDatasourceHandler();
     }
 }

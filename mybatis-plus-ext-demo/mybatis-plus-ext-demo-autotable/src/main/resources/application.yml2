@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: demo
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: don
+    password: don
+    url: jdbc:postgresql://127.0.0.1:5432/mybatis-plus-ext
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    map-underscore-to-camel-case: false
+  global-config:
+    db-config:
+      table-prefix: my_
+
+mpe:
+  auto-table:
+    #    mode: create
+    auto-drop-column: true

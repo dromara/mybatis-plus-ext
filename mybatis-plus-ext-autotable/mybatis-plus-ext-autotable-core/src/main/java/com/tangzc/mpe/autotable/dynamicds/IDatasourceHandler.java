@@ -18,9 +18,9 @@ import java.util.Set;
  * @author don
  */
 @FunctionalInterface
-public interface IDynamicDatasourceHandler {
+public interface IDatasourceHandler {
 
-    Logger log = LoggerFactory.getLogger(IDynamicDatasourceHandler.class);
+    Logger log = LoggerFactory.getLogger(IDatasourceHandler.class);
 
     /**
      * 开始分析处理模型
