@@ -2,7 +2,7 @@ package com.tangzc.mpe.autotable.dynamicds.define;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
 import com.tangzc.mpe.autotable.dynamicds.impl.DynamicDatasourceHandler;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @author don
  */
 @Configuration
-@ConditionalOnClass(DynamicDataSourceAutoConfiguration.class)
+@ConditionalOnBean(DynamicDataSourceAutoConfiguration.class)
 public class DynamicDatasourceTableInitDefine {
 
     @Bean
