@@ -1,1 +1,0 @@
-Automatic-Module-Name: mybatis-plus-ext-autotable-core
