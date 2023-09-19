@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.core.toolkit.ExceptionUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.AbstractChainWrapper;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
+ * 模仿{@link com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper}的实现逻辑，同时把{@link com.baomidou.mybatisplus.extension.conditions.query.ChainQuery}改为自定义的包装接口{@link BindChainQuery}
  * @author don
  */
 public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunction<T, ?>, MyLambdaQueryChainWrapper<T>, LambdaQueryWrapper<T>>
@@ -24,10 +26,27 @@ public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunct
         super.wrapperChildren = new LambdaQueryWrapper<>();
     }
 
-    @SafeVarargs
+    public MyLambdaQueryChainWrapper(Class<T> entityClass) {
+        super();
+        this.baseMapper = null;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entityClass);
+    }
+
+    public MyLambdaQueryChainWrapper(BaseMapper<T> baseMapper, T entity) {
+        super();
+        this.baseMapper = baseMapper;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entity);
+    }
+
+    public MyLambdaQueryChainWrapper(BaseMapper<T> baseMapper, Class<T> entityClass) {
+        super();
+        this.baseMapper = baseMapper;
+        super.wrapperChildren = new LambdaQueryWrapper<>(entityClass);
+    }
+
     @Override
-    public final MyLambdaQueryChainWrapper<T> select(SFunction<T, ?>... columns) {
-        wrapperChildren.select(columns);
+    public MyLambdaQueryChainWrapper<T> select(boolean condition, List<SFunction<T, ?>> columns) {
+        wrapperChildren.select(condition, columns);
         return typedThis;
     }
 
@@ -47,4 +66,8 @@ public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunct
         return baseMapper;
     }
 
+    @Override
+    public Class<T> getEntityClass() {
+        return super.wrapperChildren.getEntityClass();
+    }
 }

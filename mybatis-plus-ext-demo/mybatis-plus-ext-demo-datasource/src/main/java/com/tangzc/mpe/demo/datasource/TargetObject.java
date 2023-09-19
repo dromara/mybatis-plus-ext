@@ -1,6 +1,6 @@
 package com.tangzc.mpe.demo.datasource;
 
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.datasource.annotation.Condition;
 import com.tangzc.mpe.datasource.annotation.DataSource;
 import lombok.Data;

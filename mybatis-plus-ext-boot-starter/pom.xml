@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-        <version>3.5.2-EXT202</version>
+        <version>3.5.3.2-EXT510</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -17,35 +17,34 @@
             <artifactId>mybatis-plus-ext-base</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-annotation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-bind</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-datasource</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-condition</artifactId>
+            <artifactId>mybatis-plus-ext-bind-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable-core</artifactId>
+            <artifactId>mybatis-plus-ext-datasource-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-actable-annotation</artifactId>
+            <artifactId>mybatis-plus-ext-condition-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-automapper</artifactId>
             <version>${project.version}</version>
         </dependency>
 

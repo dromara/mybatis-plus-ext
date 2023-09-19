@@ -1,0 +1,21 @@
+package com.tangzc.mpe.autotable.dynamicds.define;
+
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
+import com.tangzc.mpe.autotable.dynamicds.impl.DynamicDatasourceHandler;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * 如果引入了baomidou的动态数据源框架，则加载该类
+ * @author don
+ */
+@Configuration
+@ConditionalOnBean(DynamicDataSourceAutoConfiguration.class)
+public class DynamicDatasourceTableInitDefine {
+
+    @Bean
+    public DynamicDatasourceHandler dynamicDatasourceTableInitHandler() {
+        return new DynamicDatasourceHandler();
+    }
+}

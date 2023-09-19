@@ -1,6 +1,6 @@
 package com.tangzc.mpe.demo.flyway;
 
-import com.tangzc.mpe.actable.EnableAutoTable;
+import com.tangzc.mpe.autotable.EnableAutoTable;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

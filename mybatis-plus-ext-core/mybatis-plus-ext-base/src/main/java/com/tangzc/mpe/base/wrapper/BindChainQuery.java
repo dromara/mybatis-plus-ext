@@ -3,12 +3,15 @@ package com.tangzc.mpe.base.wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.query.ChainQuery;
-import com.tangzc.mpe.base.event.BindEvent;
-import com.tangzc.mpe.base.event.BindIPageEvent;
-import com.tangzc.mpe.base.event.BindListEvent;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.base.ext.BindHandler;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 
 /**
  * 自定义ChainQuery，拓展了关于Bind的相关方法
@@ -23,9 +26,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
      * @return 集合
      */
     default List<T> bindList() {
-        List<T> list = getBaseMapper().selectList(getWrapper());
-        SpringContextUtil.publishEvent(new BindListEvent<>(list));
-        return list;
+        return bindList(Collections.emptyList());
     }
 
     /**
@@ -78,7 +79,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default List<T> bindList(List<SFunction<T, ?>> filedList) {
         List<T> list = getBaseMapper().selectList(getWrapper());
-        SpringContextUtil.publishEvent(new BindListEvent<>(list, filedList));
+        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(list, filedList);
         return list;
     }
 
@@ -90,9 +91,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
      * @return 单个
      */
     default T bindOne() {
-        T one = getBaseMapper().selectOne(getWrapper());
-        SpringContextUtil.publishEvent(new BindEvent<>(one));
-        return one;
+        return bindOne(Collections.emptyList());
     }
 
     /**
@@ -145,7 +144,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default T bindOne(List<SFunction<T, ?>> filedList) {
         T one = getBaseMapper().selectOne(getWrapper());
-        SpringContextUtil.publishEvent(new BindEvent<>(one, filedList));
+        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(one, filedList);
         return one;
     }
 
@@ -213,9 +212,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
      * @return 分页数据
      */
     default <E extends IPage<T>> E bindPage(E page) {
-        E pageRet = getBaseMapper().selectPage(page, getWrapper());
-        SpringContextUtil.publishEvent(new BindIPageEvent<>(pageRet));
-        return pageRet;
+        return bindPage(page, Collections.emptyList());
     }
 
     /**
@@ -268,7 +265,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default <E extends IPage<T>> E bindPage(E page, List<SFunction<T, ?>> filedList) {
         E pageRet = getBaseMapper().selectPage(page, getWrapper());
-        SpringContextUtil.publishEvent(new BindIPageEvent<>(pageRet, filedList));
+        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(pageRet, filedList);
         return pageRet;
     }
 
@@ -282,5 +279,4 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
         }
         return filedList;
     }
-
 }

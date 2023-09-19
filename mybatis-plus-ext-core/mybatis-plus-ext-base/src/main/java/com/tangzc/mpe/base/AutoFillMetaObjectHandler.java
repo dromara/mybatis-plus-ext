@@ -3,13 +3,12 @@ package com.tangzc.mpe.base;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.metadata.AnnotatedElementUtilsPlus;
-import com.baomidou.mybatisplus.core.metadata.impl.TableFieldImpl;
+import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
-import com.tangzc.mpe.base.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -28,7 +27,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,8 +75,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         List<Field> fieldList = fields.stream()
                 .filter(field -> metaObject.hasSetter(field.getName()))
                 .filter(field -> {
-                    TableField annotation = AnnotatedElementUtilsPlus.findMergedAnnotation(field, TableField.class, TableFieldImpl.class);
-
+                    TableField annotation = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
                     return annotation != null &&
                             (annotation.fill() == option || annotation.fill() == FieldFill.INSERT_UPDATE);
                 })
@@ -139,7 +144,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     private AutoFillHandler getAutoFillHandler(Class<? extends AutoFillHandler> autoFillHandler) {
 
         try {
-            return SpringContextUtil.getApplicationContext().getBean(autoFillHandler);
+            return SpringContextUtil.getBeanOfType(autoFillHandler);
         } catch (NoUniqueBeanDefinitionException ignore) {
             throw new RuntimeException("发现了多个" + autoFillHandler.getName() + "的实现，请保持spring中只有一个实例。");
         } catch (NoSuchBeanDefinitionException ignore) {

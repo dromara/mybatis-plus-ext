@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 设置数据插入的时候的默认值
  * @author don
  */
 @Documented

@@ -1,14 +1,14 @@
 package com.tangzc.mpe.demo.flyway.entity;
 
-import com.tangzc.mpe.actable.annotation.ColumnComment;
-import com.tangzc.mpe.actable.annotation.IsAutoIncrement;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 
 @Table(comment = "表1")
 public class AutoCreateTable {
 
-    @IsAutoIncrement
-    @ColumnComment("ID")
+    @ColumnId(mode = IdType.AUTO, comment = "ID")
     private Long id;
 
     @ColumnComment("用户名")

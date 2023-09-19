@@ -1,8 +1,8 @@
 package com.tangzc.mpe.demo.condition.user;
 
-import com.tangzc.mpe.actable.annotation.Column;
-import com.tangzc.mpe.actable.annotation.ColumnComment;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.Column;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.annotation.InsertOptionDate;
 import com.tangzc.mpe.base.BaseLogicEntity;
 import lombok.Data;

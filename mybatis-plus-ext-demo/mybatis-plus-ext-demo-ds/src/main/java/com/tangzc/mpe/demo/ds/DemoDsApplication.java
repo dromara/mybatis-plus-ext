@@ -1,6 +1,6 @@
 package com.tangzc.mpe.demo.ds;
 
-import com.tangzc.mpe.actable.EnableAutoTable;
+import com.tangzc.mpe.autotable.EnableAutoTable;
 import com.tangzc.mpe.demo.ds.repository.TestTableRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

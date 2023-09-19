@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.condition.daily;
 
-import com.tangzc.mpe.actable.annotation.ColumnComment;
-import com.tangzc.mpe.actable.annotation.Table;
+import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.annotation.InsertOptionUser;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.demo.condition.FilterByCurrentUser;

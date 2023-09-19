@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-        <version>3.5.2-EXT202</version>
+        <version>3.5.3.2-EXT510</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,9 +15,6 @@
         <module>mybatis-plus-ext-magic</module>
         <module>mybatis-plus-ext-base</module>
         <module>mybatis-plus-ext-annotation</module>
-        <module>mybatis-plus-ext-bind</module>
-        <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-condition</module>
     </modules>
 
     <dependencies>

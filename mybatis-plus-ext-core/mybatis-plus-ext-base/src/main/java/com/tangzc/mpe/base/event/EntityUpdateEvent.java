@@ -1,7 +1,7 @@
 package com.tangzc.mpe.base.event;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import com.tangzc.mpe.base.util.BeanClassUtil;
+import com.tangzc.mpe.magic.BeanClassUtil;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
