@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -110,6 +111,15 @@ public class BeanClassUtil {
             }
             return field;
         }
+    }
+
+    public static List<Field> getAllDeclaredFieldsExcludeStatic(Class<?> beanClass) {
+
+        List<Field> fieldList = new ArrayList<>();
+        getFieldList(fieldList, beanClass);
+        return fieldList.stream()
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                .collect(Collectors.toList());
     }
 
     public static List<Field> getAllDeclaredFields(Class<?> beanClass) {
