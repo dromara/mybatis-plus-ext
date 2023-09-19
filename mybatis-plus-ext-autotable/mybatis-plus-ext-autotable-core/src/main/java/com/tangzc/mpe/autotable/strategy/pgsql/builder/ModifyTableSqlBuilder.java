@@ -20,7 +20,7 @@ public class ModifyTableSqlBuilder {
     /**
      * 构建创建新表的SQL
      *
-     * @param pgsqlTableMetadata 参数
+     * @param pgsqlCompareTableInfo 参数
      * @return sql
      */
     public static String buildSql(PgsqlCompareTableInfo pgsqlCompareTableInfo) {
