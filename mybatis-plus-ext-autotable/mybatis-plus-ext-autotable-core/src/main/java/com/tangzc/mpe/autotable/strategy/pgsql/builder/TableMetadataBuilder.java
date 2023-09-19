@@ -39,7 +39,7 @@ public class TableMetadataBuilder {
         // 获取表注释
         pgsqlTableMetadata.setComment(tableAnno.comment());
 
-        List<Field> fields = BeanClassUtil.getAllDeclaredFields(clazz);
+        List<Field> fields = BeanClassUtil.getAllDeclaredFieldsExcludeStatic(clazz);
         pgsqlTableMetadata.setColumnMetadataList(getColumnList(clazz, fields));
         pgsqlTableMetadata.setIndexMetadataList(getIndexList(clazz, fields));
 

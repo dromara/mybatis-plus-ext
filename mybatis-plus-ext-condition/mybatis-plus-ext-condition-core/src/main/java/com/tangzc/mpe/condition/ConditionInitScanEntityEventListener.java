@@ -19,7 +19,7 @@ public class ConditionInitScanEntityEventListener {
     public void onApplicationEvent(InitScanEntityEvent event) {
 
         Class<?> entityClass = event.getEntityClass();
-        List<Field> allDeclaredFields = BeanClassUtil.getAllDeclaredFields(entityClass);
+        List<Field> allDeclaredFields = BeanClassUtil.getAllDeclaredFieldsExcludeStatic(entityClass);
         for (Field field : allDeclaredFields) {
 
             // 扫描所有的Entity中的DataSource注解
