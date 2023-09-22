@@ -14,7 +14,7 @@ public class MyAnnotationHandler implements AnnotationHandler {
 
     @Override
     public <T extends Annotation> boolean isAnnotationPresent(Class<?> beanClass, Class<T> annotationClass) {
-        return AnnotatedElementUtilsPlus.hasMetaAnnotationTypes(beanClass, annotationClass);
+        return AnnotatedElementUtilsPlus.hasAnnotation(beanClass, annotationClass);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class MyAnnotationHandler implements AnnotationHandler {
 
     @Override
     public <T extends Annotation> boolean isAnnotationPresent(Field field, Class<T> annotationClass) {
-        return AnnotatedElementUtilsPlus.hasMetaAnnotationTypes(field, annotationClass);
+        return AnnotatedElementUtilsPlus.hasAnnotation(field, annotationClass);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class MyAnnotationHandler implements AnnotationHandler {
 
     @Override
     public <T extends Annotation> boolean isAnnotationPresent(Method method, Class<T> annotationClass) {
-        return AnnotatedElementUtilsPlus.hasMetaAnnotationTypes(method, annotationClass);
+        return AnnotatedElementUtilsPlus.hasAnnotation(method, annotationClass);
     }
 }

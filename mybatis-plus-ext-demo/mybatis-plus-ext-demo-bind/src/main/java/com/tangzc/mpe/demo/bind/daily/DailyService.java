@@ -28,4 +28,9 @@ public class DailyService {
         dailyRepository.saveBatch(Arrays.asList(daily, daily2));
         return dailyRepository.lambdaQueryPlus().bindList();
     }
+
+    @GetMapping("bind/getById")
+    public Daily getById(){
+        return dailyRepository.getById("1");
+    }
 }
