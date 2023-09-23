@@ -126,7 +126,7 @@ public class MysqlColumnMetadata {
                     }
                     // 自定义
                     String defaultValue = this.getDefaultValue();
-                    if (DefaultValueEnum.isCustom(defaultValueType) && !StringUtils.isEmpty(defaultValue)) {
+                    if (DefaultValueEnum.isCustom(defaultValueType) && StringUtils.hasText(defaultValue)) {
                         return "DEFAULT " + defaultValue;
                     }
                     return "";

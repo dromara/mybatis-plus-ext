@@ -77,7 +77,7 @@ public class BindAggFuncDescription {
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
         AggFuncField aggFuncField = bindFunction.aggField();
         this.aggFunc = aggFuncField.func();
-        if (!StringUtils.isEmpty(aggFuncField.field())) {
+        if (StringUtils.hasText(aggFuncField.field())) {
             this.aggColumnRealName = TableColumnNameUtil.getRealColumnName(entityClass, aggFuncField.field());
         } else {
             this.aggColumnRealName = aggFuncField.field();
