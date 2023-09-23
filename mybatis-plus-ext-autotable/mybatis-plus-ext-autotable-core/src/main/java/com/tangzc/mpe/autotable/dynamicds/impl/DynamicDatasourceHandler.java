@@ -22,7 +22,7 @@ public class DynamicDatasourceHandler implements IDatasourceHandler {
 
         needCreateTableMap.forEach((dsName, tables) -> {
             // 手动指定数据源
-            if(StringUtils.isEmpty(dsName)) {
+            if(!StringUtils.hasText(dsName)) {
                 dsName = dynamicDataSourceProperties.getPrimary();
             }
             DynamicDataSourceContextHolder.push(dsName);

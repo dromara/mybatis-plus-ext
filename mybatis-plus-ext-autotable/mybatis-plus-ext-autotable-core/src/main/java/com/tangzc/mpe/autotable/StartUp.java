@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -58,7 +57,7 @@ public class StartUp {
 
     private String[] getModelPackage() {
         String[] packs = autoTableProperties.getModelPackage();
-        if (StringUtils.isEmpty(packs)) {
+        if (packs == null || packs.length == 0) {
             packs = new String[]{getBootPackage()};
         }
         return packs;

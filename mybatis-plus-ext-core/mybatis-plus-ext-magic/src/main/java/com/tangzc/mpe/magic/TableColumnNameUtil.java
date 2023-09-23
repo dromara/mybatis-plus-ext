@@ -22,10 +22,10 @@ public class TableColumnNameUtil {
         String finalTableName = "";
 
         TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
-        if (mybatisPlusTableName != null && !StringUtils.isEmpty(mybatisPlusTableName.value())) {
+        if (mybatisPlusTableName != null && StringUtils.hasText(mybatisPlusTableName.value())) {
             finalTableName = mybatisPlusTableName.value();
         }
-        if (StringUtils.isEmpty(finalTableName)) {
+        if (!StringUtils.hasText(finalTableName)) {
             finalTableName = smartConvert(MybatisPlusProperties.tableUnderline, clazz.getSimpleName());
         }
         // 添加表前缀
@@ -43,11 +43,11 @@ public class TableColumnNameUtil {
      */
     public static String getRealColumnName(Field field) {
         TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
-        if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
+        if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
         TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
-        if (tableId != null && !StringUtils.isEmpty(tableId.value())) {
+        if (tableId != null && StringUtils.hasText(tableId.value())) {
             return filterSpecialChar(tableId.value());
         }
 
@@ -64,11 +64,11 @@ public class TableColumnNameUtil {
 
         Field field = BeanClassUtil.getField(beanClazz, fieldName);
         TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
-        if (tableField != null && !StringUtils.isEmpty(tableField.value()) && tableField.exist()) {
+        if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
         TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
-        if (tableId != null && !StringUtils.isEmpty(tableId.value())) {
+        if (tableId != null && StringUtils.hasText(tableId.value())) {
             return filterSpecialChar(tableId.value());
         }
 

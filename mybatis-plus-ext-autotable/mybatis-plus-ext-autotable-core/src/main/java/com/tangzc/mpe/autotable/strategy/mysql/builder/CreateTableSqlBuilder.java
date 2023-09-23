@@ -77,15 +77,15 @@ public class CreateTableSqlBuilder {
         List<String> tableProperties = new ArrayList<>();
 
         // 引擎
-        if (!StringUtils.isEmpty(engine)) {
+        if (StringUtils.hasText(engine)) {
             tableProperties.add("ENGINE = " + engine);
         }
         // 字符集
-        if (!StringUtils.isEmpty(characterSet)) {
+        if (StringUtils.hasText(characterSet)) {
             tableProperties.add("CHARACTER SET = " + characterSet);
         }
         // 排序
-        if (!StringUtils.isEmpty(collate)) {
+        if (StringUtils.hasText(collate)) {
             tableProperties.add("COLLATE = " + collate);
         }
         // 备注

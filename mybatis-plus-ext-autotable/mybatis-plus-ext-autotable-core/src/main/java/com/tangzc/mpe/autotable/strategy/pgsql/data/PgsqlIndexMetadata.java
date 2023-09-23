@@ -69,7 +69,7 @@ public class PgsqlIndexMetadata {
             String realColumnName = TableColumnNameUtil.getRealColumnName(field);
             PgsqlIndexMetadata mysqlIndexMetadata = new PgsqlIndexMetadata();
             String indexName = index.name();
-            if (StringUtils.isEmpty(indexName)) {
+            if (!StringUtils.hasText(indexName)) {
                 indexName = TableColumnNameUtil.getRealColumnName(field);
             }
             mysqlIndexMetadata.setName(indexPrefix + indexName);

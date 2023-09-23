@@ -52,7 +52,7 @@ public class DataSourceManager {
     public static void addDataSource(Class<?> entityClass, Field entityField, DataSource dataSource) {
 
         Class<?> sourceClass = dataSource.source();
-        if (StringUtils.isEmpty(dataSource.sourceName()) && sourceClass == Void.class) {
+        if (!StringUtils.hasText(dataSource.sourceName()) && sourceClass == Void.class) {
             log.error("{}类上的{}字段，@DataSource缺少`source`或`sourceName`属性，" +
                     "自动更新数据功能将被忽略", entityClass, entityField.getName());
             return;
@@ -60,7 +60,7 @@ public class DataSourceManager {
 
         // 获取冗余数据的源的名称（全路径）
         String sourceName = dataSource.sourceName();
-        if (StringUtils.isEmpty(sourceName)) {
+        if (!StringUtils.hasText(sourceName)) {
             sourceName = sourceClass.getName();
         }
 

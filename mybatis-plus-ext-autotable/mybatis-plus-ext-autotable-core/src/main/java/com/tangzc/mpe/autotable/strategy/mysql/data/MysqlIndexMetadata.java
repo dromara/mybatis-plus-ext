@@ -69,7 +69,7 @@ public class MysqlIndexMetadata {
             String realColumnName = TableColumnNameUtil.getRealColumnName(field);
             MysqlIndexMetadata mysqlIndexMetadata = new MysqlIndexMetadata();
             String indexName = index.name();
-            if (StringUtils.isEmpty(indexName)) {
+            if (!StringUtils.hasText(indexName)) {
                 indexName = TableColumnNameUtil.getRealColumnName(field);
             }
             mysqlIndexMetadata.setName(indexPrefix + indexName);

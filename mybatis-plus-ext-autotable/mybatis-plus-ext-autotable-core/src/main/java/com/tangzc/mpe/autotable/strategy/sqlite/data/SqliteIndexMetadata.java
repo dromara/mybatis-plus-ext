@@ -69,7 +69,7 @@ public class SqliteIndexMetadata {
             String realColumnName = TableColumnNameUtil.getRealColumnName(field);
             SqliteIndexMetadata sqliteIndexMetadata = new SqliteIndexMetadata();
             String indexName = index.name();
-            if (StringUtils.isEmpty(indexName)) {
+            if (!StringUtils.hasText(indexName)) {
                 indexName = TableColumnNameUtil.getRealColumnName(field);
             }
             sqliteIndexMetadata.setName(indexPrefix + indexName);
