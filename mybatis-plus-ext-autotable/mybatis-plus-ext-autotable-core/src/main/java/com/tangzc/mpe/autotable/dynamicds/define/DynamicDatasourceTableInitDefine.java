@@ -1,8 +1,10 @@
 package com.tangzc.mpe.autotable.dynamicds.define;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.tangzc.mpe.autotable.dynamicds.impl.DynamicDatasourceHandler;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +13,8 @@ import org.springframework.context.annotation.Configuration;
  * @author don
  */
 @Configuration
-@ConditionalOnBean(DynamicDataSourceAutoConfiguration.class)
+@ConditionalOnClass(DynamicDataSourceAutoConfiguration.class)
+@ConditionalOnProperty(prefix = DynamicDataSourceProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DynamicDatasourceTableInitDefine {
 
     @Bean
