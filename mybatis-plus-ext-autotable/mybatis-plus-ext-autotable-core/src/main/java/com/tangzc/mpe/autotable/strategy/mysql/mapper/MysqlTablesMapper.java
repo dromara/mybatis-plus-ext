@@ -89,7 +89,7 @@ public interface MysqlTablesMapper {
             @Result(column = "table_name", property = "tableName"),
             @Result(column = "table_schema", property = "tableSchema"),
     })
-    @Select("select * from information_schema.columns where table_name = #{tableName} and table_schema = (select database())")
+    @Select("select * from information_schema.columns where table_name = #{tableName} and table_schema = (select database()) order by ordinal_position asc")
     List<InformationSchemaColumn> findTableEnsembleByTableName(String tableName);
 
     /**

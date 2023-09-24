@@ -17,7 +17,7 @@ public class MysqlTableController {
     @GetMapping("add")
     public void add(String username) {
         MysqlTable3 entity = new MysqlTable3();
-        entity.setUsername(username);
+        entity.setName(username);
         mysqlTableRepository.save(entity);
     }
 

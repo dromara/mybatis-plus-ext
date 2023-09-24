@@ -221,6 +221,9 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         }
     }
 
+    /**
+     * 对比列的不同
+     */
     private void compareColumns(MysqlTableMetadata mysqlTableMetadata, String tableName, MysqlCompareTableInfo mysqlCompareTableInfo) {
         // 实体全部字段描述
         List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
@@ -228,20 +231,26 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
         // 查询数据库所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);
-        for (InformationSchemaColumn informationSchemaColumn : tableColumnList) {
+
+        // 获取顺序变更的sql TODO 感觉算法有待优化
+        ColumnPositionHelper.generateChangePosition(tableColumnList, mysqlColumnMetadataList);
+
+        for (int i = 0; i < tableColumnList.size(); i++) {
+            InformationSchemaColumn informationSchemaColumn = tableColumnList.get(i);
             String columnName = informationSchemaColumn.getColumnName();
             // 以数据库字段名，从当前Bean上取信息，获取到就从中剔除
             MysqlColumnMetadata mysqlColumnMetadata = columnParamMap.remove(columnName);
             if (mysqlColumnMetadata != null) {
                 // 取到了，则进行字段配置的比对
+                boolean columnPositionChanged = mysqlColumnMetadata.getNewPreColumn() != null;
                 boolean commentChanged = isCommentChanged(informationSchemaColumn, mysqlColumnMetadata);
                 boolean fieldTypeChanged = isFieldTypeChanged(informationSchemaColumn, mysqlColumnMetadata);
                 boolean notNullChanged = mysqlColumnMetadata.isNotNull() != informationSchemaColumn.isNotNull();
                 boolean fieldIsAutoIncrementChanged = mysqlColumnMetadata.isAutoIncrement() != informationSchemaColumn.isAutoIncrement();
                 boolean defaultValueChanged = isDefaultValueChanged(informationSchemaColumn, mysqlColumnMetadata);
-                if (commentChanged || fieldTypeChanged || notNullChanged || fieldIsAutoIncrementChanged || defaultValueChanged) {
+                if (columnPositionChanged || commentChanged || fieldTypeChanged || notNullChanged || fieldIsAutoIncrementChanged || defaultValueChanged) {
                     // 任何一项有变化，则说明需要更新该字段
-                    mysqlCompareTableInfo.getModifyMysqlColumnMetadataList().add(mysqlColumnMetadata);
+                    mysqlCompareTableInfo.addEditColumnMetadata(mysqlColumnMetadata);
                 }
             } else {
                 // 没有取到对应字段，说明库中存在的字段，Bean上不存在，根据配置，决定是否删除库上的多余字段
@@ -252,7 +261,9 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         }
         // 因为按照表中字段已经晒过一轮Bean上的字段了，同名可以取到的均删除了，剩下的都是表中字段不存在的，需要新增
         Collection<MysqlColumnMetadata> needNewColumns = columnParamMap.values();
-        mysqlCompareTableInfo.getMysqlColumnMetadataList().addAll(needNewColumns);
+        for (MysqlColumnMetadata needNewColumn : needNewColumns) {
+            mysqlCompareTableInfo.addNewColumnMetadata(needNewColumn);
+        }
     }
 
     private static boolean isDefaultValueChanged(InformationSchemaColumn informationSchemaColumn, MysqlColumnMetadata mysqlColumnMetadata) {
