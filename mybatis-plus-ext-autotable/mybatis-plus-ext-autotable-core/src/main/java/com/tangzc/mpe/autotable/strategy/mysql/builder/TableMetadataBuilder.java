@@ -19,6 +19,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -70,9 +71,10 @@ public class TableMetadataBuilder {
     }
 
     public static List<MysqlColumnMetadata> getColumnList(Class<?> clazz, List<Field> fields) {
+        AtomicInteger index = new AtomicInteger(1);
         return fields.stream()
                 .filter(field -> TableBeanUtils.isIncludeField(field, clazz))
-                .map(field -> MysqlColumnMetadata.create(clazz, field))
+                .map(field -> MysqlColumnMetadata.create(clazz, field, index.getAndIncrement()))
                 .collect(Collectors.toList());
     }
 

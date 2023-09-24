@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,8 +33,7 @@ public class ModifyTableSqlBuilder {
         String comment = mysqlCompareTableInfo.getComment();
 
         List<String> dropColumnList = mysqlCompareTableInfo.getDropColumnList();
-        List<MysqlColumnMetadata> modifyMysqlColumnMetadataList = mysqlCompareTableInfo.getModifyMysqlColumnMetadataList();
-        List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlCompareTableInfo.getMysqlColumnMetadataList();
+        List<MysqlCompareTableInfo.MysqlModifyColumnMetadata> modifyMysqlColumnMetadataList = mysqlCompareTableInfo.getModifyMysqlColumnMetadataList();
         List<String> dropIndexList = mysqlCompareTableInfo.getDropIndexList();
         List<MysqlIndexMetadata> mysqlIndexMetadataList = mysqlCompareTableInfo.getMysqlIndexMetadataList();
 
@@ -48,30 +48,27 @@ public class ModifyTableSqlBuilder {
                         ).collect(Collectors.joining(","))
         );
 
-        // 修改表字段处理
+        // 拼接每个字段的sql片段
         modifyItems.add(
-                modifyMysqlColumnMetadataList.stream().map(modifyColumn -> {
-                    // 判断是主键，自动设置为NOT NULL，并记录
-                    if (modifyColumn.isPrimary()) {
-                        modifyColumn.setNotNull(true);
-                    }
-                    // 拼接每个字段的sql片段
-                    String columnSql = modifyColumn.toColumnSql();
-                    return "MODIFY COLUMN " + columnSql;
-                }).collect(Collectors.joining(","))
-        );
+                modifyMysqlColumnMetadataList.stream()
+                        .sorted(Comparator.comparingInt(modifyColumn -> modifyColumn.getMysqlColumnMetadata().getPosition()))
+                        .map(modifyColumn -> {
+                            MysqlColumnMetadata columnMetadata = modifyColumn.getMysqlColumnMetadata();
+                            // 判断是主键，自动设置为NOT NULL，并记录
+                            if (columnMetadata.isPrimary()) {
+                                columnMetadata.setNotNull(true);
+                            }
+                            String columnSql = columnMetadata.toColumnSql();
 
-        // 新增表字段处理
-        modifyItems.add(
-                mysqlColumnMetadataList.stream().map(addColumn -> {
-                    // 判断是主键，自动设置为NOT NULL，并记录
-                    if (addColumn.isPrimary()) {
-                        addColumn.setNotNull(true);
-                    }
-                    // 拼接每个字段的sql片段
-                    String columnSql = addColumn.toColumnSql();
-                    return "ADD COLUMN " + columnSql;
-                }).collect(Collectors.joining(","))
+                            if (modifyColumn.getType() == MysqlCompareTableInfo.ModifyType.MODIFY) {
+                                // 修改表字段处理
+                                return "MODIFY COLUMN " + columnSql;
+                            } else {
+                                // 新增表字段处理
+                                return "ADD COLUMN " + columnSql;
+                            }
+                        })
+                        .collect(Collectors.joining(","))
         );
 
         /*

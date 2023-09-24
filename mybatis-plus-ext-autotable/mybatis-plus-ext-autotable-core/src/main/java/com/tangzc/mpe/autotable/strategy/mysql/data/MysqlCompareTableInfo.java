@@ -1,6 +1,7 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
 import com.tangzc.mpe.autotable.strategy.CompareTableInfo;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -49,13 +50,9 @@ public class MysqlCompareTableInfo implements CompareTableInfo {
      */
     private final List<String> dropColumnList = new ArrayList<>();
     /**
-     * 修改的列
+     * 修改的列，包含新增、修改
      */
-    private final List<MysqlColumnMetadata> modifyMysqlColumnMetadataList = new ArrayList<>();
-    /**
-     * 新增的列
-     */
-    private final List<MysqlColumnMetadata> mysqlColumnMetadataList = new ArrayList<>();
+    private final List<MysqlModifyColumnMetadata> modifyMysqlColumnMetadataList = new ArrayList<>();
     /**
      * 删除的索引
      */
@@ -78,8 +75,26 @@ public class MysqlCompareTableInfo implements CompareTableInfo {
                 !newPrimaries.isEmpty() ||
                 !dropColumnList.isEmpty() ||
                 !modifyMysqlColumnMetadataList.isEmpty() ||
-                !mysqlColumnMetadataList.isEmpty() ||
                 !dropIndexList.isEmpty() ||
                 !mysqlIndexMetadataList.isEmpty();
+    }
+
+    public void addNewColumnMetadata(MysqlColumnMetadata mysqlColumnMetadata) {
+        this.modifyMysqlColumnMetadataList.add(new MysqlModifyColumnMetadata(ModifyType.ADD, mysqlColumnMetadata));
+    }
+
+    public void addEditColumnMetadata(MysqlColumnMetadata mysqlColumnMetadata) {
+        this.modifyMysqlColumnMetadataList.add(new MysqlModifyColumnMetadata(ModifyType.MODIFY, mysqlColumnMetadata));
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class MysqlModifyColumnMetadata {
+        private ModifyType type;
+        private MysqlColumnMetadata mysqlColumnMetadata;
+    }
+
+    public static enum ModifyType {
+        ADD, MODIFY
     }
 }

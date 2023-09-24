@@ -66,13 +66,27 @@ public class MysqlColumnMetadata {
      */
     private boolean primary;
 
-    public static MysqlColumnMetadata create(Class<?> clazz, Field field) {
+    /**
+     * 当前列的位置
+     */
+    private int position;
+
+    /**
+     * 位置变动：前一列的列名。
+     * if 非空，AFTER 列名；
+     * else if 空字符，表示FIRST；
+     * else 表示没有变动；
+     */
+    private String newPreColumn;
+
+    public static MysqlColumnMetadata create(Class<?> clazz, Field field, int position) {
         MysqlColumnMetadata mysqlColumnMetadata = new MysqlColumnMetadata();
         mysqlColumnMetadata.setName(TableColumnNameUtil.getRealColumnName(field));
         mysqlColumnMetadata.setType(getTypeAndLength(field, clazz));
         mysqlColumnMetadata.setNotNull(TableBeanUtils.isNotNull(field));
         mysqlColumnMetadata.setPrimary(TableBeanUtils.isPrimary(field));
         mysqlColumnMetadata.setAutoIncrement(TableBeanUtils.isAutoIncrement(field));
+        mysqlColumnMetadata.setPosition(position);
         ColumnDefault columnDefault = TableBeanUtils.getDefaultValue(field);
         if (columnDefault != null) {
             mysqlColumnMetadata.setDefaultValueType(columnDefault.type());
@@ -110,11 +124,11 @@ public class MysqlColumnMetadata {
     public String toColumnSql() {
         // 例子：`name` varchar(100) NULL DEFAULT '张三' COMMENT '名称'
         // 例子：`id` int(32) NOT NULL AUTO_INCREMENT COMMENT '主键'
-        return StringHelper.newInstance("`{columnName}` {typeAndLength} {null} {default} {autoIncrement} {columnComment}")
+        return StringHelper.newInstance("`{columnName}` {typeAndLength} {null} {default} {autoIncrement} {columnComment} {position}")
                 .replace("{columnName}", this.getName())
                 .replace("{typeAndLength}", this.getType().getFullType())
                 .replace("{null}", this.isNotNull() ? "NOT NULL" : "NULL")
-                .replace("{default}", (key) -> {
+                .replace("{default}", ($) -> {
                     // 指定NULL
                     DefaultValueEnum defaultValueType = this.getDefaultValueType();
                     if (defaultValueType == DefaultValueEnum.NULL) {
@@ -133,6 +147,15 @@ public class MysqlColumnMetadata {
                 })
                 .replace("{autoIncrement}", this.isAutoIncrement() ? "AUTO_INCREMENT" : "")
                 .replace("{columnComment}", StringUtils.hasText(this.getComment()) ? "COMMENT '" + this.getComment() + "'" : "")
+                .replace("{position}", ($) -> {
+                    if (StringUtils.hasText(this.newPreColumn)) {
+                        return "AFTER `" + this.newPreColumn + "`";
+                    }
+                    if ("".equals(this.newPreColumn)) {
+                        return "FIRST";
+                    }
+                    return "";
+                })
                 .toString();
     }
 

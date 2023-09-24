@@ -1,10 +1,10 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
-import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
@@ -16,13 +16,13 @@ public class MysqlTableController {
 
     @GetMapping("add")
     public void add(String username) {
-        MysqlTable entity = new MysqlTable();
-        entity.setUsername(username);
+        MysqlTable3 entity = new MysqlTable3();
+        entity.setName(username);
         mysqlTableRepository.save(entity);
     }
 
     @GetMapping("list")
-    public List<MysqlTable> list() {
+    public List<MysqlTable3> list() {
         return mysqlTableRepository.list();
     }
 }
