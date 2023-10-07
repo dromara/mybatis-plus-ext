@@ -91,24 +91,26 @@ public class MysqlColumnMetadata {
         if (columnDefault != null) {
             mysqlColumnMetadata.setDefaultValueType(columnDefault.type());
             String defaultValue = columnDefault.value();
-            MysqlTypeAndLength type = mysqlColumnMetadata.getType();
-            // 补偿逻辑：类型为Boolean的时候(实际数据库为bit数字类型)，兼容 true、false
-            if (type.isBoolean() && !"1".equals(defaultValue) && !"0".equals(defaultValue)) {
-                if (Boolean.parseBoolean(defaultValue)) {
-                    defaultValue = "1";
-                } else {
-                    defaultValue = "0";
+            if (StringUtils.hasText(defaultValue)) {
+                MysqlTypeAndLength type = mysqlColumnMetadata.getType();
+                // 补偿逻辑：类型为Boolean的时候(实际数据库为bit数字类型)，兼容 true、false
+                if (type.isBoolean() && !"1".equals(defaultValue) && !"0".equals(defaultValue)) {
+                    if (Boolean.parseBoolean(defaultValue)) {
+                        defaultValue = "1";
+                    } else {
+                        defaultValue = "0";
+                    }
                 }
+                // 补偿逻辑：需要兼容字符串的类型，前后自动添加'
+                if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+                    defaultValue = "'" + defaultValue + "'";
+                }
+                // 补偿逻辑：时间类型，非函数的值，前后自动添加'
+                if (type.isDateTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+                    defaultValue = "'" + defaultValue + "'";
+                }
+                mysqlColumnMetadata.setDefaultValue(defaultValue);
             }
-            // 补偿逻辑：需要兼容字符串的类型，前后自动添加'
-            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
-                defaultValue = "'" + defaultValue + "'";
-            }
-            // 补偿逻辑：时间类型，非函数的值，前后自动添加'
-            if (type.isDateTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
-                defaultValue = "'" + defaultValue + "'";
-            }
-            mysqlColumnMetadata.setDefaultValue(defaultValue);
         }
         mysqlColumnMetadata.setComment(TableBeanUtils.getComment(field));
 
