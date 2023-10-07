@@ -68,7 +68,7 @@ public class PgsqlColumnMetadata {
     public String getDefaultValue() {
 
         if (!StringUtils.hasText(defaultValue)) {
-            return defaultValue;
+            return null;
         }
 
         if (this.type.isBoolean()) {
@@ -100,12 +100,14 @@ public class PgsqlColumnMetadata {
         if (columnDefault != null) {
             pgsqlColumnMetadata.setDefaultValueType(columnDefault.type());
             String defaultValue = columnDefault.value();
-            PgsqlTypeAndLength type = pgsqlColumnMetadata.getType();
-            // 补偿逻辑：字符串类型，前后自动添加'
-            if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
-                defaultValue = "'" + defaultValue + "'";
+            if(StringUtils.hasText(defaultValue)) {
+                PgsqlTypeAndLength type = pgsqlColumnMetadata.getType();
+                // 补偿逻辑：字符串类型，前后自动添加'
+                if (type.isCharString() && !defaultValue.isEmpty() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
+                    defaultValue = "'" + defaultValue + "'";
+                }
+                pgsqlColumnMetadata.setDefaultValue(defaultValue);
             }
-            pgsqlColumnMetadata.setDefaultValue(defaultValue);
         }
         pgsqlColumnMetadata.setComment(TableBeanUtils.getComment(field));
 

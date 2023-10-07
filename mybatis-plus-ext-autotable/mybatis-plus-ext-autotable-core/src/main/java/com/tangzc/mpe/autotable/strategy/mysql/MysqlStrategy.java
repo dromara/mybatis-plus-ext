@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -279,22 +280,18 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
                 return !"".equals(columnDefault);
             }
         } else {
-            // 自定义值 默认值对比
-            String defaultValue = mysqlColumnMetadata.getDefaultValue();
-            // 未设置有效默认值，直接返回未变更
-            if (!StringUtils.hasText(defaultValue)) {
-                return false;
-            }
             MysqlTypeAndLength columnType = mysqlColumnMetadata.getType();
             // 如果是数据库是bit类型，默认值是b'1' 或者 b'0' 的形式
-            if (columnType.isBoolean() && columnDefault.startsWith("b'") && columnDefault.endsWith("'")) {
+            if (columnType.isBoolean() && columnDefault != null && columnDefault.startsWith("b'") && columnDefault.endsWith("'")) {
                 columnDefault = columnDefault.substring(2, columnDefault.length() - 1);
             }
+            // 自定义值 默认值对比
+            String defaultValue = mysqlColumnMetadata.getDefaultValue();
             // 兼容逻辑：如果是需要字符串兼容的类型（字符串、日期），使用者在默认值前后携带了''，则在比对的时候自动去掉
-            if (columnType.needStringCompatibility() && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
+            if (columnType.needStringCompatibility() && defaultValue != null && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
                 defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
             }
-            return !defaultValue.equals(columnDefault);
+            return !Objects.equals(defaultValue, columnDefault);
         }
         return false;
     }

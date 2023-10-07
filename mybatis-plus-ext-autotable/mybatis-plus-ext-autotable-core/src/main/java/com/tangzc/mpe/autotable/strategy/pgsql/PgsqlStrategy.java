@@ -235,26 +235,8 @@ public class PgsqlStrategy implements IStrategy<PgsqlTableMetadata, PgsqlCompare
             }
         } else {
             String defaultValue = pgsqlColumnMetadata.getDefaultValue();
-            if (!StringUtils.hasText(defaultValue)) {
-                return false;
-            }
-
-            // PgsqlTypeAndLength columnType = pgsqlColumnMetadata.getType();
-            // // 兼容逻辑：如果是数据库是bool类型，兼容1和0的标记方式
-            // if (columnType.isBoolean()) {
-            //     if ("1".equals(defaultValue)) {
-            //         defaultValue = "true";
-            //     } else if ("0".equals(defaultValue)) {
-            //         defaultValue = "false";
-            //     }
-            // }
-            // // 兼容逻辑：如果是字符串的类型，自动包一层''（如果没有的话）
-            // if (columnType.isCharString() && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
-            //     defaultValue = "'" + defaultValue + "'";
-            // }
-            // // 兼容逻辑：如果是日期，且非函数，自动包一层''（如果没有的话）
-            // if (columnType.isTime() && defaultValue.matches("(\\d+.?)+") && !defaultValue.startsWith("'") && !defaultValue.endsWith("'")) {
-            //     defaultValue = "'" + defaultValue + "'";
+            // if (!StringUtils.hasText(defaultValue)) {
+            //     return false;
             // }
 
             return !Objects.equals(defaultValue, columnDefault);
