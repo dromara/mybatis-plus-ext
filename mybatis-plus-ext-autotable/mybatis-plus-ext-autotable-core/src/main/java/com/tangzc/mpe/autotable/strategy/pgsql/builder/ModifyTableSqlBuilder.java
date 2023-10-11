@@ -41,7 +41,7 @@ public class ModifyTableSqlBuilder {
         // 删除列
         List<String> dropColumnList = pgsqlCompareTableInfo.getDropColumnList();
         dropColumnList.stream()
-                .map(columnName -> "  DROP COLUMN \"char_field\"")
+                .map(columnName -> "  DROP COLUMN \"" + columnName + "\"")
                 .forEach(alterTableSqlList::add);
         // 新增列
         List<PgsqlColumnMetadata> newColumnList = pgsqlCompareTableInfo.getNewColumnMetadataList();
