@@ -78,7 +78,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
     }
 
     default List<T> bindList(List<SFunction<T, ?>> filedList) {
-        List<T> list = getBaseMapper().selectList(getWrapper());
+        List<T> list = list();
         SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(list, filedList);
         return list;
     }
@@ -143,7 +143,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
     }
 
     default T bindOne(List<SFunction<T, ?>> filedList) {
-        T one = getBaseMapper().selectOne(getWrapper());
+        T one = one();
         SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(one, filedList);
         return one;
     }
@@ -264,7 +264,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
     }
 
     default <E extends IPage<T>> E bindPage(E page, List<SFunction<T, ?>> filedList) {
-        E pageRet = getBaseMapper().selectPage(page, getWrapper());
+        E pageRet = page(page);
         SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(pageRet, filedList);
         return pageRet;
     }
