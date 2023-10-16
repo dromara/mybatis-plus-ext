@@ -25,9 +25,9 @@ public enum PgsqlDefaultTypeEnum {
     /**
      * 小数
      */
-    FLOAT4(PgsqlTypeConstant.FLOAT4, 10, 2), // float
+    FLOAT4(PgsqlTypeConstant.FLOAT4, null, null), // float
 
-    FLOAT8(PgsqlTypeConstant.FLOAT8, 10, 2), // double
+    FLOAT8(PgsqlTypeConstant.FLOAT8, null, null), // double
 
     MONEY(PgsqlTypeConstant.MONEY, null, null), //
 
