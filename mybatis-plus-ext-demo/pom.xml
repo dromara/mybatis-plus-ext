@@ -19,6 +19,7 @@
         <module>mybatis-plus-ext-demo-autotable</module>
         <module>mybatis-plus-ext-demo-actable-flyway</module>
         <module>mybatis-plus-ext-demo-datasource</module>
+        <module>mybatis-plus-ext-demo-dict</module>
     </modules>
 
     <dependencies>

@@ -6,9 +6,10 @@ import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
 import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import com.tangzc.mpe.bind.metadata.builder.FieldDescriptionBuilder;
+import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author don
  */
 @Getter
+@Slf4j
 public class BeanDescription<BEAN> {
 
     private final Class<BEAN> beanClass;
@@ -52,36 +54,43 @@ public class BeanDescription<BEAN> {
         this.beanClass = beanClass;
     }
 
-    public <BIND_ANNOTATION extends Annotation> void tryAddBindAnnotation(Field field, BIND_ANNOTATION annotation) {
+    public void findBindAnnotation(Field field) {
 
-        if (annotation instanceof BindAggFunc) {
-            BindAggFuncDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindAggFunc) annotation);
+        BindAggFunc bindAggFunc = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, BindAggFunc.class);
+        if (bindAggFunc != null) {
+            BindAggFuncDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, bindAggFunc);
             this.bindAggFuncAnnotations.add(fieldDescription);
             return;
         }
 
-        if (annotation instanceof BindField) {
-            BindFieldDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindField) annotation);
+        BindField bindField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, BindField.class);
+        if (bindField != null) {
+            BindFieldDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, bindField);
             this.bindFieldAnnotations.add(fieldDescription);
             return;
         }
 
-        if (annotation instanceof BindEntity) {
-            BindEntityDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindEntity) annotation);
+        BindEntity bindEntity = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, BindEntity.class);
+        if (bindEntity != null) {
+            BindEntityDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, bindEntity);
             this.bindEntityAnnotations.add(fieldDescription);
             return;
         }
 
-        if (annotation instanceof BindFieldByMid) {
-            BindFieldByMidDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindFieldByMid) annotation);
+        BindFieldByMid bindFieldByMid = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, BindFieldByMid.class);
+        if (bindFieldByMid != null) {
+            BindFieldByMidDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, bindFieldByMid);
             this.bindFieldByMidDescriptions.add(fieldDescription);
             return;
         }
 
-        if (annotation instanceof BindEntityByMid) {
-            BindEntityByMidDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, (BindEntityByMid) annotation);
+        BindEntityByMid bindEntityByMid = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, BindEntityByMid.class);
+        if (bindEntityByMid != null) {
+            BindEntityByMidDescription fieldDescription = FieldDescriptionBuilder.build(beanClass, field, bindEntityByMid);
             this.bindEntityByMidAnnotations.add(fieldDescription);
+            return;
         }
+        log.debug("字段{}没有Bind注解", field.getName());
     }
 
     public boolean isValid() {

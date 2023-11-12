@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  *
  * @author don
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @TableField(exist = false)
 @Inherited

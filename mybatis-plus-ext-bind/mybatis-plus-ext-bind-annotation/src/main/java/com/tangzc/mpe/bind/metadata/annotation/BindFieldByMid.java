@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Documented
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @TableField(exist = false)
 public @interface BindFieldByMid {
