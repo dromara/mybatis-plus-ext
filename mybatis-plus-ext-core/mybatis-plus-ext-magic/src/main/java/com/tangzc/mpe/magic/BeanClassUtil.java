@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author don
+ */
 public class BeanClassUtil {
 
     /**
@@ -47,10 +50,6 @@ public class BeanClassUtil {
 
         String fieldName = getFieldName(sFunction);
         Field field = getField(clazz, fieldName);
-        if (field == null) {
-            throw new RuntimeException(clazz + "下未找到" + fieldName + "字段");
-        }
-
         return getFieldRealClass(field);
     }
 
@@ -96,8 +95,9 @@ public class BeanClassUtil {
      */
     public static Field getField(Class<?> clazz, String fieldName) {
 
+        Field field;
         while (true) {
-            Field field = Arrays.stream(clazz.getDeclaredFields())
+            field = Arrays.stream(clazz.getDeclaredFields())
                     .filter(f -> f.getName().equals(fieldName))
                     .findFirst().orElse(null);
             // 如果没有找到
@@ -109,8 +109,14 @@ public class BeanClassUtil {
                     continue;
                 }
             }
-            return field;
+            break;
         }
+
+        if (field == null) {
+            throw new RuntimeException(clazz.getName() + "上没有找到字段：" + fieldName);
+        }
+
+        return field;
     }
 
     public static List<Field> getAllDeclaredFieldsExcludeStatic(Class<?> beanClass) {
