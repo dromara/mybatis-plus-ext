@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 
 @Component
-public class UserIdAutoFillHandler implements AutoFillHandler<String> {
+public class UserIdAutoFillHandler implements AutoFillHandler<Integer> {
 
     @Override
-    public String getVal(Object object, Class<?> clazz, Field field) {
+    public Integer getVal(Object object, Class<?> clazz, Field field) {
 
-        return String.valueOf(RandomUtils.nextInt(1, 2));
+        return RandomUtils.nextInt(1, 2);
     }
 }

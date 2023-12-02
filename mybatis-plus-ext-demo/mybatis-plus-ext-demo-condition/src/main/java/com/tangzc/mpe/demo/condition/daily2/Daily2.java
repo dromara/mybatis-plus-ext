@@ -23,5 +23,5 @@ public class Daily2 {
     @DynamicCondition(FilterByFixedUser.class)
     @InsertOptionUser(UserIdAutoFillHandler.class)
     @ColumnComment("提交人")
-    private String submitter;
+    private Integer submitter;
 }

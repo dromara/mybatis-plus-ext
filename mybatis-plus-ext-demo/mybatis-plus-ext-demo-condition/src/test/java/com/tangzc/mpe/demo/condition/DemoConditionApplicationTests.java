@@ -20,12 +20,16 @@ class DemoConditionApplicationTests {
     private DailyRepository dailyRepository;
 
     @Test
-    public void insert() {
+    public void insertUser() {
 
         List<User> userList = new ArrayList<>();
         userList.add(new User().setId("1").setName("zhangsan"));
         userList.add(new User().setId("2").setName("lisi"));
         userRepository.saveBatch(userList);
+    }
+
+    @Test
+    public void insertDaily() {
 
         List<Daily> dailyList = new ArrayList<>();
         dailyList.add(new Daily().setContent("日志1"));
