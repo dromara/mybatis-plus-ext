@@ -3,7 +3,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-autotable</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.4-EXT541</version>
+        <version>3.5.4-EXT542</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
