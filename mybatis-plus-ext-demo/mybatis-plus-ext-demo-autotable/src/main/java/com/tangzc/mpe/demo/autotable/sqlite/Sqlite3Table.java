@@ -10,7 +10,6 @@ import com.tangzc.mpe.autotable.annotation.Ignore;
 import com.tangzc.mpe.autotable.annotation.Index;
 import com.tangzc.mpe.autotable.annotation.IndexField;
 import com.tangzc.mpe.autotable.annotation.NotNull;
-import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.TableIndex;
 import com.tangzc.mpe.autotable.annotation.TableIndexes;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
@@ -31,7 +30,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-@Table(comment = "测试表", dsName = "my-sqlite")
+// @Table(comment = "测试表", dsName = "my-sqlite")
 public class Sqlite3Table {
 
     @ColumnId(mode = IdType.AUTO, comment = "ID", type = "bigint")

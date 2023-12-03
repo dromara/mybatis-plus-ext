@@ -96,4 +96,8 @@ public class MysqlTypeAndLength {
     public boolean isNumber() {
         return (INTEGER_TYPE.contains(this.typeName()) || FLOAT_TYPE.contains(this.typeName()));
     }
+
+    public boolean isNoLengthNumber() {
+        return INTEGER_TYPE.contains(this.typeName());
+    }
 }
