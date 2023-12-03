@@ -303,7 +303,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
 
         MysqlTypeAndLength fieldType = mysqlColumnMetadata.getType();
         // 整数类型，只对比类型，不对比长度
-        if (fieldType.isNumber()) {
+        if (fieldType.isNoLengthNumber()) {
             return !fieldType.typeName().equalsIgnoreCase(informationSchemaColumn.getDataType());
         }
         // 非整数类型，类型全文匹配：varchar(255) double(6,2)
