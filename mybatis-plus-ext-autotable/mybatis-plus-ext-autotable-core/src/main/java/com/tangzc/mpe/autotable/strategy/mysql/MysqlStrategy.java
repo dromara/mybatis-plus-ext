@@ -236,8 +236,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         // 获取顺序变更的sql TODO 感觉算法有待优化
         ColumnPositionHelper.generateChangePosition(tableColumnList, mysqlColumnMetadataList);
 
-        for (int i = 0; i < tableColumnList.size(); i++) {
-            InformationSchemaColumn informationSchemaColumn = tableColumnList.get(i);
+        for (InformationSchemaColumn informationSchemaColumn : tableColumnList) {
             String columnName = informationSchemaColumn.getColumnName();
             // 以数据库字段名，从当前Bean上取信息，获取到就从中剔除
             MysqlColumnMetadata mysqlColumnMetadata = columnParamMap.remove(columnName);
@@ -287,6 +286,18 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
             }
             // 自定义值 默认值对比
             String defaultValue = mysqlColumnMetadata.getDefaultValue();
+            // mysql中，如果是数据库浮点数，默认值后面会带上对应的小数位数，策略：数据库值于注解指定的值，均去掉多余的0进行对比
+            if (columnType.isFloatNumber() && columnDefault != null && columnDefault.matches("[0-9]+(.[0-9]+)?")) {
+                // 先转数字，再转字符串，消除多余的0，异常忽略
+                try {
+                    columnDefault = String.valueOf(Double.parseDouble(columnDefault));
+                } catch (Exception ignore) {
+                }
+                try {
+                    defaultValue = String.valueOf(Double.parseDouble(defaultValue));
+                } catch (Exception ignore) {
+                }
+            }
             // 兼容逻辑：如果是需要字符串兼容的类型（字符串、日期），使用者在默认值前后携带了''，则在比对的时候自动去掉
             if (columnType.needStringCompatibility() && defaultValue != null && defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
                 defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
