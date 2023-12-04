@@ -31,7 +31,7 @@ public interface IDatasourceHandler {
 
         DatabaseDialect databaseDialect = this.getDatabaseDialect();
         if (databaseDialect != null) {
-            log.info("当前数据库方言（" + databaseDialect + "），准备执行自动建表");
+            log.info("当前数据库方言（" + databaseDialect + "）");
             IStrategy<?, ?> databaseStrategy = this.getDatabaseStrategy(databaseDialect);
             if (databaseStrategy != null) {
                 databaseStrategy.analyseClasses(beanClasses);
