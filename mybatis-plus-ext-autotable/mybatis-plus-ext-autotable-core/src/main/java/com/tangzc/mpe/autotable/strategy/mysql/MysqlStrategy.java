@@ -1,6 +1,5 @@
 package com.tangzc.mpe.autotable.strategy.mysql;
 
-import com.google.common.base.Functions;
 import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.mpe.autotable.constants.DatabaseDialect;
@@ -29,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -229,7 +229,7 @@ public class MysqlStrategy implements IStrategy<MysqlTableMetadata, MysqlCompare
         // 实体全部字段描述
         List<MysqlColumnMetadata> mysqlColumnMetadataList = mysqlTableMetadata.getColumnMetadataList();
         // 变形：《列名，实体字段描述》
-        Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Functions.identity()));
+        Map<String, MysqlColumnMetadata> columnParamMap = mysqlColumnMetadataList.stream().collect(Collectors.toMap(MysqlColumnMetadata::getName, Function.identity()));
         // 查询数据库所有列数据
         List<InformationSchemaColumn> tableColumnList = mysqlTablesMapper.findTableEnsembleByTableName(tableName);
 
