@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.4-EXT544-boot3</version>
+        <version>3.5.5-EXT544-boot3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,7 +33,7 @@
         <!-- 注释掉该引用，即表示非多数据源 -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
             <version>${dynamic-datasource.version}</version>
         </dependency>
     </dependencies>

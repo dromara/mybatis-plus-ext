@@ -3,7 +3,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-autotable</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.4-EXT544-boot3</version>
+        <version>3.5.5-EXT544-boot3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
             <optional>true</optional>
         </dependency>
@@ -32,7 +32,7 @@
         <!-- mybatis-plus拓展 数据库操作框架 -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
             <version>${dynamic-datasource.version}</version>
             <optional>true</optional>
         </dependency>
