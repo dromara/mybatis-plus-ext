@@ -3,7 +3,6 @@ package com.tangzc.mpe.autotable.utils;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
-import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnType;
@@ -18,6 +17,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,12 +52,11 @@ public class TableBeanUtils {
 
         // 不参与建表的字段: 增加缓存策略，提升性能
         HashSet<String> excludeFields = excludeFieldsMap.computeIfAbsent(clazz, (k) -> {
-            HashSet<String> excludes = new HashSet<>();
             Table table = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
             if (table != null) {
-                excludes = Sets.newHashSet(table.excludeProperty());
+                return new HashSet<>(Arrays.asList(table.excludeProperty()));
             }
-            return excludes;
+            return new HashSet<>();
         });
         // 当前属性名在排除建表的字段内
         return !excludeFields.contains(field.getName());

@@ -1,7 +1,5 @@
 package com.tangzc.mpe.condition;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
@@ -13,6 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,26 +21,23 @@ import java.util.Map;
 @Slf4j
 public class DynamicConditionManager {
 
-    private static final Table<String, String, List<DynamicConditionDescription>> DYN_CON_CACHE = HashBasedTable.create();
+    private static final Map<String, Map<String, List<DynamicConditionDescription>>> DYN_CON_CACHE = new HashMap<>();
 
     public static void add(Class<?> entityClass, Field field, DynamicCondition dynamicCondition) {
 
         String tableName = TableColumnNameUtil.getTableName(entityClass);
 
-        List<DynamicConditionDescription> dynamicConditionDescriptions = DYN_CON_CACHE.get(tableName, entityClass);
-        if (dynamicConditionDescriptions == null) {
-            dynamicConditionDescriptions = new ArrayList<>();
-            DYN_CON_CACHE.put(tableName, entityClass.getName(), dynamicConditionDescriptions);
-        }
+        List<DynamicConditionDescription> dynamicConditionDescriptions = DYN_CON_CACHE.computeIfAbsent(tableName, $ -> new HashMap<>())
+                .computeIfAbsent(entityClass.getName(), $ -> new ArrayList<>());
         dynamicConditionDescriptions.add(new DynamicConditionDescription(entityClass, field, dynamicCondition));
     }
 
     public static List<DynamicConditionDescription> getDynamicCondition(String tableName) {
 
-        Map<String, List<DynamicConditionDescription>> row = DYN_CON_CACHE.row(tableName);
+        Map<String, List<DynamicConditionDescription>> row = DYN_CON_CACHE.get(tableName);
 
         // 不存在，直接返回
-        if (row.isEmpty()) {
+        if (row == null) {
             return Collections.emptyList();
         }
 

@@ -1,10 +1,10 @@
 package com.tangzc.mpe.autotable.strategy.mysql.data;
 
-import com.google.common.collect.Sets;
 import com.tangzc.mpe.autotable.strategy.mysql.data.enums.MySqlDefaultTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,35 +27,35 @@ public class MysqlTypeAndLength {
         this.type = type;
     }
 
-    private static final Set<String> CHAR_STRING_TYPE = Sets.newHashSet(
-            MySqlDefaultTypeEnum.CHAR.typeName(),
-            MySqlDefaultTypeEnum.VARCHAR.typeName(),
-            MySqlDefaultTypeEnum.TEXT.typeName(),
-            MySqlDefaultTypeEnum.TINYTEXT.typeName(),
-            MySqlDefaultTypeEnum.MEDIUMTEXT.typeName(),
-            MySqlDefaultTypeEnum.LONGTEXT.typeName()
-    );
+    private static final Set<String> CHAR_STRING_TYPE = new HashSet<String>() {{
+        add(MySqlDefaultTypeEnum.CHAR.typeName());
+        add(MySqlDefaultTypeEnum.VARCHAR.typeName());
+        add(MySqlDefaultTypeEnum.TEXT.typeName());
+        add(MySqlDefaultTypeEnum.TINYTEXT.typeName());
+        add(MySqlDefaultTypeEnum.MEDIUMTEXT.typeName());
+        add(MySqlDefaultTypeEnum.LONGTEXT.typeName());
+    }};
 
-    private static final Set<String> DATE_TIME_TYPE = Sets.newHashSet(
-            MySqlDefaultTypeEnum.DATE.typeName(),
-            MySqlDefaultTypeEnum.DATETIME.typeName(),
-            MySqlDefaultTypeEnum.YEAR.typeName(),
-            MySqlDefaultTypeEnum.TIME.typeName()
-    );
+    private static final Set<String> DATE_TIME_TYPE = new HashSet<String>() {{
+        add(MySqlDefaultTypeEnum.DATE.typeName());
+        add(MySqlDefaultTypeEnum.DATETIME.typeName());
+        add(MySqlDefaultTypeEnum.YEAR.typeName());
+        add(MySqlDefaultTypeEnum.TIME.typeName());
+    }};
 
-    private static final Set<String> INTEGER_TYPE = Sets.newHashSet(
-            MySqlDefaultTypeEnum.INT.typeName(),
-            MySqlDefaultTypeEnum.TINYINT.typeName(),
-            MySqlDefaultTypeEnum.SMALLINT.typeName(),
-            MySqlDefaultTypeEnum.MEDIUMINT.typeName(),
-            MySqlDefaultTypeEnum.BIGINT.typeName()
-    );
+    private static final Set<String> INTEGER_TYPE = new HashSet<String>() {{
+        add(MySqlDefaultTypeEnum.INT.typeName());
+        add(MySqlDefaultTypeEnum.TINYINT.typeName());
+        add(MySqlDefaultTypeEnum.SMALLINT.typeName());
+        add(MySqlDefaultTypeEnum.MEDIUMINT.typeName());
+        add(MySqlDefaultTypeEnum.BIGINT.typeName());
+    }};
 
-    private static final Set<String> FLOAT_TYPE = Sets.newHashSet(
-            MySqlDefaultTypeEnum.FLOAT.typeName(),
-            MySqlDefaultTypeEnum.DOUBLE.typeName(),
-            MySqlDefaultTypeEnum.DECIMAL.typeName()
-    );
+    private static final Set<String> FLOAT_TYPE = new HashSet<String>() {{
+        add(MySqlDefaultTypeEnum.FLOAT.typeName());
+        add(MySqlDefaultTypeEnum.DOUBLE.typeName());
+        add(MySqlDefaultTypeEnum.DECIMAL.typeName());
+    }};
 
     public String typeName() {
         return this.type.toLowerCase();
