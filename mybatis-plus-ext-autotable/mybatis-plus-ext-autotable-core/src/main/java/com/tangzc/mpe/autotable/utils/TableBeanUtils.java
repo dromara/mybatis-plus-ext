@@ -17,20 +17,20 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @author don
  */
 public class TableBeanUtils {
 
-    private static Map<Class<?>, Set<String>> excludeFieldsMap = new HashMap<>();
+    private static Map<Class<?>, HashSet<String>> excludeFieldsMap = new HashMap<>();
 
     private static List<IgnoreExt> ignoreExts;
 
@@ -51,13 +51,12 @@ public class TableBeanUtils {
         }
 
         // 不参与建表的字段: 增加缓存策略，提升性能
-        Set<String> excludeFields = excludeFieldsMap.computeIfAbsent(clazz, (k) -> {
-            Set<String> excludes = new HashSet<>();
+        HashSet<String> excludeFields = excludeFieldsMap.computeIfAbsent(clazz, (k) -> {
             Table table = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
             if (table != null) {
-                excludes = Set.of(table.excludeProperty());
+                return new HashSet<>(Arrays.asList(table.excludeProperty()));
             }
-            return excludes;
+            return new HashSet<>();
         });
         // 当前属性名在排除建表的字段内
         return !excludeFields.contains(field.getName());
