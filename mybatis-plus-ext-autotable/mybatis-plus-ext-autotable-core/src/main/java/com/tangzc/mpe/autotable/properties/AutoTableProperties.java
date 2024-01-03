@@ -11,6 +11,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("mpe.auto-table")
 public class AutoTableProperties {
 
+    public static final String ENABLE_KEY = "mpe.auto-table.enable";
+
+    /**
+     * 是否启用自动维护表功能
+     */
+    private Boolean enable = true;
     /**
      * 启动模式
      * none：系统不做任何处理。
