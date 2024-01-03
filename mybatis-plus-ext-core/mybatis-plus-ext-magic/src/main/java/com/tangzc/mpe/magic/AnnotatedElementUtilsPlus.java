@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -85,12 +85,15 @@ public class AnnotatedElementUtilsPlus extends AnnotatedElementUtils {
         }
 
         if (defVal.getClass().isArray()) {
-            if (((Object[]) val).length == ((Object[]) defVal).length) {
-                if (((Object[]) val).length != 0) {
-                    return new HashSet<>(Arrays.asList((Object[]) val)).containsAll(Arrays.asList((Object[]) defVal));
-                }
+            // 长度相等的情况下，在比对内容
+            List<Object> list = Arrays.asList(val);
+            List<Object> defList = Arrays.asList(defVal);
+            if (list.size() > 0 && list.size() == defList.size()) {
+                // 考虑到数组中，可能值的顺序不同，所以使用containsAll方法。
+                // 因为大小相同，如果是一个集合全包含另一个集合，则说明两个集合内容完全一致
+                return !list.containsAll(defList);
             }
-            return false;
+            return list.size() > 0;
         }
         return !Objects.equals(val, defVal);
     }
