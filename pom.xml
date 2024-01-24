@@ -15,7 +15,6 @@
         <spring-boot.version>2.7.15</spring-boot.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
-        <guava.version>30.0-jre</guava.version>
 
         <!-- java版本 -->
         <java.version>1.8</java.version>
