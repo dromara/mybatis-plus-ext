@@ -11,8 +11,8 @@ import com.tangzc.mpe.autotable.strategy.pgsql.converter.impl.DefaultJavaToPgsql
 import com.tangzc.mpe.autotable.strategy.sqlite.SqliteStrategy;
 import com.tangzc.mpe.autotable.strategy.sqlite.converter.impl.DefaultJavaToSqliteConverterDefine;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
+import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.Documented;
@@ -27,8 +27,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@DependsOn("springContextUtil")
 @Import({
+        SpringContextUtil.class,
         MybatisPlusProperties.class,
         MapperScannerConfig.class,
         MysqlStrategy.class,
@@ -47,7 +47,7 @@ import java.lang.annotation.Target;
 @EnableConfigurationProperties(AutoTableProperties.class)
 public @interface EnableAutoTable {
 
-    String[] activeProfile() default "";
+    String[] activeProfile() default {};
 
     String profileProperty() default "spring.profiles.active";
 }

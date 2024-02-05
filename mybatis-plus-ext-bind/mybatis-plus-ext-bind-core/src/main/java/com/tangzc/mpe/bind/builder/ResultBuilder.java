@@ -5,8 +5,10 @@ import com.tangzc.mpe.base.MapperScanner;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.JoinConditionDescription;
 import lombok.AllArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -62,20 +64,35 @@ public class ResultBuilder<BEAN, ENTITY> {
 
     private Map<String, List<ENTITY>> listEntitiesByCondition() {
 
-        QueryWrapper<ENTITY> queryWrapper = QueryWrapperBuilder.<ENTITY>newInstance()
-                .select(fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions))
-                .where(conditionSign.getConditions(), conditionSign.getCustomCondition())
-                .orderBy(conditionSign.getOrderBys())
-                .last(conditionSign.getLast())
-                .build(beans);
+        String lastSql = conditionSign.getLast();
 
-        Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-        List<ENTITY> entities = MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
+        List<ENTITY> entities = new ArrayList<>();
+        // 存在last sql的情况下，目前发现的就是limit 1，而limit 1这种情况无法合并查询，需要单独查询，然后合并结果
+        if(StringUtils.hasText(lastSql)) {
+            for (BEAN bean : beans) {
+                List<BEAN> beanList = Collections.singletonList(bean);
+                entities.addAll(listEntitiesByCondition(beanList));
+            }
+        } else {
+            entities = listEntitiesByCondition(beans);
+        }
 
         return entities.stream()
                 .collect(Collectors.groupingBy(
                         entity -> getConditionSignatureByJoin(entity, conditionSign)
                 ));
+    }
+
+    private List<ENTITY> listEntitiesByCondition(List<BEAN> beanList) {
+        QueryWrapper<ENTITY> queryWrapper = QueryWrapperBuilder.<ENTITY>newInstance()
+                .select(fillDataCallback.selectColumns(beanList, conditionSign, fieldDescriptions))
+                .where(conditionSign.getConditions(), conditionSign.getCustomCondition())
+                .orderBy(conditionSign.getOrderBys())
+                .last(conditionSign.getLast())
+                .build(beanList);
+
+        Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
+        return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
     }
 
     private void fullDataToBeanField(BEAN bean,

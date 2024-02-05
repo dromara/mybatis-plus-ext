@@ -119,7 +119,11 @@ public class QueryWrapperBuilder<ENTITY> {
             List<Object> values = whereItemList.stream()
                     .map(WhereItem::getValue)
                     .collect(Collectors.toList());
-            queryWrapper.in(column, values);
+            if (values.size() > 1) {
+                queryWrapper.in(column, values);
+            } else {
+                queryWrapper.eq(column, values.get(0));
+            }
         } else {
             queryWrapper.and(queryWrapper2 -> {
                 for (Where where : wheres) {

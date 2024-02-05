@@ -3,6 +3,7 @@ package com.tangzc.mpe.bind.metadata;
 import com.tangzc.mpe.magic.BeanClassUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -116,6 +117,12 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
             String thatCustomCondition = that.getCustomCondition();
             String thatOrderBys = that.getSortOrderByStr();
             String thatLast = that.getLast();
+
+            // 只要有last，就认为是不同的，因为无法合并last上的sql，大概率是用的limit 1之类的
+            if (StringUtils.hasText(this.last) || StringUtils.hasText(thatLast)) {
+                return false;
+            }
+
             return joinEntityClass.equals(that.joinEntityClass)
                     && thisConditions.equals(thatConditions)
                     && customCondition.equals(thatCustomCondition)
@@ -125,7 +132,7 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
 
         @Override
         public int hashCode() {
-            return Objects.hash(joinEntityClass, getSortConditionStr(), customCondition, getSortOrderByStr());
+            return Objects.hash(joinEntityClass, getSortConditionStr(), customCondition, getSortOrderByStr(), last);
         }
 
         private String getSortConditionStr() {
