@@ -1,6 +1,8 @@
 package com.tangzc.mpe.magic.util;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.util.ClassUtils;
 
@@ -13,16 +15,17 @@ import java.util.Map;
  * @author don
  */
 //@Component
-public class SpringContextUtil {
+public class SpringContextUtil implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
-    public SpringContextUtil(ApplicationContext applicationContext) {
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringContextUtil.applicationContext = applicationContext;
     }
 
     public static ApplicationContext getApplicationContext() {
-        return applicationContext;
+        return SpringContextUtil.applicationContext;
     }
 
     public static String getProperty(String key) {
