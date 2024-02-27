@@ -48,19 +48,6 @@ import java.util.stream.Collectors;
 @ConditionalOnMissingBean(MetaObjectHandler.class)
 public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
-    public Map<Class, Class> baseTypeClassMap = new HashMap<>();
-
-    {
-        baseTypeClassMap.put(Byte.class, byte.class);
-        baseTypeClassMap.put(Short.class, short.class);
-        baseTypeClassMap.put(Integer.class, int.class);
-        baseTypeClassMap.put(Long.class, long.class);
-        baseTypeClassMap.put(Double.class, double.class);
-        baseTypeClassMap.put(Float.class, float.class);
-        baseTypeClassMap.put(Character.class, char.class);
-        baseTypeClassMap.put(Boolean.class, boolean.class);
-    }
-
     @Override
     public void insertFill(MetaObject metaObject) {
 
@@ -145,25 +132,16 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
                 // 如果当前未取到信息，不设置
                 if (userInfo != null) {
-                    // 先校验类型是否一致
-                    if (!this.checkTypeConsistency(userInfo.getClass(), field.getType())) {
-                        String errorMsg = clazz.getName() + "中的字段" + field.getName() + "的类型（" + field.getType() + "）与" + instance.getClass() + "返回值的类型（" + userInfo.getClass() + "）不一致";
+                    try {
+                        // 赋值
+                        this.setFieldValByName(field.getName(), userInfo, metaObject);
+                    } catch (Exception e) {
+                        String errorMsg = "数据填充赋值失败，可能是由于" + clazz.getName() + "中的字段" + field.getName() + "的类型（" + field.getType() + "）与" + instance.getClass() + "返回值的类型（" + userInfo.getClass() + "）不一致";
                         throw new RuntimeException(errorMsg);
                     }
-                    // 赋值
-                    this.setFieldValByName(field.getName(), userInfo, metaObject);
                 }
             }
         }
-    }
-
-    /**
-     * 校验两个类型是否一致，涵盖了8大基本类型的自动转换
-     */
-    private boolean checkTypeConsistency(Class<?> aClass, Class<?> bClass) {
-        return aClass == bClass ||
-                baseTypeClassMap.get(aClass) == bClass ||
-                baseTypeClassMap.get(bClass) == aClass;
     }
 
     /**
