@@ -1,23 +1,23 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.sun.istack.internal.NotNull;
+import com.tangzc.autotable.annotation.ColumnComment;
+import com.tangzc.autotable.annotation.ColumnDefault;
+import com.tangzc.autotable.annotation.ColumnType;
+import com.tangzc.autotable.annotation.Ignore;
+import com.tangzc.autotable.annotation.Index;
+import com.tangzc.autotable.annotation.IndexField;
+import com.tangzc.autotable.annotation.TableIndex;
+import com.tangzc.autotable.annotation.TableIndexes;
+import com.tangzc.autotable.annotation.enums.DefaultValueEnum;
+import com.tangzc.autotable.annotation.enums.IndexSortTypeEnum;
+import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
+import com.tangzc.autotable.annotation.mysql.MysqlCharset;
+import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.mpe.autotable.annotation.Column;
-import com.tangzc.mpe.autotable.annotation.ColumnComment;
-import com.tangzc.mpe.autotable.annotation.ColumnDefault;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
-import com.tangzc.mpe.autotable.annotation.ColumnType;
-import com.tangzc.mpe.autotable.annotation.Ignore;
-import com.tangzc.mpe.autotable.annotation.Index;
-import com.tangzc.mpe.autotable.annotation.IndexField;
-import com.tangzc.mpe.autotable.annotation.NotNull;
-import com.tangzc.mpe.autotable.annotation.TableIndex;
-import com.tangzc.mpe.autotable.annotation.TableIndexes;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
-import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
-import com.tangzc.mpe.autotable.annotation.enums.IndexSortTypeEnum;
-import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
-import com.tangzc.mpe.autotable.annotation.mysql.MysqlCharset;
-import com.tangzc.mpe.autotable.strategy.mysql.data.MysqlTypeConstant;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-@MysqlCharset(value = "utf8mb4")
+@MysqlCharset(charset = "utf8mb4", collate = "utf8mb4_0900_ai_ci")
 // @Table(comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 
@@ -42,12 +42,12 @@ public class MysqlTable {
     @Index
     @NotNull
     @ColumnDefault(type = DefaultValueEnum.EMPTY_STRING)
-    @ColumnType(length = 100)
+    @ColumnType(value = MysqlTypeConstant.VARCHAR, length = 100)
     @ColumnComment("用户名")
     private String username;
 
     @UniqueIndex
-    @ColumnType(length = 20)
+    @ColumnType(value = MysqlTypeConstant.VARCHAR, length = 20)
     @Column(comment = "电话", defaultValue = "+00 00000000", notNull = true)
     private String phone;
 

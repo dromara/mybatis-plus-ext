@@ -1,4 +1,4 @@
-package com.tangzc.mpe.autotable.strategy;
+package com.tangzc.mpe.autotable;
 
 import java.lang.reflect.Field;
 

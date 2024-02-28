@@ -17,5 +17,10 @@
             <artifactId>mybatis-plus-annotation</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>auto-table-annotation</artifactId>
+            <version>${auto-table.version}</version>
+        </dependency>
     </dependencies>
 </project>

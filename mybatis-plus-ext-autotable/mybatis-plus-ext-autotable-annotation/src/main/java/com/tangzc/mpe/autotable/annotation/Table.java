@@ -2,6 +2,7 @@ package com.tangzc.mpe.autotable.annotation;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.tangzc.autotable.annotation.TableComment;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
@@ -33,14 +34,8 @@ public @interface Table {
     /**
      * 表注释
      */
+    @AliasFor(annotation = TableComment.class, attribute = "value")
     String comment() default "";
-
-    /**
-     * 是否主表：在多个Bean对应同一个表的时候，指定以哪一个Bean为主，以此主Bean构建表
-     *
-     * @return 是否主表
-     */
-    boolean primary() default false;
 
     /**
      * 数据源名称

@@ -1,6 +1,7 @@
 package com.tangzc.mpe.autotable.annotation;
 
-import com.tangzc.mpe.autotable.annotation.enums.IndexTypeEnum;
+import com.tangzc.autotable.annotation.Index;
+import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;

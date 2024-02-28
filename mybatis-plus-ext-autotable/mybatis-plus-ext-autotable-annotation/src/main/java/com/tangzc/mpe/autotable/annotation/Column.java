@@ -1,7 +1,11 @@
 package com.tangzc.mpe.autotable.annotation;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.tangzc.mpe.autotable.annotation.enums.DefaultValueEnum;
+import com.tangzc.autotable.annotation.ColumnComment;
+import com.tangzc.autotable.annotation.ColumnDefault;
+import com.tangzc.autotable.annotation.ColumnNotNull;
+import com.tangzc.autotable.annotation.ColumnType;
+import com.tangzc.autotable.annotation.enums.DefaultValueEnum;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
@@ -20,8 +24,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableField
-@ColumnType
-@NotNull
+@ColumnType("")
+@ColumnNotNull
 @ColumnDefault
 @ColumnComment("")
 public @interface Column {
@@ -63,7 +67,7 @@ public @interface Column {
      *
      * @return 是否为可以为null，true是不可以，false是可以，默认为false
      */
-    @AliasFor(annotation = NotNull.class, attribute = "value")
+    @AliasFor(annotation = ColumnNotNull.class, attribute = "value")
     boolean notNull() default false;
 
     /**

@@ -23,6 +23,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.tangzc</groupId>
+            <artifactId>auto-table-spring-boot-starter</artifactId>
+            <version>${auto-table.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>

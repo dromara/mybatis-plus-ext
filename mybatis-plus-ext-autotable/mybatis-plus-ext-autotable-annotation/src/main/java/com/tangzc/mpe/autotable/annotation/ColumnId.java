@@ -2,6 +2,8 @@ package com.tangzc.mpe.autotable.annotation;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.tangzc.autotable.annotation.ColumnComment;
+import com.tangzc.autotable.annotation.ColumnType;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
@@ -19,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableId
-@ColumnType
+@ColumnType("")
 @ColumnComment("")
 public @interface ColumnId {
 

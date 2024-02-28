@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.flyway.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.tangzc.mpe.autotable.annotation.ColumnComment;
+import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
 import com.tangzc.mpe.autotable.annotation.Table;
 
