@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableId
-@ColumnType("")
+@ColumnType
 @ColumnComment("")
 public @interface ColumnId {
 

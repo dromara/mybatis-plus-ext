@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.autotable.annotation.IndexField;
 import com.tangzc.autotable.annotation.TableIndex;
@@ -7,6 +8,7 @@ import com.tangzc.autotable.annotation.TableIndexes;
 import com.tangzc.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import lombok.Data;
 
@@ -23,7 +25,8 @@ import lombok.Data;
         // 声明唯一联合索引，单独指定phone的索引排序方式，构建索引的时候indexFields中字段的顺序权重高于fields中的字段
         @TableIndex(name = "username_phone_uni_index", fields = {"username"}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE),
 })
-// @Table
+@Ignore
+@Table
 public class MysqlTable2 {
 
     @ColumnId

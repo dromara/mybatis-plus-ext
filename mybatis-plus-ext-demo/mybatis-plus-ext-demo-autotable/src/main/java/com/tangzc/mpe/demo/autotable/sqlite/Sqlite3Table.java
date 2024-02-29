@@ -16,6 +16,7 @@ import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import lombok.Data;
 
@@ -31,7 +32,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-// @Table(comment = "测试表", dsName = "my-sqlite")
+@Table(comment = "测试表", dsName = "my-sqlite")
 public class Sqlite3Table {
 
     @ColumnId(mode = IdType.AUTO, comment = "ID", type = "bigint")

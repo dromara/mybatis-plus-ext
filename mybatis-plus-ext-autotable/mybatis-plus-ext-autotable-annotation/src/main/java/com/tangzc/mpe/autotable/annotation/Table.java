@@ -21,6 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableName
+@TableComment("")
 public @interface Table {
 
     /**

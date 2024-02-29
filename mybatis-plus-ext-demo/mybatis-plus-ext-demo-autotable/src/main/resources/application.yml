@@ -37,7 +37,6 @@ mybatis-plus:
     db-config:
       table-prefix: my_
 
-mpe:
-  auto-table:
+auto-table:
 #    mode: create
-    auto-drop-column: true
+  auto-drop-column: true

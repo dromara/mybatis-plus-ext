@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableField
-@ColumnType("")
+@ColumnType
 @ColumnNotNull
 @ColumnDefault
 @ColumnComment("")

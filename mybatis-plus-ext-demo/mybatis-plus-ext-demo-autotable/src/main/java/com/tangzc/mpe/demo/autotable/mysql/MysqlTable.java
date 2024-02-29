@@ -17,6 +17,7 @@ import com.tangzc.autotable.annotation.mysql.MysqlCharset;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import lombok.Data;
 
@@ -33,7 +34,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @MysqlCharset(charset = "utf8mb4", collate = "utf8mb4_0900_ai_ci")
-// @Table(comment = "测试表", dsName = "my-mysql")
+@Table(comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 
     @ColumnId(mode = IdType.AUTO, comment = "ID", type = MysqlTypeConstant.BIGINT)
@@ -55,7 +56,7 @@ public class MysqlTable {
     @ColumnComment("年龄")
     private Integer age;
 
-    @Column(comment = "资产", length = 12, decimalLength = 6)
+    @Column(comment = "我的资产", length = 12, decimalLength = 6)
     private BigDecimal money;
 
     @ColumnType(MysqlTypeConstant.TEXT)

@@ -17,6 +17,7 @@ import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.autotable.annotation.pgsql.PgsqlTypeConstant;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.autotable.annotation.UniqueIndex;
 import lombok.Data;
 
@@ -32,7 +33,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-// @Table(comment = "测试表", dsName = "my-pgsql")
+@Table(comment = "测试表", dsName = "my-pgsql")
 public class PgsqlTable {
 
     @ColumnId(mode = IdType.AUTO, comment = "ID", type = PgsqlTypeConstant.INT8)
@@ -51,10 +52,10 @@ public class PgsqlTable {
 
     @UniqueIndex
     @ColumnType(value = MysqlTypeConstant.VARCHAR, length = 20)
-    @Column(comment = "电话", notNull = true)
+    @Column(comment = "电话", notNull = true, defaultValueType = DefaultValueEnum.EMPTY_STRING)
     private String phone;
 
-    @Column(comment = "资产", length = 12, decimalLength = 4)
+    @Column(comment = "资产", length = 12, decimalLength = 4, notNull = true)
     private BigDecimal money;
 
     @ColumnDefault("true")

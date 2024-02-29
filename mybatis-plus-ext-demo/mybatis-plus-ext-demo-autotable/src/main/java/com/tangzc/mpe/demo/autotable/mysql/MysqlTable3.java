@@ -7,13 +7,15 @@ import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.ColumnId;
+import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
 
 /**
  * @author don
  */
 @Data
-// @Table
+@Ignore
+@Table
 public class MysqlTable3 extends BaseTable {
 
     // 指定主键自增注释、类型（数据库数字类型可以跟java字符串类型相互转化）、长度

@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author don
  */
 @Data
+@Ignore
 @Table
 public class MysqlTable4 {
 
