@@ -5,18 +5,18 @@ import com.tangzc.mpe.demo.condition.daily.DailyRepository;
 import com.tangzc.mpe.demo.condition.user.User;
 import com.tangzc.mpe.demo.condition.user.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest(classes = DemoConditionApplication.class)
 class DemoConditionApplicationTests {
 
-    @Resource
+    @Autowired
     private UserRepository userRepository;
-    @Resource
+    @Autowired
     private DailyRepository dailyRepository;
 
     @Test

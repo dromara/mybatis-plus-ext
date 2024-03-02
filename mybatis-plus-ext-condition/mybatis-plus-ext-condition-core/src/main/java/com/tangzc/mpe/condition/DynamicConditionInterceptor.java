@@ -165,7 +165,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
                     }
                 }
                 Expression envCondition = CCJSqlParserUtil.parseCondExpression(condExpr);
-                if(where == null) {
+                if (where == null) {
                     where = envCondition;
                 } else {
                     where = new AndExpression(where, envCondition);

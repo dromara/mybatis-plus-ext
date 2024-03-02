@@ -10,6 +10,7 @@ import java.util.Collection;
 
 /**
  * 扩展了MP的ServiceImpl的功能，拦截了通过id更新数据的方法，对外发送通知
+ *
  * @param <M> mapper
  * @param <E> Entity
  * @author don
@@ -19,7 +20,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
     @Override
     public boolean updateById(E entity) {
         boolean result = super.updateById(entity);
-        if(result) {
+        if (result) {
             SpringContextUtil.publishEvent(EntityUpdateEvent.create(entity));
         }
         return result;
@@ -28,7 +29,7 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
     @Override
     public boolean updateBatchById(Collection<E> entityList, int batchSize) {
         boolean result = super.updateBatchById(entityList, batchSize);
-        if(result) {
+        if (result) {
             for (E entity : entityList) {
                 SpringContextUtil.publishEvent(EntityUpdateEvent.create(entity));
             }

@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 
 /**
  * 模仿{@link com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper}的实现逻辑，同时把{@link com.baomidou.mybatisplus.extension.conditions.query.ChainQuery}改为自定义的包装接口{@link BindChainQuery}
+ *
  * @author don
  */
 public class MyLambdaQueryChainWrapper<T> extends AbstractChainWrapper<T, SFunction<T, ?>, MyLambdaQueryChainWrapper<T>, LambdaQueryWrapper<T>>

@@ -11,4 +11,5 @@ public class TestTableRepository extends BaseRepository<TestTableMapper, TestTab
 }
 
 @Mapper
-interface TestTableMapper extends BaseMapper<TestTable> {}
+interface TestTableMapper extends BaseMapper<TestTable> {
+}

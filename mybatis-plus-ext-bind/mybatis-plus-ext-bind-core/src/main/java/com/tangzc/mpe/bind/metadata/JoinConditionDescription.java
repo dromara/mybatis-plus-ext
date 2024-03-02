@@ -1,7 +1,7 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

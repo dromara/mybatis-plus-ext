@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 /**
  * mybatis-plus部分配置
+ *
  * @author don
  */
 public class MybatisPlusProperties {

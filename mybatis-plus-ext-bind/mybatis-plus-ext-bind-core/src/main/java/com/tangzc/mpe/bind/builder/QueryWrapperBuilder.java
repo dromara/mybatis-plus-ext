@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * QueryWrapper构建工具
+ *
  * @author don
  */
 @NoArgsConstructor(staticName = "newInstance")

@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
 
 /**
  * 标志该字段为主键
+ *
  * @author don
  */
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})

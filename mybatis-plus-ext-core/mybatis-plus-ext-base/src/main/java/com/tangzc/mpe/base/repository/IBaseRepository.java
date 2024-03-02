@@ -5,6 +5,7 @@ import com.tangzc.mpe.base.wrapper.MyLambdaQueryChainWrapper;
 
 /**
  * 拓展lambdaQuery能力，集成了bind相关的查询能力
+ *
  * @param <E> Entity
  * @author don
  */

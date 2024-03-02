@@ -24,14 +24,14 @@ public class Deeper<BEAN> extends ArrayList<BEAN> {
     }
 
     public static <BEAN> Deeper<BEAN> with(BEAN bean) {
-        if(bean == null) {
+        if (bean == null) {
             return new Deeper<>(Collections.emptyList());
         }
         return new Deeper<>(Collections.singletonList(bean));
     }
 
     public static <BEAN> Deeper<BEAN> with(List<BEAN> beans) {
-        if(beans == null) {
+        if (beans == null) {
             return new Deeper<>(Collections.emptyList());
         }
         return new Deeper<>(beans);

@@ -11,6 +11,7 @@ import java.lang.annotation.Target;
 
 /**
  * 动态查询条件
+ *
  * @author don
  */
 @Inherited

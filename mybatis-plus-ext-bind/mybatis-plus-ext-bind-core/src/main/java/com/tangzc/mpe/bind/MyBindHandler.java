@@ -12,15 +12,17 @@ import java.util.List;
 public class MyBindHandler implements BindHandler {
 
     @Override
-    public <BEAN> void bindOn(BEAN bind, List<SFunction<BEAN, ?>> bindFields){
+    public <BEAN> void bindOn(BEAN bind, List<SFunction<BEAN, ?>> bindFields) {
         Binder.bindOn(bind, bindFields);
     }
+
     @Override
-    public <BEAN> void bindOn(List<BEAN> bind, List<SFunction<BEAN, ?>> bindFields){
+    public <BEAN> void bindOn(List<BEAN> bind, List<SFunction<BEAN, ?>> bindFields) {
         Binder.bindOn(bind, bindFields);
     }
+
     @Override
-    public <BEAN> void bindOn(IPage<BEAN> bind, List<SFunction<BEAN, ?>> bindFields){
+    public <BEAN> void bindOn(IPage<BEAN> bind, List<SFunction<BEAN, ?>> bindFields) {
         Binder.bindOn(bind, bindFields);
     }
 }

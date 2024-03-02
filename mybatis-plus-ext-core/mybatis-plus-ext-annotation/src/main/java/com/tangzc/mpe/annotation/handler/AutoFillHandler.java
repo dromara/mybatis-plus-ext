@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 
 /**
  * 自动填充的接口
+ *
  * @author don
  */
 @FunctionalInterface

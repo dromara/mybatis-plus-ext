@@ -89,7 +89,8 @@ public class BeanClassUtil {
 
     /**
      * 查找类下指定的字段，如果当前类没有，那就去它的父类寻找
-     * @param clazz 类
+     *
+     * @param clazz     类
      * @param fieldName 字段名
      * @return 字段
      */

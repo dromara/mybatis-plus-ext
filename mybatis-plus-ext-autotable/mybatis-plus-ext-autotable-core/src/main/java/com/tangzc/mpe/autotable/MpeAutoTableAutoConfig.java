@@ -18,10 +18,12 @@ public class MpeAutoTableAutoConfig {
     public AutoTableOrmFrameAdapter mybatisPlusAdapter() {
         return new MybatisPlusAdapter();
     }
+
     @Bean
     public DynamicDatasourceHandler dynamicDatasourceHandler() {
         return new DynamicDatasourceHandler();
     }
+
     @Bean
     public SpringContextUtil springContextUtil() {
         return new SpringContextUtil();

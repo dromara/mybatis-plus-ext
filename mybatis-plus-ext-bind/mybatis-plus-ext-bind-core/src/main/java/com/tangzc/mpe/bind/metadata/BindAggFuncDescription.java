@@ -69,7 +69,8 @@ public class BindAggFuncDescription {
     public BindAggFuncDescription(Field field, Method setMethod, BindAggFunc bindFunction,
                                   Class<?> entityClass, List<JoinConditionDescription> conditions) {
         this.field = field;
-        this.fieldClass = BeanClassUtil.getFieldRealClass(field);;
+        this.fieldClass = BeanClassUtil.getFieldRealClass(field);
+        ;
         this.setMethod = setMethod;
         this.bindAnnotation = bindFunction;
         this.entityClass = entityClass;

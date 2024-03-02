@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationEvent;
 
 /**
  * 初始化扫描Mapper事件
+ *
  * @author don
  */
 @Getter

@@ -1,19 +1,18 @@
 package com.tangzc.mpe.demo.dict;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
  * Hello world!
- *
  */
 @SpringBootTest
 public class TestApp {
 
-    @Resource
+    @Autowired
     private SysUserRepository sysUserRepository;
 
     @Test

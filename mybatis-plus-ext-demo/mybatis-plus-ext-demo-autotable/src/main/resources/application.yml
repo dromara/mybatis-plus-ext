@@ -26,17 +26,17 @@ spring:
         my-pgsql:
           driver-class-name: org.postgresql.Driver
           username: postgres
-#          password: 12345678
+          #          password: 12345678
           url: jdbc:postgresql://127.0.0.1:5432/mybatis-plus-ext
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    map-underscore-to-camel-case: false
+  #    map-underscore-to-camel-case: false
   global-config:
     db-config:
       table-prefix: my_
 
 auto-table:
-#    mode: create
+  #    mode: create
   auto-drop-column: true

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 public class DailyRepository extends BaseRepository<DailyMapper, Daily> {
 
 }
+
 @Mapper
 interface DailyMapper extends BaseMapper<Daily> {
 }

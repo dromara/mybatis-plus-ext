@@ -2,18 +2,17 @@ package com.tangzc.mpe.demo.ds;
 
 import com.tangzc.autotable.springboot.EnableAutoTable;
 import com.tangzc.mpe.demo.ds.repository.TestTableRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
-import javax.annotation.Resource;
-
 @EnableAutoTable
 @SpringBootApplication
 public class DemoDsApplication {
 
-    @Resource
+    @Autowired
     private TestTableRepository testTableRepository;
 
     public static void main(String[] args) {

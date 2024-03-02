@@ -20,6 +20,7 @@ public @interface DataSource {
      * 数据来源的Entity class
      */
     Class<?> source() default Void.class;
+
     /**
      * 数据来源的Entity class 的全路径名称（包名.类名）
      */

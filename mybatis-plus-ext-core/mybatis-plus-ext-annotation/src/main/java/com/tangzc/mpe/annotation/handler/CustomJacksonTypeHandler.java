@@ -128,7 +128,7 @@ public class CustomJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
         mapObjectMapper.setDefaultTyping(mapTyper);
     }
 
-    @JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@id")
     @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY,
             getterVisibility = JsonAutoDetect.Visibility.PUBLIC_ONLY,
             setterVisibility = JsonAutoDetect.Visibility.NONE,

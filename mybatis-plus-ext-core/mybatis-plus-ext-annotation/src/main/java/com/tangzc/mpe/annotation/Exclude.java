@@ -12,12 +12,13 @@ import java.lang.annotation.Target;
  * 排除某个字段，不被MybatisPlus管理
  * <p>区别自动建表逻辑中的com.tangzc.mpe.autotable.annotation.Ignore</p>
  * <p>@Exclude仅仅排除了数组操作，@Ignore不仅排除了数据操作，且排序数据表维护操作</p>
+ *
  * @author don
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@TableField(exist=false)
+@TableField(exist = false)
 public @interface Exclude {
 
 }

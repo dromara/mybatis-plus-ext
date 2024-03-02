@@ -319,9 +319,9 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         @EventListener
         public void onApplicationEvent(ContextRefreshedEvent event) {
 
-            if(!(metaObjectHandler instanceof AutoFillMetaObjectHandler)) {
+            if (!(metaObjectHandler instanceof AutoFillMetaObjectHandler)) {
                 log.warn("由于本地已经实现了{}，导致{}未生效，@InsertOptionDate、@InsertOptionUser、@InsertUpdateOptionDate、" +
-                        "@InsertUpdateOptionUser、@DefaultValue...等注解将会无法工作，请注意!",
+                                "@InsertUpdateOptionUser、@DefaultValue...等注解将会无法工作，请注意!",
                         MetaObjectHandler.class.getName(), AutoFillMetaObjectHandler.class.getName());
             }
         }

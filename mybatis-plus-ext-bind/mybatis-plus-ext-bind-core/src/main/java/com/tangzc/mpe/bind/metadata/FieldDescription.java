@@ -64,7 +64,8 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
                             BIND_ANNOTATION bindAnnotation, Class<?> entityClass,
                             String customCondition, List<OrderByDescription> orderBys, String last) {
         this.field = field;
-        this.fieldClass = BeanClassUtil.getFieldRealClass(field);;
+        this.fieldClass = BeanClassUtil.getFieldRealClass(field);
+        ;
         this.setMethod = setMethod;
         this.isCollection = isCollection;
         this.bindAnnotation = bindAnnotation;
@@ -85,6 +86,7 @@ public abstract class FieldDescription<BIND_ANNOTATION extends Annotation, CONDI
 
     /**
      * 关联条件的唯一签名，用于对相同条件的关联做合并
+     *
      * @author don
      */
     @Getter

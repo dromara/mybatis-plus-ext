@@ -7,11 +7,11 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -21,7 +21,7 @@ import java.util.List;
 //@Component
 public class MapperScanner {
 
-    @Resource
+    @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     @EventListener

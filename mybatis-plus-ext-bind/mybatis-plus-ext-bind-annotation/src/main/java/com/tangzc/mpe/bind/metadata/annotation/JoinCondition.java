@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * 绑定条件查询的注解
+ *
  * @author don
  */
 @Inherited

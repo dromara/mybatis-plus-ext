@@ -6,15 +6,15 @@ import com.tangzc.mpe.bind.Binder;
 import com.tangzc.mpe.demo.bind.user.User;
 import com.tangzc.mpe.demo.bind.user.UserMapper;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.util.List;
 
-@SpringBootTest(classes= DemoBindApplication.class)
+@SpringBootTest(classes = DemoBindApplication.class)
 public class MyTest {
 
-    @Resource
+    @Autowired
     private UserMapper userMapper;
 
     @Test

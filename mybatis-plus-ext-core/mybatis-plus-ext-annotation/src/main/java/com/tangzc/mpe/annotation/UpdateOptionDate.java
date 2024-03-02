@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * SQL更新的时候，自动填充当前时间
+ *
  * @author don
  */
 @Documented

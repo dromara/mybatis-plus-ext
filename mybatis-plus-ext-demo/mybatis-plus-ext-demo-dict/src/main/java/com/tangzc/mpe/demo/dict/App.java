@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Hello world!
- *
  */
 @EnableAutoTable
 @SpringBootApplication

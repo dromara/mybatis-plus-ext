@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 /**
  * 自动填充操作时间，通常用不到，直接使用衍生的注解 {@link InsertOptionDate} 或者 {@link UpdateOptionDate} 或者 {@link InsertUpdateOptionDate}
+ *
  * @author don
  */
 @Documented

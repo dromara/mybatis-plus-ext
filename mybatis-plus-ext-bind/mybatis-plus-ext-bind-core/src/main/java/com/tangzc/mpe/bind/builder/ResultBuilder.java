@@ -68,7 +68,7 @@ public class ResultBuilder<BEAN, ENTITY> {
 
         List<ENTITY> entities = new ArrayList<>();
         // 存在last sql的情况下，目前发现的就是limit 1，而limit 1这种情况无法合并查询，需要单独查询，然后合并结果
-        if(StringUtils.hasText(lastSql)) {
+        if (StringUtils.hasText(lastSql)) {
             for (BEAN bean : beans) {
                 List<BEAN> beanList = Collections.singletonList(bean);
                 entities.addAll(listEntitiesByCondition(beanList));

@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 表名缓存
+ *
  * @author don
  */
 public class EntityTableNameManager {

@@ -1,7 +1,7 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
+import com.tangzc.mpe.magic.TableColumnNameUtil;
 import lombok.Getter;
 
 import java.lang.reflect.Field;

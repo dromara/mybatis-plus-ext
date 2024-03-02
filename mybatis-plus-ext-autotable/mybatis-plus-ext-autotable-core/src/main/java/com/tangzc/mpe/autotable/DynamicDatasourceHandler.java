@@ -8,9 +8,8 @@ import com.tangzc.autotable.core.dynamicds.IDataSourceHandler;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-
-import javax.annotation.Resource;
 
 /**
  * 多数据源模式
@@ -19,7 +18,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 public class DynamicDatasourceHandler implements IDataSourceHandler<String> {
-    @Resource
+    @Autowired
     private DynamicDataSourceProperties dynamicDataSourceProperties;
 
     @Override

@@ -1,9 +1,9 @@
 package com.tangzc.mpe.demo.condition;
 
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class FilterByFixedUser implements IDynamicConditionHandler {
 
-    @Resource
+    @Autowired
     private HttpServletRequest request;
 
     @Override
