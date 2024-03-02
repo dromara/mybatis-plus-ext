@@ -1,7 +1,6 @@
 package com.tangzc.mpe.demo.autotable.sqlite;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.sun.istack.internal.NotNull;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.ColumnDefault;
 import com.tangzc.autotable.annotation.ColumnType;
@@ -39,7 +38,6 @@ public class Sqlite3Table {
     private String id;
 
     @Index
-    @NotNull
     @ColumnDefault(type = DefaultValueEnum.EMPTY_STRING)
     @ColumnType(value = MysqlTypeConstant.VARCHAR, length = 120)
     @ColumnComment("用户名")

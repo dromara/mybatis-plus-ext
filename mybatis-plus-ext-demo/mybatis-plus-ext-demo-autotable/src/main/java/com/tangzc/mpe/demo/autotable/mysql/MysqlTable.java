@@ -1,7 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.sun.istack.internal.NotNull;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.ColumnDefault;
 import com.tangzc.autotable.annotation.ColumnType;
@@ -41,7 +40,6 @@ public class MysqlTable {
     private String id;
 
     @Index
-    @NotNull
     @ColumnDefault(type = DefaultValueEnum.EMPTY_STRING)
     @ColumnType(value = MysqlTypeConstant.VARCHAR, length = 100)
     @ColumnComment("用户名")
