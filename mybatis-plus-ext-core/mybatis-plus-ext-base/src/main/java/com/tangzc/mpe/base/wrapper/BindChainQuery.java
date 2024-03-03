@@ -87,7 +87,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
         try {
             bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
         } catch (Exception ignore) {
-            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
         }
         if (bindHandler != null) {
             bindHandler.bindOn(list, filedList);
@@ -160,7 +160,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
         try {
             bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
         } catch (Exception ignore) {
-            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
         }
         if (bindHandler != null) {
             bindHandler.bindOn(one, filedList);
@@ -289,7 +289,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
         try {
             bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
         } catch (Exception ignore) {
-            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
         }
         if (bindHandler != null) {
             bindHandler.bindOn(pageRet, filedList);
