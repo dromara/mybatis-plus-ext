@@ -21,12 +21,17 @@
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-magic</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-core</artifactId>
+            <version>${mybatis-plus.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
