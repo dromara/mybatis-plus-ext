@@ -20,6 +20,6 @@ public class Daily {
     private String content;
     @TableField("submit")
     private String submitter;
-    @BindEntity(conditions = @JoinCondition(selfField = "submitter", joinField = "name"), last = "limit 1")
+    @BindEntity(conditions = @JoinCondition(selfField = "submitter", joinField = "id"), last = "limit 1")
     private User submitterUser;
 }

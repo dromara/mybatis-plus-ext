@@ -9,6 +9,8 @@ import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 /**
@@ -17,7 +19,15 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
  * @author don
  */
 @Slf4j
+@ConditionalOnClass(DynamicDataSourceProperties.class)
+@ConditionalOnProperty(
+        prefix = DynamicDataSourceProperties.PREFIX,
+        name = {"enabled"},
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class DynamicDatasourceHandler implements IDataSourceHandler<String> {
+
     @Autowired
     private DynamicDataSourceProperties dynamicDataSourceProperties;
 
