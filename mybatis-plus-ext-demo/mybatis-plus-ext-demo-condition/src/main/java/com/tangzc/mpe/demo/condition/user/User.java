@@ -4,7 +4,7 @@ import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.annotation.InsertOptionDate;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
-import com.tangzc.mpe.base.BaseLogicEntity;
+import com.tangzc.mpe.base.entity.BaseLogicEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

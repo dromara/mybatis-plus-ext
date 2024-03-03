@@ -18,6 +18,12 @@
 
         <dependency>
             <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-annotation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-magic</artifactId>
             <version>${project.version}</version>
         </dependency>

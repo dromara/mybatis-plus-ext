@@ -1,21 +1,15 @@
-package com.tangzc.mpe;
+package com.tangzc.mpe.base;
 
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
-import com.tangzc.mpe.autotable.FieldTypeHandler;
-import com.tangzc.mpe.base.AutoFillMetaObjectHandler;
-import com.tangzc.mpe.base.BaseEntity;
+import com.tangzc.mpe.base.entity.BaseEntity;
+import com.tangzc.mpe.annotation.handler.FieldDateTypeHandler;
 
 import java.lang.reflect.Field;
 
 /**
  * @author don
  */
-public class BaseEntityFieldTypeHandler implements FieldTypeHandler, AutoFillMetaObjectHandler.FieldDateTypeHandler {
-
-    @Override
-    public Class<?> getFieldType(Class<?> entityClass, Field field) {
-        return getFiledTypeClass(entityClass, field);
-    }
+public class BaseEntityFieldTypeHandler implements FieldDateTypeHandler {
 
     @Override
     public Class<?> getDateType(Class<?> clazz, Field field) {

@@ -7,6 +7,7 @@ import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
+import com.tangzc.mpe.annotation.handler.FieldDateTypeHandler;
 import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -300,11 +301,6 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
             return null;
         }
-    }
-
-    @FunctionalInterface
-    public static interface FieldDateTypeHandler {
-        Class<?> getDateType(Class<?> clazz, Field field);
     }
 
     /**

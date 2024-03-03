@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.autotable.core.AutoTableOrmFrameAdapter;
+import com.tangzc.mpe.annotation.handler.FieldDateTypeHandler;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
     private static List<IgnoreExt> ignoreExts;
 
-    private static List<FieldTypeHandler> fieldTypeHandlers;
+    private static List<FieldDateTypeHandler> fieldDateTypeHandlers;
 
     @Override
     public boolean isIgnoreField(Field field, Class<?> clazz) {
@@ -94,11 +95,11 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
         }
 
         // 自定义获取字段的类型
-        if (fieldTypeHandlers == null) {
-            fieldTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldTypeHandler.class);
+        if (fieldDateTypeHandlers == null) {
+            fieldDateTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldDateTypeHandler.class);
         }
-        Class<?> fieldType = fieldTypeHandlers.stream()
-                .map(handler -> handler.getFieldType(clazz, field))
+        Class<?> fieldType = fieldDateTypeHandlers.stream()
+                .map(handler -> handler.getDateType(clazz, field))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);

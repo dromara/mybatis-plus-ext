@@ -19,6 +19,12 @@
         </dependency>
         <dependency>
             <groupId>com.tangzc</groupId>
+            <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.tangzc</groupId>
             <artifactId>mybatis-plus-ext-magic</artifactId>
             <version>${project.version}</version>
         </dependency>

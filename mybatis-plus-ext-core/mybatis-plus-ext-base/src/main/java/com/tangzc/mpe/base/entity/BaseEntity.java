@@ -1,4 +1,4 @@
-package com.tangzc.mpe.base;
+package com.tangzc.mpe.base.entity;
 
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.mpe.annotation.InsertOptionDate;

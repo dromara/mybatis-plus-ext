@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.query.ChainQuery;
 import com.tangzc.mpe.base.ext.BindHandler;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +21,8 @@ import java.util.Optional;
  * @author don
  */
 public interface BindChainQuery<T> extends ChainQuery<T> {
+
+    Logger log = LoggerFactory.getLogger(BindChainQuery.class);
 
     /**
      * 获取集合
@@ -79,7 +83,15 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default List<T> bindList(List<SFunction<T, ?>> filedList) {
         List<T> list = list();
-        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(list, filedList);
+        BindHandler bindHandler = null;
+        try {
+            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
+        } catch (Exception ignore) {
+            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+        }
+        if (bindHandler != null) {
+            bindHandler.bindOn(list, filedList);
+        }
         return list;
     }
 
@@ -144,7 +156,15 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default T bindOne(List<SFunction<T, ?>> filedList) {
         T one = one();
-        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(one, filedList);
+        BindHandler bindHandler = null;
+        try {
+            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
+        } catch (Exception ignore) {
+            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+        }
+        if (bindHandler != null) {
+            bindHandler.bindOn(one, filedList);
+        }
         return one;
     }
 
@@ -265,7 +285,15 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default <E extends IPage<T>> E bindPage(E page, List<SFunction<T, ?>> filedList) {
         E pageRet = page(page);
-        SpringContextUtil.getBeanOfType(BindHandler.class).bindOn(pageRet, filedList);
+        BindHandler bindHandler = null;
+        try {
+            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
+        } catch (Exception ignore) {
+            log.error("没有找到BindHandler的实现，无法实现数据关联查询");
+        }
+        if (bindHandler != null) {
+            bindHandler.bindOn(pageRet, filedList);
+        }
         return pageRet;
     }
 

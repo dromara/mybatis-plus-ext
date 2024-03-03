@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>mybatis-plus-ext-boot-starter</artifactId>
+    <artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
 
     <dependencies>
         <dependency>
@@ -57,7 +57,7 @@
         <!-- mybatis plus -->
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
