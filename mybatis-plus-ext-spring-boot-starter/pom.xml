@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-        <version>3.5.5-EXT561</version>
+        <version>3.5.5-EXT600-beta</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -55,5 +55,15 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- 生成MD5校验文件 -->
+            <plugin>
+                <groupId>net.ju-n.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
