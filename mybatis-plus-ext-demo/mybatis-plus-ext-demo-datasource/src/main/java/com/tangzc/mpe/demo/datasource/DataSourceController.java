@@ -18,6 +18,18 @@ public class DataSourceController {
     @Autowired
     private SourceObjectRepository sourceObjectRepository;
 
+    @GetMapping("init")
+    public void init() {
+        SourceObject sourceObject = new SourceObject();
+        sourceObject.setName("source");
+        sourceObjectRepository.save(sourceObject);
+
+        TargetObject targetObject = new TargetObject();
+        targetObject.setName("target");
+        targetObject.setSourceId(sourceObject.getId());
+        targetObjectRepository.save(targetObject);
+    }
+
     @GetMapping("list")
     public List<TargetObject> list() {
 
