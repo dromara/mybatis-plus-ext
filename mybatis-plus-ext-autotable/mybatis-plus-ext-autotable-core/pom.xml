@@ -33,20 +33,23 @@
             <artifactId>auto-table-spring-boot-starter</artifactId>
             <version>${auto-table.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- mybatis-plus拓展 数据库操作框架 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <artifactId>dynamic-datasource-spring-boot-common</artifactId>
             <version>${dynamic-datasource.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot-autoconfigure</artifactId>
+            <version>${mybatis-plus.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-core</artifactId>
+            <version>${mybatis-plus.version}</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
