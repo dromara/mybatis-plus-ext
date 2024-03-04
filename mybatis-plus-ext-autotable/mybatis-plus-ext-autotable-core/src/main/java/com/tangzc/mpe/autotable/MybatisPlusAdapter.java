@@ -12,7 +12,6 @@ import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
 import com.tangzc.mpe.magic.TableColumnNameUtil;
 import com.tangzc.mpe.magic.util.EnumUtil;
-import com.tangzc.mpe.magic.util.SpringContextUtil;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
@@ -28,9 +27,14 @@ import java.util.stream.Collectors;
  * @author don
  */
 public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
-    private static List<IgnoreExt> ignoreExts;
+    private final List<IgnoreExt> ignoreExts;
 
-    private static List<FieldDateTypeHandler> fieldDateTypeHandlers;
+    private final List<FieldDateTypeHandler> fieldDateTypeHandlers;
+
+    public MybatisPlusAdapter(List<IgnoreExt> ignoreExts, List<FieldDateTypeHandler> fieldDateTypeHandlers) {
+        this.ignoreExts = ignoreExts;
+        this.fieldDateTypeHandlers = fieldDateTypeHandlers;
+    }
 
     @Override
     public boolean isIgnoreField(Field field, Class<?> clazz) {
@@ -48,9 +52,6 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
         }
 
         // 外部框架检测钩子
-        if (ignoreExts == null) {
-            ignoreExts = SpringContextUtil.getBeansOfTypeList(IgnoreExt.class);
-        }
         for (IgnoreExt ignoreExt : ignoreExts) {
             boolean isIgnoreField = ignoreExt.isIgnoreField(field, clazz);
             if (isIgnoreField) {
@@ -95,9 +96,6 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
         }
 
         // 自定义获取字段的类型
-        if (fieldDateTypeHandlers == null) {
-            fieldDateTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldDateTypeHandler.class);
-        }
         Class<?> fieldType = fieldDateTypeHandlers.stream()
                 .map(handler -> handler.getDateType(clazz, field))
                 .filter(Objects::nonNull)
