@@ -23,6 +23,10 @@
 
 <p align="center"><img src="https://s2.loli.net/2022/04/02/Sc6uMsaKNY9nWBE.png" alt="img" width="200px" /></p>
 
+## 关联推荐
+
+<a style="font-size:20px" href="https://autotable.tangzc.com/" target="_blank">AutoTable</a>
+
 ## 官方教程
 
 <a style="font-size:20px" href="https://www.yuque.com/dontang/codewiki/gzqgd8" target="_blank">Mybatis-Plus-Ext教程</a>
