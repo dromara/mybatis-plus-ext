@@ -136,10 +136,11 @@ public class FieldDescriptionBuilder {
         Method joinFieldGetMethod = BeanClassUtil.getReadMethod(joinClazz, midCondition.joinField());
         Method selfMidFieldGetMethod = BeanClassUtil.getReadMethod(midCondition.midEntity(), midCondition.selfMidField());
         Method joinMidFieldGetMethod = BeanClassUtil.getReadMethod(midCondition.midEntity(), midCondition.joinMidField());
+        String customCondition = midCondition.customCondition();
         return new MidConditionDescription(selfField, joinField,
                 selfFieldGetMethod, joinFieldGetMethod,
                 midCondition.midEntity(), selfMidField,
-                selfMidFieldGetMethod, joinMidField, joinMidFieldGetMethod);
+                selfMidFieldGetMethod, joinMidField, joinMidFieldGetMethod, customCondition);
     }
 
     private static List<OrderByDescription> getOrderByList(Class<?> entityClass, JoinOrderBy[] orderBy) {

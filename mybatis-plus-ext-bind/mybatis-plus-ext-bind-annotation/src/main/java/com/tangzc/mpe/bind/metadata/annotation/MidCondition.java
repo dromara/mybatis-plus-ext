@@ -40,4 +40,9 @@ public @interface MidCondition {
      * 被关联Entity的关联字段，中间表字段名
      */
     String joinMidField();
+
+    /**
+     * 中间表自定义条件
+     */
+    String customCondition() default "";
 }

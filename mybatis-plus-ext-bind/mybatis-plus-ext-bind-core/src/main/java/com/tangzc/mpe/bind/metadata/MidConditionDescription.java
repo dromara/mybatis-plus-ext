@@ -54,7 +54,9 @@ public class MidConditionDescription {
      */
     protected final Method joinMidFieldGetMethod;
 
-    public MidConditionDescription(Field selfField, Field joinField, Method selfFieldGetMethod, Method joinFieldGetMethod, Class<?> midEntity, Field selfMidField, Method selfMidFieldGetMethod, Field joinMidField, Method joinMidFieldGetMethod) {
+    private final String customCondition;
+
+    public MidConditionDescription(Field selfField, Field joinField, Method selfFieldGetMethod, Method joinFieldGetMethod, Class<?> midEntity, Field selfMidField, Method selfMidFieldGetMethod, Field joinMidField, Method joinMidFieldGetMethod, String customCondition) {
         this.selfField = selfField;
         this.joinField = joinField;
         this.selfFieldGetMethod = selfFieldGetMethod;
@@ -64,6 +66,7 @@ public class MidConditionDescription {
         this.selfMidFieldGetMethod = selfMidFieldGetMethod;
         this.joinMidField = joinMidField;
         this.joinMidFieldGetMethod = joinMidFieldGetMethod;
+        this.customCondition = customCondition;
     }
 
     @Override
@@ -79,17 +82,18 @@ public class MidConditionDescription {
                 getSelfFieldName().equals(condition.getSelfFieldName()) &&
                 getJoinFieldName().equals(condition.getJoinFieldName()) &&
                 getSelfMidFieldName().equals(condition.getSelfMidFieldName()) &&
-                getJoinMidFieldName().equals(condition.getJoinMidFieldName());
+                getJoinMidFieldName().equals(condition.getJoinMidFieldName()) &&
+                getCustomCondition().equals(condition.getCustomCondition());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(midEntity, getSelfFieldName(), getJoinFieldName(), getSelfMidFieldName(), getJoinMidFieldName());
+        return Objects.hash(midEntity, getSelfFieldName(), getJoinFieldName(), getSelfMidFieldName(), getJoinMidFieldName(), getCustomCondition());
     }
 
     @Override
     public String toString() {
-        return midEntity.getName() + "|" + getSelfFieldName() + "|" + getJoinFieldName() + "|" + getSelfMidFieldName() + "|" + getJoinMidFieldName();
+        return midEntity.getName() + "|" + getSelfFieldName() + "|" + getJoinFieldName() + "|" + getSelfMidFieldName() + "|" + getJoinMidFieldName() + "|" + getCustomCondition();
     }
 
     public String getSelfFieldName() {

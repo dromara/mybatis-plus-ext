@@ -167,14 +167,15 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
         queryWrapper.select(joinMidColumnName + " as " + midConditionDescription.getJoinMidFieldName(),
                 selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
         queryWrapper.in(selfMidColumnName, selfFieldVals);
+        if(StringUtils.hasText(midConditionDescription.getCustomCondition())) {
+            queryWrapper.apply(midConditionDescription.getCustomCondition());
+        }
 
         Class<MID> entity = (Class<MID>) midConditionDescription.getMidEntity();
         return MapperScanner.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
     }
 
-    private void fullDataToBeanField(BEAN bean,
-                                     FieldDescription<?, MidConditionDescription> fieldAnnotation,
-                                     List<?> dataList) {
+    private void fullDataToBeanField(BEAN bean, FieldDescription<?, MidConditionDescription> fieldAnnotation, List<?> dataList) {
 
         Object val;
 
