@@ -7,7 +7,7 @@
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
-    <version>3.5.5-EXT600-beta</version>
+    <version>3.5.5-EXT601-beta</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>mybatis-plus框架的拓展包，基于spring
@@ -39,7 +39,7 @@
     <properties>
         <spring-boot.version>2.7.15</spring-boot.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
-        <auto-table.version>1.2.0</auto-table.version>
+        <auto-table.version>1.2.2</auto-table.version>
         <dynamic-datasource.version>4.2.0</dynamic-datasource.version>
 
         <!-- java版本 -->
