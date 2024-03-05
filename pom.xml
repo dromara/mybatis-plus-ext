@@ -67,7 +67,6 @@
         <module>mybatis-plus-ext-core</module>
         <module>mybatis-plus-ext-condition</module>
         <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-demo</module>
         <module>mybatis-plus-ext-spring-boot-starter</module>
         <module>mybatis-plus-ext-spring-boot3-starter</module>
     </modules>
