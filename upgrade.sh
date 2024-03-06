@@ -12,9 +12,11 @@ echo "开始打tag：${tagName}"
 git rev-parse --verify ${tagName} >/dev/null 2>&1
 if [ $? -eq 0 ]; then
     git tag -d ${tagName}
-    echo "${tagName}标签已删除"
-else
-    echo "${tagName}标签不存在"
+    echo "本地标签${tagName}已删除"
+fi
+if git ls-remote --tags | grep -q "refs/tags/${tagName}"; then
+    git push origin --delete ${tagName}
+    echo "远程标签${tagName}已删除"
 fi
 echo "新建标签：${tagName}"
 git tag -a ${tagName} -m "版本号：${version}"
