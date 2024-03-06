@@ -13,17 +13,17 @@ import java.lang.annotation.Target;
 public @interface AutoDefine {
 
     /**
-     * 包含实体所有字段的类的完整名称
+     * 自定义完整的Define名称，指定后，将会替换掉默认生成策略
      */
     String value() default "";
 
     /**
-     * 包含实体所有字段的类的名称后缀
+     * 生成的Define类的后缀，前半部分固定为Entity的名字，默认：Define
      */
     String suffix() default "";
 
     /**
-     * 包含实体所有字段的类的包名，默认与Entity包名一致
+     * 生成Define所在的包名，默认与Entity包名一致
      */
     String packageName() default "";
 }
