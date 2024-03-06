@@ -2,6 +2,8 @@ package com.tangzc.mpe.annotation;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.tangzc.mpe.annotation.handler.AutoFillHandler;
+import com.tangzc.mpe.annotation.handler.DefaultAuditHandler;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
@@ -11,28 +13,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * SQL插入、更新的时候，自动填充当前时间
- * <p>已废弃，使用{@link com.tangzc.mpe.annotation.InsertUpdateFillTime}替换
- *
- * @author don
+ * SQL插入、更新的时候，自动填充自定义值
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @TableField(fill = FieldFill.INSERT_UPDATE)
-@OptionDate
-@Deprecated
-public @interface InsertUpdateOptionDate {
+@FillData(DefaultAuditHandler.class)
+public @interface InsertUpdateFillData {
 
     /**
-     * 如果字段类型为String，需要制定字符串格式
+     * 可以自定义信息生成方式
      */
-    @AliasFor(annotation = OptionDate.class, attribute = "format")
-    String format() default "yyyy-MM-dd HH:mm:ss";
+    @AliasFor(annotation = FillData.class, attribute = "value")
+    Class<? extends AutoFillHandler> value();
 
     /**
      * 若对象上存在值，是否覆盖
      */
-    @AliasFor(annotation = OptionDate.class, attribute = "override")
+    @AliasFor(annotation = FillData.class, attribute = "override")
     boolean override() default true;
 }

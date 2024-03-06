@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * SQL插入的时候，自动填充当前时间
- *
+ * <p>已废弃，使用{@link com.tangzc.mpe.annotation.InsertFillTime}替换
  * @author don
  */
 @Documented
@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @TableField(fill = FieldFill.INSERT)
 @OptionDate
+@Deprecated
 public @interface InsertOptionDate {
 
     /**

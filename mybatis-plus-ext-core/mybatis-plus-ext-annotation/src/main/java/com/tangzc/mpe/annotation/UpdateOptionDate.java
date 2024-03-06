@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * SQL更新的时候，自动填充当前时间
+ * <p>已废弃，使用{@link com.tangzc.mpe.annotation.UpdateFillTime}替换
  *
  * @author don
  */
@@ -20,6 +21,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @TableField(fill = FieldFill.UPDATE)
 @OptionDate
+@Deprecated
 public @interface UpdateOptionDate {
 
     /**

@@ -1,10 +1,9 @@
 package com.tangzc.mpe.base.entity;
 
 import com.tangzc.autotable.annotation.ColumnComment;
-import com.tangzc.mpe.annotation.InsertOptionDate;
-import com.tangzc.mpe.annotation.InsertOptionUser;
-import com.tangzc.mpe.annotation.InsertUpdateOptionDate;
-import com.tangzc.mpe.annotation.InsertUpdateOptionUser;
+import com.tangzc.mpe.annotation.InsertFillData;
+import com.tangzc.mpe.annotation.InsertFillTime;
+import com.tangzc.mpe.annotation.InsertUpdateFillTime;
 import com.tangzc.mpe.annotation.handler.IOptionByAutoFillHandler;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,16 +17,16 @@ import java.io.Serializable;
 @Setter
 public class BaseEntity<ID_TYPE extends Serializable, TIME_TYPE> {
 
-    @InsertOptionUser(IOptionByAutoFillHandler.class)
+    @InsertFillData(IOptionByAutoFillHandler.class)
     @ColumnComment("创建人")
     protected ID_TYPE createBy;
-    @InsertUpdateOptionUser(IOptionByAutoFillHandler.class)
+    @InsertFillData(IOptionByAutoFillHandler.class)
     @ColumnComment("最后更新人")
     protected ID_TYPE updateBy;
-    @InsertOptionDate
+    @InsertFillTime
     @ColumnComment("创建时间")
     protected TIME_TYPE createTime;
-    @InsertUpdateOptionDate
+    @InsertUpdateFillTime
     @ColumnComment("最后更新时间")
     protected TIME_TYPE updateTime;
 }

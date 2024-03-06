@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.condition.daily;
 
 import com.tangzc.autotable.annotation.ColumnComment;
-import com.tangzc.mpe.annotation.InsertOptionUser;
+import com.tangzc.mpe.annotation.InsertFillData;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.demo.condition.FilterByCurrentUser;
@@ -19,7 +19,7 @@ public class Daily {
     @ColumnComment("内容")
     private String content;
     @DynamicCondition(FilterByCurrentUser.class)
-    @InsertOptionUser(UserIdAutoFillHandler.class)
+    @InsertFillData(UserIdAutoFillHandler.class)
     @ColumnComment("提交人")
     private int submitter;
 }

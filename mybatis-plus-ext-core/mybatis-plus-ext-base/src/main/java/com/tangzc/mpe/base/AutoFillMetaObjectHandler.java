@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.tangzc.mpe.annotation.DefaultValue;
+import com.tangzc.mpe.annotation.FillData;
+import com.tangzc.mpe.annotation.FillTime;
 import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
@@ -116,17 +118,31 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     private void setOptionUser(MetaObject metaObject, Object object, Class<?> clazz, Field field) {
 
-        OptionUser optionUser = AnnotatedElementUtils.getMergedAnnotation(field, OptionUser.class);
-        if (optionUser != null) {
+        Boolean override = null;
+        Class<? extends AutoFillHandler> value = null;
+        FillData fillData = AnnotatedElementUtils.getMergedAnnotation(field, FillData.class);
+        if (fillData != null) {
+            override = fillData.override();
+            value = fillData.value();
+        } else {
+            // 尝试获取旧版注解
+            OptionUser optionUser = AnnotatedElementUtils.getMergedAnnotation(field, OptionUser.class);
+            if (optionUser != null) {
+                override = optionUser.override();
+                value = optionUser.value();
+            }
+        }
+
+        if (override != null && value != null) {
 
             // 判断原来值为null，或者覆盖选项为true
-            boolean canSet = this.getFieldValByName(field.getName(), metaObject) == null || optionUser.override();
+            boolean canSet = this.getFieldValByName(field.getName(), metaObject) == null || override;
 
             if (canSet) {
 
                 Object userInfo = null;
 
-                AutoFillHandler instance = getAutoFillHandler(optionUser.value());
+                AutoFillHandler instance = getAutoFillHandler(value);
                 if (instance != null) {
                     userInfo = instance.getVal(object, clazz, field);
                 }
@@ -166,16 +182,29 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
     private void setOptionDate(MetaObject metaObject, Class<?> clazz, Field field, Now now) {
 
-        OptionDate optionDate = AnnotatedElementUtils.getMergedAnnotation(field, OptionDate.class);
-        if (optionDate != null) {
+        Boolean override = null;
+        String format = null;
+        FillTime fillTime = AnnotatedElementUtils.getMergedAnnotation(field, FillTime.class);
+        if (fillTime != null) {
+            override = fillTime.override();
+            format = fillTime.format();
+        } else {
+            // 尝试旧版的注解
+            OptionDate optionDate = AnnotatedElementUtils.getMergedAnnotation(field, OptionDate.class);
+            if (optionDate != null) {
+                override = optionDate.override();
+                format = optionDate.format();
+            }
+        }
+        if (override != null && format != null) {
 
             boolean canSet = this.getFieldValByName(field.getName(), metaObject) == null
-                    || optionDate.override();
+                    || override;
 
             if (canSet) {
                 Class<?> type = getDateType(clazz, field);
 
-                Object nowDate = Optional.ofNullable(now.now(type, optionDate.format()))
+                Object nowDate = Optional.ofNullable(now.now(type, format))
                         .orElseThrow(() -> new RuntimeException("类：" + clazz.toString() + "的字段：" + field.getName()
                                 + "的类型不支持。仅支持String、Long、long、Date、LocalDate、LocalDateTime"));
 
@@ -316,7 +345,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         public void onApplicationEvent(ContextRefreshedEvent event) {
 
             if (!(metaObjectHandler instanceof AutoFillMetaObjectHandler)) {
-                log.warn("由于本地已经实现了{}，导致{}未生效，@InsertOptionDate、@InsertOptionUser、@InsertUpdateOptionDate、" +
+                log.warn("由于本地已经实现了{}，导致{}未生效，@InsertFillTime、@InsertOptionUser、@InsertUpdateOptionDate、" +
                                 "@InsertUpdateOptionUser、@DefaultValue...等注解将会无法工作，请注意!",
                         MetaObjectHandler.class.getName(), AutoFillMetaObjectHandler.class.getName());
             }

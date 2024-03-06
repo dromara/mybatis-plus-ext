@@ -3,7 +3,7 @@ package com.tangzc.mpe.demo.condition.daily2;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.Ignore;
-import com.tangzc.mpe.annotation.InsertOptionUser;
+import com.tangzc.mpe.annotation.InsertFillData;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.demo.condition.FilterByFixedUser;
@@ -23,7 +23,7 @@ public class Daily2 {
     @ColumnComment("内容")
     private String content;
     @DynamicCondition(FilterByFixedUser.class)
-    @InsertOptionUser(UserIdAutoFillHandler.class)
+    @InsertFillData(UserIdAutoFillHandler.class)
     @ColumnComment("提交人")
     private Integer submitter;
 }

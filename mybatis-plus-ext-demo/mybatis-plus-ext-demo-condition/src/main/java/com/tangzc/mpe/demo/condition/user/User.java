@@ -1,7 +1,7 @@
 package com.tangzc.mpe.demo.condition.user;
 
 import com.tangzc.autotable.annotation.ColumnComment;
-import com.tangzc.mpe.annotation.InsertOptionDate;
+import com.tangzc.mpe.annotation.InsertFillTime;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.base.entity.BaseLogicEntity;
@@ -19,7 +19,7 @@ public class User extends BaseLogicEntity<String, LocalDateTime> {
     private String id;
     @Column(comment = "姓名", length = 300)
     private String name;
-    @InsertOptionDate
+    @InsertFillTime
     @Column(value = "registered_date1", comment = "注册时间")
     private Long registeredDate;
 }

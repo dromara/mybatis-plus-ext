@@ -11,12 +11,14 @@ import java.lang.annotation.Target;
 
 /**
  * 自动填充自定义值，通常用不到，直接使用衍生的注解 {@link InsertOptionUser} 或者 {@link UpdateOptionUser} 或者 {@link InsertUpdateOptionUser}
+ * <p>已废弃，使用{@link com.tangzc.mpe.annotation.FillData}替换
  *
  * @author don
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Deprecated
 public @interface OptionUser {
 
     /**

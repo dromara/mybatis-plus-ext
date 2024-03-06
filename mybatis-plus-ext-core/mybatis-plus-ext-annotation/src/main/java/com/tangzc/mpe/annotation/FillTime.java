@@ -7,16 +7,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自动填充操作时间，通常用不到，直接使用衍生的注解 {@link InsertOptionDate} 或者 {@link UpdateOptionDate} 或者 {@link InsertUpdateOptionDate}
- * <p>已废弃，使用{@link com.tangzc.mpe.annotation.FillTime}替换
+ * 自动填充操作时间，通常用不到，直接使用衍生的注解 {@link InsertFillTime} 或者 {@link UpdateFillTime} 或者 {@link InsertUpdateFillTime}
  *
  * @author don
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-@Deprecated
-public @interface OptionDate {
+public @interface FillTime {
 
     /**
      * 如果字段类型为String，需要制定字符串格式

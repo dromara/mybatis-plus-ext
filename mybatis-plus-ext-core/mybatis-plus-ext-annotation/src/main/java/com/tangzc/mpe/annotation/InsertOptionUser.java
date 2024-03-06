@@ -14,6 +14,7 @@ import java.lang.annotation.Target;
 
 /**
  * SQL插入的时候，自动填充自定义值
+ * <p>已废弃，使用{@link com.tangzc.mpe.annotation.InsertFillData}替换
  *
  * @author don
  */
@@ -22,6 +23,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 @TableField(fill = FieldFill.INSERT)
 @OptionUser(DefaultAuditHandler.class)
+@Deprecated
 public @interface InsertOptionUser {
 
     /**
