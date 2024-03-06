@@ -7,9 +7,17 @@ mvn versions:set -DnewVersion=${version}
 echo "开始commit到本地仓库：${version}"
 git commit -am "版本升级：${version}"
 
-echo "开始打tag：v${version}"
-git tag -d v${version}
-git tag -a v${version} -m "版本号：${version}"
+tagName=v${version}
+echo "开始打tag：${tagName}"
+git rev-parse --verify ${tagName} >/dev/null 2>&1
+if [ $? -eq 0 ]; then
+    git tag -d ${tagName}
+    echo "${tagName}标签已删除"
+else
+    echo "${tagName}标签不存在"
+fi
+echo "新建标签：${tagName}"
+git tag -a ${tagName} -m "版本号：${version}"
 
 echo "开始提交到远程git仓库：${version}"
 git push origin main --tags
