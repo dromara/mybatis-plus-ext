@@ -1,13 +1,10 @@
 package com.tangzc.mpe.demo.dict;
 
-import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Table;
+import com.tangzc.mpe.processer.annotation.AutoRepository;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-/**
- * 简单设计，仅用于演示
- */
 @Data
 @Accessors(chain = true)
 @Table

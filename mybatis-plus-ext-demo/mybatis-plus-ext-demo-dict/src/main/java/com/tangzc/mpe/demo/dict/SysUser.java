@@ -1,8 +1,8 @@
 package com.tangzc.mpe.demo.dict;
 
-import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
+import com.tangzc.mpe.processer.annotation.AutoRepository;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.tangzc.mpe.automapper;
+package com.tangzc.mpe.processer.config;
 
 import java.io.File;
 import java.util.Arrays;

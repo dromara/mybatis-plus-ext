@@ -1,4 +1,4 @@
-package com.tangzc.mpe.automapper;
+package com.tangzc.mpe.processer.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

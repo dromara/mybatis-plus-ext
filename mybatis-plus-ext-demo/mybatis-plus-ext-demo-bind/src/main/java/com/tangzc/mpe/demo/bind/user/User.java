@@ -1,6 +1,7 @@
 package com.tangzc.mpe.demo.bind.user;
 
 import com.tangzc.mpe.annotation.InsertOptionDate;
+import com.tangzc.mpe.processer.annotation.AutoDefine;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.AggFuncField;
 import com.tangzc.mpe.bind.metadata.annotation.BindAggFunc;
@@ -11,6 +12,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
+@AutoDefine
 @Table
 public class User {
 

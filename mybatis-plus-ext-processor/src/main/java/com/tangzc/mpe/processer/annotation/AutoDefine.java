@@ -1,4 +1,4 @@
-package com.tangzc.mpe.automapper;
+package com.tangzc.mpe.processer.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,25 +10,20 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AutoRepository {
+public @interface AutoDefine {
 
     /**
-     * 完整的Mapper名称，指定后，将会替换掉默认生成策略
+     * 包含实体所有字段的类的完整名称
      */
     String value() default "";
 
     /**
-     * 生成的Repository类的后缀，前半部分固定为Entity的名字
+     * 包含实体所有字段的类的名称后缀
      */
     String suffix() default "";
 
     /**
-     * 生成Repository所在的包名，默认与Entity包名一致
+     * 包含实体所有字段的类的包名，默认与Entity包名一致
      */
     String packageName() default "";
-
-    /**
-     * 自动创建Mapper
-     */
-    AutoMapper autoMapper() default @AutoMapper;
 }

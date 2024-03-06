@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package com.tangzc.mpe.automapper;
+package com.tangzc.mpe.processer.config;
 
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
