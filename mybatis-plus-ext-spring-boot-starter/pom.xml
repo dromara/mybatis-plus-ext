@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>com.tangzc</groupId>
-            <artifactId>mybatis-plus-ext-automapper</artifactId>
+            <artifactId>mybatis-plus-ext-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
 

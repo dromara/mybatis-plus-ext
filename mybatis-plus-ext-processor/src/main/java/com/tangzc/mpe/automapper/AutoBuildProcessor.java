@@ -38,6 +38,7 @@ public class AutoBuildProcessor extends AbstractProcessor {
     private Elements elementUtils;
     private Filer filer;
     private Messager messager;
+    private MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -46,6 +47,7 @@ public class AutoBuildProcessor extends AbstractProcessor {
         elementUtils = processingEnv.getElementUtils();
         filer = processingEnv.getFiler();
         messager = processingEnv.getMessager();
+        mybatisPlusExtProcessConfig = new MybatisPlusExtProcessConfig(this.filer);
     }
 
     @Override
@@ -92,33 +94,60 @@ public class AutoBuildProcessor extends AbstractProcessor {
 
     private String buildMapper(String entityPackageName, String entityName, AutoMapper autoMapper) {
 
-        String mapperName = getTargetName(autoMapper.value(), entityName, autoMapper.suffix());
-        String mapperPackageName = getTargetPackageName(entityPackageName, autoMapper.packageName());
+        String suffix = getMapperSuffix(autoMapper);
+        String mapperName = getTargetName(autoMapper.value(), entityName, suffix);
+        String packageName = getMapperPackageName(autoMapper);
+        String mapperPackagePath = getTargetPackageName(entityPackageName, packageName);
 
-        ClassName mapperClassName = ClassName.get(BaseMapper.class);
-        String baseMapperClassName = autoMapper.baseMapperClassName();
-        if (!baseMapperClassName.isEmpty()) {
-            int lastIndexOf = baseMapperClassName.lastIndexOf(".");
-            String baseMapperPackageName = baseMapperClassName.substring(0, lastIndexOf);
-            String baseMapperName = baseMapperClassName.substring(lastIndexOf + 1);
-            mapperClassName = ClassName.get(baseMapperPackageName, baseMapperName);
-        }
+        ClassName mapperSuperclassName = getMapperSuperclassName(autoMapper);
 
         /* 生成Mapper */
         TypeSpec mapper = TypeSpec.interfaceBuilder(mapperName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(
-                        mapperClassName,
+                        mapperSuperclassName,
                         ClassName.get(entityPackageName, entityName)))
                 .addAnnotation(ClassName.get(Mapper.class))
                 .build();
-        JavaFile javaFile = JavaFile.builder(mapperPackageName, mapper)
+        JavaFile javaFile = JavaFile.builder(mapperPackagePath, mapper)
                 .build();
 
         // 持久化到本地
         writeToFile(javaFile);
 
-        return mapperPackageName + "." + mapperName;
+        return mapperPackagePath + "." + mapperName;
+    }
+
+    private ClassName getMapperSuperclassName(AutoMapper autoMapper) {
+
+        ClassName mapperSuperclassName = ClassName.get(BaseMapper.class);
+        String baseMapperClassName = autoMapper.superclassName();
+        if (baseMapperClassName.isEmpty()) {
+            baseMapperClassName = mybatisPlusExtProcessConfig.get(ConfigurationKey.MAPPER_SUPERCLASS_NAME);
+        }
+        if (!baseMapperClassName.isEmpty()) {
+            int lastIndexOf = baseMapperClassName.lastIndexOf(".");
+            String baseMapperPackageName = baseMapperClassName.substring(0, lastIndexOf);
+            String baseMapperName = baseMapperClassName.substring(lastIndexOf + 1);
+            mapperSuperclassName = ClassName.get(baseMapperPackageName, baseMapperName);
+        }
+        return mapperSuperclassName;
+    }
+
+    private String getMapperPackageName(AutoMapper autoMapper) {
+        String packageName = autoMapper.packageName();
+        if (packageName.isEmpty()) {
+            packageName = mybatisPlusExtProcessConfig.get(ConfigurationKey.MAPPER_PACKAGE_NAME);
+        }
+        return packageName;
+    }
+
+    private String getMapperSuffix(AutoMapper autoMapper) {
+        String suffix = autoMapper.suffix();
+        if ("".equals(suffix)) {
+            suffix = this.mybatisPlusExtProcessConfig.get(ConfigurationKey.MAPPER_SUFFIX);
+        }
+        return suffix;
     }
 
     private void buildRepository(Set<? extends Element> elements) {
@@ -130,8 +159,16 @@ public class AutoBuildProcessor extends AbstractProcessor {
             AutoRepository autoRepository = element.getAnnotation(AutoRepository.class);
 
             /* 获取Repository的类名和包名 */
-            String repositoryName = getTargetName(autoRepository.value(), entityName, autoRepository.suffix());
-            String repositoryPackageName = getTargetPackageName(entityPackageName, autoRepository.packageName());
+            String suffix = autoRepository.suffix();
+            if ("".equals(suffix)) {
+                suffix = this.mybatisPlusExtProcessConfig.get(ConfigurationKey.REPOSITORY_SUFFIX);
+            }
+            String repositoryName = getTargetName(autoRepository.value(), entityName, suffix);
+            String customPackageName = autoRepository.packageName();
+            if (customPackageName.isEmpty()) {
+                customPackageName = mybatisPlusExtProcessConfig.get(ConfigurationKey.REPOSITORY_PACKAGE_NAME);
+            }
+            String repositoryPackageName = getTargetPackageName(entityPackageName, customPackageName);
 
             /* 获取mapper的类名和包名 */
             String mapperName;
@@ -139,8 +176,8 @@ public class AutoBuildProcessor extends AbstractProcessor {
             AutoMapper autoMapper = element.getAnnotation(AutoMapper.class);
             if (autoMapper != null) {
                 // @AutoMapper不为空，说明已经通过@AutoMapper直接创建了
-                mapperName = getTargetName(autoMapper.value(), entityName, autoMapper.suffix());
-                mapperPackageName = getTargetPackageName(entityPackageName, autoMapper.packageName());
+                mapperName = getTargetName(autoMapper.value(), entityName, getMapperSuffix(autoMapper));
+                mapperPackageName = getTargetPackageName(entityPackageName, getMapperPackageName(autoMapper));
             } else {
                 // 没有独立声明@AutoMapper，需要使用@AutoRepository中的@AutoMapper
                 autoMapper = autoRepository.autoMapper();
@@ -168,16 +205,43 @@ public class AutoBuildProcessor extends AbstractProcessor {
         }
     }
 
-    private static String getTargetPackageName(String entityPackageName, String customPackageName) {
-        String packageName = entityPackageName;
-        if (!"".equals(customPackageName)) {
-            packageName = customPackageName;
+    private String getTargetPackageName(String entityPackagePath, String customPackagePath) {
+        // 默认使用entity所在目录
+        String packageName = entityPackagePath;
+        if (!"".equals(customPackagePath)) {
+            String basePackageName;
+            // 相对路径配置
+            if (customPackagePath.startsWith(".")) {
+                // 先去掉第一个.，赋值当前entity所在目录
+                customPackagePath = customPackagePath.substring(1);
+                basePackageName = entityPackagePath;
+                // 后续如果仍有.，则向上取一层
+                while (customPackagePath.startsWith(".")) {
+                    // 去除.
+                    customPackagePath = customPackagePath.substring(1);
+                    // 基本路径去掉最后一层
+                    int lastIndexOfPoint = basePackageName.lastIndexOf(".");
+                    if (lastIndexOfPoint != -1) {
+                        basePackageName = basePackageName.substring(0, lastIndexOfPoint);
+                    } else {
+                        basePackageName = "";
+                    }
+                }
+                if (!customPackagePath.isEmpty() && !basePackageName.isEmpty()) {
+                    customPackagePath = "." + customPackagePath;
+                }
+                packageName = basePackageName + customPackagePath;
+            } else {
+                // 绝对路径配置
+                packageName = customPackagePath;
+            }
         }
         return packageName;
     }
 
-    private static String getTargetName(String customName, String entityName, String suffix) {
+    private String getTargetName(String customName, String entityName, String suffix) {
         String name;
+
         if (!"".equals(customName)) {
             name = customName;
         } else {

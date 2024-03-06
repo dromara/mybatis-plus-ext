@@ -18,9 +18,9 @@ public @interface AutoMapper {
     String value() default "";
 
     /**
-     * 生成的Mapper类的后缀，前半部分固定为Entity的名字
+     * 生成的Mapper类的后缀，前半部分固定为Entity的名字，后半部分默认为Mapper
      */
-    String suffix() default "Mapper";
+    String suffix() default "";
 
     /**
      * 生成Mapper所在的包名，默认与Entity包名一致
@@ -34,5 +34,5 @@ public @interface AutoMapper {
      * 2、自定义的父类Mapper必须继承自com.baomidou.mybatisplus.core.mapper.BaseMapper
      * 3、自定义的父类Mapper必须保留泛型T
      */
-    String baseMapperClassName() default "";
+    String superclassName() default "";
 }

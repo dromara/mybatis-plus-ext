@@ -7,7 +7,7 @@
         <version>3.5.5-EXT601-beta</version>
     </parent>
 
-    <artifactId>mybatis-plus-ext-automapper</artifactId>
+    <artifactId>mybatis-plus-ext-processor</artifactId>
     <packaging>jar</packaging>
 
     <name>mybatis-plus-ext-automapper</name>

@@ -20,7 +20,7 @@ public @interface AutoRepository {
     /**
      * 生成的Repository类的后缀，前半部分固定为Entity的名字
      */
-    String suffix() default "Repository";
+    String suffix() default "";
 
     /**
      * 生成Repository所在的包名，默认与Entity包名一致

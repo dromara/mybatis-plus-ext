@@ -1,7 +1,6 @@
 package com.tangzc.mpe.demo.bind.daily;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.tangzc.mpe.automapper.AutoMapper;
 import com.tangzc.mpe.automapper.AutoRepository;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
@@ -12,7 +11,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@AutoRepository(autoMapper = @AutoMapper(baseMapperClassName = "com.tangzc.mpe.demo.bind.daily.MyMapper"))
+@AutoRepository
 @Table
 public class Daily {
 
