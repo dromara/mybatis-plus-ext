@@ -8,6 +8,7 @@ echo "开始commit到本地仓库：${version}"
 git commit -am "版本升级：${version}"
 
 echo "开始打tag：v${version}"
+git tag -d v${version}
 git tag -a v${version} -m "版本号：${version}"
 
 echo "开始提交到远程git仓库：${version}"
