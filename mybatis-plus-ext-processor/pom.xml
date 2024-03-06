@@ -10,7 +10,7 @@
     <artifactId>mybatis-plus-ext-processor</artifactId>
     <packaging>jar</packaging>
 
-    <name>mybatis-plus-ext-automapper</name>
+    <name>mybatis-plus-ext-processor</name>
 
     <dependencies>
         <dependency>
