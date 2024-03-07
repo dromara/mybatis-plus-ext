@@ -1,6 +1,5 @@
 package com.tangzc.mpe.demo.bind.daily;
 
-import com.tangzc.mpe.demo.bind.daily.repository.DailyRepository;
 import com.tangzc.mpe.demo.bind.user.User;
 import com.tangzc.mpe.demo.bind.user.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

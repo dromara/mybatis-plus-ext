@@ -1,4 +1,4 @@
-package com.tangzc.mpe.demo.processor;
+package com.tangzc.mpe.demo.processor.entity;
 
 import com.tangzc.mpe.processer.annotation.AutoDefine;
 import com.tangzc.mpe.processer.annotation.AutoRepository;

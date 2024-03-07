@@ -1,4 +1,4 @@
-package com.tangzc.mpe.demo.bind.daily;
+package com.tangzc.mpe.demo.processor.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
