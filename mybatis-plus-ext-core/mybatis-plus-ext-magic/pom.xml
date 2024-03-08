@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-core</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.5-EXT612-beta</version>
+        <version>3.5.5-EXT613-beta</version>
     </parent>
     <dependencies>
         <dependency>
