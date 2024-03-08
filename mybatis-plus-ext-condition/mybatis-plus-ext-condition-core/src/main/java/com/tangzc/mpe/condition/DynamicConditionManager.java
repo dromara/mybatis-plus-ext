@@ -2,7 +2,7 @@ package com.tangzc.mpe.condition;
 
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
-import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.TableColumnNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 

@@ -16,8 +16,8 @@ import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import com.tangzc.mpe.bind.metadata.annotation.JoinCondition;
 import com.tangzc.mpe.bind.metadata.annotation.JoinOrderBy;
 import com.tangzc.mpe.bind.metadata.annotation.MidCondition;
-import com.tangzc.mpe.magic.BeanClassUtil;
-import com.tangzc.mpe.magic.TableColumnNameUtil;
+import com.tangzc.mpe.magic.util.BeanClassUtil;
+import com.tangzc.mpe.magic.util.TableColumnNameUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

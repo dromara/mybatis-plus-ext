@@ -1,8 +1,11 @@
-package com.tangzc.mpe.magic;
+package com.tangzc.mpe.magic.util;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.tangzc.mpe.magic.MybatisPlusProperties;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.util.BeanClassUtil;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 

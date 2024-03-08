@@ -10,7 +10,7 @@ import com.tangzc.mpe.annotation.OptionDate;
 import com.tangzc.mpe.annotation.OptionUser;
 import com.tangzc.mpe.annotation.handler.AutoFillHandler;
 import com.tangzc.mpe.annotation.handler.FieldDateTypeHandler;
-import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;

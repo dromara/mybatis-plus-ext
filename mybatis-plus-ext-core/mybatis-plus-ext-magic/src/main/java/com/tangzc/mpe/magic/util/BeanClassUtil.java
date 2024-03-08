@@ -1,4 +1,4 @@
-package com.tangzc.mpe.magic;
+package com.tangzc.mpe.magic.util;
 
 import com.baomidou.mybatisplus.core.toolkit.LambdaUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.LambdaMeta;

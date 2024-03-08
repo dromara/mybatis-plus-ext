@@ -9,7 +9,7 @@ import com.tangzc.mpe.bind.binder.BindFieldBinder;
 import com.tangzc.mpe.bind.binder.BindFieldByMidBinder;
 import com.tangzc.mpe.bind.manager.BeanAnnotationManager;
 import com.tangzc.mpe.bind.metadata.BeanDescription;
-import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.magic.util.BeanClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 

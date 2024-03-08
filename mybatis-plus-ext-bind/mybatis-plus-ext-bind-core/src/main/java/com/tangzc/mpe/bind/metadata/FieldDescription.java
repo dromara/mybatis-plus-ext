@@ -1,6 +1,6 @@
 package com.tangzc.mpe.bind.metadata;
 
-import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.magic.util.BeanClassUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.util.StringUtils;

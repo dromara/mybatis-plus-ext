@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
+@Ignore
 @Table(comment = "测试表", dsName = "my-pgsql")
 public class PgsqlTable {
 

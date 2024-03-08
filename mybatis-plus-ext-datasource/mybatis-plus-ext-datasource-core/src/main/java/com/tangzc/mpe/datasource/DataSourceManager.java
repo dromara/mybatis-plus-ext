@@ -8,7 +8,7 @@ import com.tangzc.mpe.datasource.annotation.DataSource;
 import com.tangzc.mpe.datasource.description.DataSourceConditionDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateDescription;
 import com.tangzc.mpe.datasource.description.WaitUpdateFieldDescription;
-import com.tangzc.mpe.magic.BeanClassUtil;
+import com.tangzc.mpe.magic.util.BeanClassUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

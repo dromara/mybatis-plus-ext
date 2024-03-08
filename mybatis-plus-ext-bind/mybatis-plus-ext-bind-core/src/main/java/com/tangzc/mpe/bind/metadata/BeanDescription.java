@@ -6,7 +6,7 @@ import com.tangzc.mpe.bind.metadata.annotation.BindEntityByMid;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
 import com.tangzc.mpe.bind.metadata.annotation.BindFieldByMid;
 import com.tangzc.mpe.bind.metadata.builder.FieldDescriptionBuilder;
-import com.tangzc.mpe.magic.AnnotatedElementUtilsPlus;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
