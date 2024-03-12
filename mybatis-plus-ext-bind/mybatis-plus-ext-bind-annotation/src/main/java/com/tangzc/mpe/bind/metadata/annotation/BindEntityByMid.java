@@ -27,6 +27,16 @@ public @interface BindEntityByMid {
     Class<?> entity() default Void.class;
 
     /**
+     * 被关联的Entity所查询的字段，空表示查询全部
+     */
+    String[] selectFields() default {};
+
+    /**
+     * 被关联的Entity不查询的字段
+     */
+    String[] notSelectFields() default {};
+
+    /**
      * 中间表关联条件
      */
     MidCondition conditions();

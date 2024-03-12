@@ -27,6 +27,11 @@ public @interface BindEntity {
     Class<?> entity() default Void.class;
 
     /**
+     * 被关联的Entity所查询的字段，空表示查询全部
+     */
+    String[] selectFields() default {};
+
+    /**
      * 关联Entity所需要的条件
      */
     JoinCondition[] conditions();

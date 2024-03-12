@@ -1,5 +1,6 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
+import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
 import com.tangzc.mpe.annotation.DefaultValue;
 import com.tangzc.mpe.autotable.annotation.Column;
@@ -13,6 +14,7 @@ import lombok.Data;
  */
 @Data
 @AutoRepository
+@Ignore
 @Table(comment = "我的消息")
 public class Notice {
 

@@ -17,6 +17,10 @@ import java.util.stream.Collectors;
 public class BindEntityDescription extends FieldDescription<BindEntity, JoinConditionDescription> {
 
     /**
+     * 自定义的查询字段
+     */
+    private final List<String> selectColumns;
+    /**
      * 注解条件：字段匹配信息
      */
     private final List<JoinConditionDescription> conditions;
@@ -26,10 +30,12 @@ public class BindEntityDescription extends FieldDescription<BindEntity, JoinCond
                                  boolean isCollection,
                                  BindEntity bindEntity,
                                  Class<?> entityClass,
+                                 List<String> selectColumns,
                                  List<JoinConditionDescription> conditions,
                                  List<OrderByDescription> orderBys) {
         super(field, setMethod, isCollection, bindEntity, entityClass,
                 bindEntity.customCondition(), orderBys, bindEntity.last());
+        this.selectColumns = selectColumns.stream().distinct().collect(Collectors.toList());
         this.conditions = conditions.stream().distinct().collect(Collectors.toList());
     }
 

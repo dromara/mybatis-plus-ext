@@ -2,12 +2,14 @@ package com.tangzc.mpe.bind.binder;
 
 import com.tangzc.mpe.bind.builder.ByMidResultBuilder;
 import com.tangzc.mpe.bind.metadata.BindEntityByMidDescription;
+import com.tangzc.mpe.bind.metadata.ColumnDescription;
 import com.tangzc.mpe.bind.metadata.FieldDescription;
 import com.tangzc.mpe.bind.metadata.MidConditionDescription;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,35 @@ public class BindEntityByMidBinder<BEAN> implements IBinder<BEAN, BindEntityByMi
                                   List<BindEntityByMidDescription> fieldAnnotations) {
 
         ByMidResultBuilder.FillDataCallback fillDataCallback = new ByMidResultBuilder.FillDataCallback() {
+
+            @Override
+            public String[] selectColumns(List<?> beans, FieldDescription.ConditionSign<?, MidConditionDescription> conditionSign,
+                                          List<? extends FieldDescription<?, MidConditionDescription>> fieldAnnotationList) {
+
+                // 如果有一个字段没有设置selectColumns，则直接返回空，表示查询全部列
+                for (BindEntityByMidDescription fieldAnnotation : fieldAnnotations) {
+                    if (fieldAnnotation.getSelectColumns().isEmpty()) {
+                        return new String[0];
+                    }
+                }
+
+                List<String> columns = fieldAnnotations.stream()
+                        .map(BindEntityByMidDescription::getSelectColumns)
+                        .flatMap(Collection::stream)
+                        .map(ColumnDescription::getColumnName)
+                        .distinct()
+                        .collect(Collectors.toList());
+
+                // 如果有字段设置了selectColumns，则追加条件查询字段
+                if (!columns.isEmpty()) {
+                    // 追加条件查询字段，用于标识查询数据的
+                    for (MidConditionDescription condition : conditionSign.getConditions()) {
+                        columns.add(condition.getJoinColumnName());
+                    }
+                }
+
+                return columns.toArray(new String[0]);
+            }
 
             @Override
             public List<?> changeDataList(Object bean, FieldDescription<?, MidConditionDescription> fieldAnnotation, List<?> entities) {

@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @MysqlCharset(charset = "utf8mb4", collate = "utf8mb4_0900_ai_ci")
-@Ignore
+// @Ignore
 @Table(comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 

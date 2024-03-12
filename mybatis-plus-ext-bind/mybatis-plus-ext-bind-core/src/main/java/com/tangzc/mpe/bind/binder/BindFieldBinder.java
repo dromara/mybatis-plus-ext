@@ -35,12 +35,12 @@ public class BindFieldBinder<BEAN> implements IBinder<BEAN, BindFieldDescription
                                           List<? extends FieldDescription<?, JoinConditionDescription>> fieldAnnotationList) {
 
                 List<String> columns = bindFieldDescriptions.stream()
-                        .map(desc -> desc.getRealColumnName() + " as " + desc.getBindAnnotation().field())
+                        .map(BindFieldDescription::getRealColumnName)
                         .collect(Collectors.toList());
 
                 // 追加条件查询字段，用于标识查询数据的
                 for (JoinConditionDescription condition : entityJoinCondition.getConditions()) {
-                    columns.add(condition.getJoinColumnName() + " as " + condition.getJoinFieldName());
+                    columns.add(condition.getJoinColumnName());
                 }
 
                 return columns.toArray(new String[0]);

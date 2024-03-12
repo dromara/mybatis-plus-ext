@@ -112,7 +112,7 @@ public class ResultBuilder<BEAN, ENTITY> {
         try {
             fieldAnnotation.getSetMethod().invoke(bean, val);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            throw new RuntimeException("字段" + fieldAnnotation.getFieldName() + "设置值失败。", e);
         }
     }
 
