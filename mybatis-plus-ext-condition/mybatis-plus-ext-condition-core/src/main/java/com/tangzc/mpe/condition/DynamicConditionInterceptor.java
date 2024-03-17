@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.tangzc.mpe.condition.metadata.DynamicConditionDescription;
 import com.tangzc.mpe.condition.metadata.IDynamicConditionHandler;
-import com.tangzc.mpe.magic.util.TableColumnNameUtil;
 import com.tangzc.mpe.magic.util.EnumUtil;
 import com.tangzc.mpe.magic.util.SpringContextUtil;
+import com.tangzc.mpe.magic.util.TableColumnNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
@@ -153,15 +153,16 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
 
                 String condExpr;
                 List<Object> values = conditionHandler.values();
+                String realColumnName = TableColumnNameUtil.getRealColumnName(entityField);
                 if (values == null || values.isEmpty()) {
-                    condExpr = TableColumnNameUtil.getRealColumnName(entityField) + " is null";
+                    condExpr = realColumnName + " is null";
                 } else {
                     // 字符串的话，两边追加'
                     values = autoFillStrVal(entityField, values);
                     if (values.size() == 1) {
-                        condExpr = TableColumnNameUtil.getRealColumnName(entityField) + "=" + values.get(0) + "";
+                        condExpr = realColumnName + "=" + values.get(0);
                     } else {
-                        condExpr = TableColumnNameUtil.getRealColumnName(entityField) + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
+                        condExpr = realColumnName + " in(" + values.stream().map(Object::toString).collect(Collectors.joining(",")) + ")";
                     }
                 }
                 Expression envCondition = CCJSqlParserUtil.parseCondExpression(condExpr);
@@ -172,7 +173,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
                 }
             }
         } catch (JSQLParserException e) {
-            e.printStackTrace();
+            log.error("动态条件添加失败", e);
         }
         return where;
     }

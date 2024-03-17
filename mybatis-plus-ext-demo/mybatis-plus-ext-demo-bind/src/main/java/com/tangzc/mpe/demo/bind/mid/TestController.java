@@ -17,6 +17,7 @@ public class TestController {
 
     @GetMapping("list")
     public List<Role> list() {
+        roleRepository.lambdaQuery().eq(Role::getId, "1").list();
         List<Role> list = roleRepository.list();
         Binder.bind(list);
         return list;

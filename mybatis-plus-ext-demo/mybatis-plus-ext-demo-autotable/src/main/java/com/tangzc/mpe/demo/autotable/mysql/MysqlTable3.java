@@ -1,6 +1,7 @@
 package com.tangzc.mpe.demo.autotable.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.Ignore;
@@ -29,7 +30,9 @@ public class MysqlTable3 extends BaseTable {
     @ColumnComment("姓名")
     private String name;
 
-    // 忽略该字段，不参与建表
+    // 忽略该字段，即不参与建表也不参与查询
+    @TableField(exist = false)
+    // 仅仅忽略该字段不参与建表，但是会参与查询逻辑。所以如果表里没有该字段会报错找不到列
     @Ignore
     @Column(comment = "额外信息")
     private String extra;

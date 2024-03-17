@@ -1,6 +1,7 @@
 package com.tangzc.mpe.demo.bind.daily;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.tangzc.autotable.annotation.TableName;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.bind.metadata.annotation.BindEntity;
 import com.tangzc.mpe.bind.metadata.annotation.BindField;
@@ -17,6 +18,7 @@ import lombok.experimental.Accessors;
 @AutoDefine
 @AutoRepository
 @Table
+@TableName(value = "autotable_daily")
 public class Daily {
 
     private String id;

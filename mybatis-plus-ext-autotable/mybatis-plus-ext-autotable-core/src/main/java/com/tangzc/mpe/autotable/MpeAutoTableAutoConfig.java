@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter(MybatisPlusAutoConfiguration.class)
 @Import({
         SpringContextUtil.class,
+        MybatisPlusAnnotationHandler.class,
         DynamicDatasourceHandler.class,
         CustomRunStateCallback.class,
 })
