@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-condition</artifactId>
-        <version>3.5.5-EXT618</version>
+        <version>3.5.5-EXT619</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-condition-core</artifactId>

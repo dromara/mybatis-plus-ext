@@ -6,7 +6,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
         <groupId>com.tangzc</groupId>
-        <version>3.5.5-EXT618</version>
+        <version>3.5.5-EXT619</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-demo-processor</artifactId>
