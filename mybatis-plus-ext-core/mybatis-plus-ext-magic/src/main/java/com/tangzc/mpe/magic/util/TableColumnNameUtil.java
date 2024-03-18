@@ -4,17 +4,19 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.mpe.magic.MybatisPlusProperties;
-import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
-import com.tangzc.mpe.magic.util.BeanClassUtil;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author don
  */
 public class TableColumnNameUtil {
+
+    private static final Map<Class<?>, String> TABLE_NAME_CATCH = new HashMap<>();
 
     public static String filterSpecialChar(String name) {
         return name.replaceAll("`", "");
@@ -22,20 +24,28 @@ public class TableColumnNameUtil {
 
     public static String getTableName(Class<?> clazz) {
 
-        String finalTableName = "";
+        return TABLE_NAME_CATCH.computeIfAbsent(clazz, k -> {
 
-        TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
-        if (mybatisPlusTableName != null && StringUtils.hasText(mybatisPlusTableName.value())) {
-            finalTableName = mybatisPlusTableName.value();
-        }
-        if (!StringUtils.hasText(finalTableName)) {
-            finalTableName = smartConvert(MybatisPlusProperties.tableUnderline, clazz.getSimpleName());
-        }
-        // 添加表前缀
-        if (StringUtils.hasText(MybatisPlusProperties.tablePrefix)) {
-            finalTableName = MybatisPlusProperties.tablePrefix + finalTableName;
-        }
-        return finalTableName;
+            String finalTableName = "";
+
+            boolean addTablePrefix = StringUtils.hasText(MybatisPlusProperties.tablePrefix);
+
+            TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
+            if (mybatisPlusTableName != null && StringUtils.hasText(mybatisPlusTableName.value())) {
+                finalTableName = mybatisPlusTableName.value();
+                if (addTablePrefix && !mybatisPlusTableName.keepGlobalPrefix()) {
+                    addTablePrefix = false;
+                }
+            }
+            if (!StringUtils.hasText(finalTableName)) {
+                finalTableName = smartConvert(MybatisPlusProperties.tableUnderline, clazz.getSimpleName());
+            }
+            // 添加表前缀
+            if (addTablePrefix) {
+                finalTableName = MybatisPlusProperties.tablePrefix + finalTableName;
+            }
+            return finalTableName;
+        });
     }
 
     /**

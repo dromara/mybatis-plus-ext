@@ -5,12 +5,14 @@ import com.tangzc.mpe.annotation.InsertFillTime;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.base.entity.BaseLogicEntity;
+import com.tangzc.mpe.processer.annotation.AutoRepository;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 
 @Data
+@AutoRepository
 @Accessors(chain = true)
 @Table(comment = "用户")
 public class User extends BaseLogicEntity<String, LocalDateTime> {

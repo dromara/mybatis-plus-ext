@@ -6,10 +6,12 @@ import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.demo.condition.FilterByCurrentUser;
 import com.tangzc.mpe.demo.condition.UserIdAutoFillHandler;
+import com.tangzc.mpe.processer.annotation.AutoRepository;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
+@AutoRepository
 @Accessors(chain = true)
 @Table(comment = "日报")
 public class Daily {

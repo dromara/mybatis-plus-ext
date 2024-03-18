@@ -1,8 +1,6 @@
 package com.tangzc.mpe.demo.condition.daily;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tangzc.mpe.demo.condition.daily2.Daily2;
-import com.tangzc.mpe.demo.condition.daily2.DailyRepository2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +15,7 @@ public class DailyService {
     @Autowired
     private DailyRepository dailyRepository;
     @Autowired
-    private DailyRepository2 dailyRepository2;
+    private Daily2Repository daily2Repository;
 
     @GetMapping("list")
     public List<Daily> list(String id) {
@@ -32,6 +30,16 @@ public class DailyService {
 
     @GetMapping("list2")
     public List<Daily2> list2() {
-        return dailyRepository2.list();
+        return daily2Repository.list();
+    }
+
+    @GetMapping("/add/daily")
+    public void addDaily(String content) {
+        dailyRepository.save(new Daily().setContent(content));
+    }
+
+    @GetMapping("/add/daily2")
+    public void addDaily2(String content) {
+        daily2Repository.save(new Daily2().setContent(content));
     }
 }

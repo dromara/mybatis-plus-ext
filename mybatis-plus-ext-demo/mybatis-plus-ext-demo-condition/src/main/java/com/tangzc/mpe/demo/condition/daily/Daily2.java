@@ -1,19 +1,19 @@
-package com.tangzc.mpe.demo.condition.daily2;
+package com.tangzc.mpe.demo.condition.daily;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.autotable.annotation.ColumnComment;
-import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.mpe.annotation.InsertFillData;
 import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
 import com.tangzc.mpe.demo.condition.FilterByFixedUser;
 import com.tangzc.mpe.demo.condition.UserIdAutoFillHandler;
+import com.tangzc.mpe.processer.annotation.AutoRepository;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@Ignore
+@AutoRepository
 @Table(comment = "日报")
 @TableName("daily")
 public class Daily2 {
