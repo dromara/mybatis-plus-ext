@@ -24,7 +24,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
         havingValue = "true",
         matchIfMissing = true
 )
-public class DynamicDatasourceHandler implements IDataSourceHandler<String> {
+public class DynamicDatasourceHandler implements IDataSourceHandler {
 
     @Autowired
     private DynamicDataSourceProperties dynamicDataSourceProperties;
