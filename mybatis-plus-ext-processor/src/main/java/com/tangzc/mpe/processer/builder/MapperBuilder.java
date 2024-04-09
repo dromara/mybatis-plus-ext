@@ -1,14 +1,19 @@
 package com.tangzc.mpe.processer.builder;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.processer.annotation.AutoMapper;
 import com.tangzc.mpe.processer.config.ConfigurationKey;
 import com.tangzc.mpe.processer.config.MybatisPlusExtProcessConfig;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -32,15 +37,16 @@ public class MapperBuilder extends BaseBuilder {
 
     public void buildMapper(TypeElement classElement) {
         /* 获取Entity的类名和包名 */
-        String entityPackageName = elementUtils.getPackageOf(classElement).getQualifiedName().toString();
-        String entityName = classElement.getSimpleName().toString();
         AutoMapper autoMapper = classElement.getAnnotation(AutoMapper.class);
 
-        buildMapper(entityPackageName, entityName, autoMapper);
+        buildMapper(classElement, autoMapper);
     }
 
 
-    public String buildMapper(String entityPackageName, String entityName, AutoMapper autoMapper) {
+    public String buildMapper(TypeElement element, AutoMapper autoMapper) {
+
+        String entityPackageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
+        String entityName = element.getSimpleName().toString();
 
         String suffix = getMapperSuffix(autoMapper);
         String mapperName = getTargetName(autoMapper.value(), entityName, suffix);
@@ -50,13 +56,19 @@ public class MapperBuilder extends BaseBuilder {
         ClassName mapperSuperclassName = getMapperSuperclassName(autoMapper);
 
         /* 生成Mapper */
-        TypeSpec mapper = TypeSpec.interfaceBuilder(mapperName)
+        TypeSpec.Builder builder = TypeSpec.interfaceBuilder(mapperName)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(
                         mapperSuperclassName,
                         ClassName.get(entityPackageName, entityName)))
-                .addAnnotation(ClassName.get(Mapper.class))
-                .build();
+                .addAnnotation(ClassName.get(Mapper.class));
+
+        // 添加@DS注解
+        if (autoMapper.withDSAnnotation()) {
+            addDsAnnotation(element, builder);
+        }
+
+        TypeSpec mapper = builder.build();
         JavaFile javaFile = JavaFile.builder(mapperPackagePath, mapper)
                 .build();
 

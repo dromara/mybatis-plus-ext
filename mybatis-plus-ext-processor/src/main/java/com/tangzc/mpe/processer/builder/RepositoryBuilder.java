@@ -1,15 +1,20 @@
 package com.tangzc.mpe.processer.builder;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.processer.annotation.AutoMapper;
 import com.tangzc.mpe.processer.annotation.AutoRepository;
 import com.tangzc.mpe.processer.config.ConfigurationKey;
 import com.tangzc.mpe.processer.config.MybatisPlusExtProcessConfig;
 import com.tangzc.mpe.base.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -63,21 +68,28 @@ public class RepositoryBuilder extends BaseBuilder {
             // 没有独立声明@AutoMapper，需要使用@AutoRepository中的@AutoMapper
             autoMapper = autoRepository.autoMapper();
             // 先构建Mapper
-            String fullMapperName = mapperBuilder.buildMapper(entityPackageName, entityName, autoMapper);
+            String fullMapperName = mapperBuilder.buildMapper(element, autoMapper);
             int lastIndexOfPoint = fullMapperName.lastIndexOf(".");
             mapperName = fullMapperName.substring(lastIndexOfPoint + 1);
             mapperPackageName = fullMapperName.substring(0, lastIndexOfPoint);
         }
 
         /* 生成Repository */
-        TypeSpec repository = TypeSpec.classBuilder(repositoryName)
+        TypeSpec.Builder builder = TypeSpec.classBuilder(repositoryName)
                 .addModifiers(Modifier.PUBLIC)
                 .superclass(ParameterizedTypeName.get(
                         ClassName.get(BaseRepository.class),
                         ClassName.get(mapperPackageName, mapperName),
                         ClassName.get(entityPackageName, entityName)))
-                .addAnnotation(ClassName.get(Repository.class))
-                .build();
+                .addAnnotation(ClassName.get(Repository.class));
+
+        // 添加@DS注解
+        if (autoRepository.withDSAnnotation()) {
+            addDsAnnotation(element, builder);
+        }
+
+        TypeSpec repository = builder.build();
+
         JavaFile javaFile = JavaFile.builder(repositoryPackageName, repository)
                 .build();
 

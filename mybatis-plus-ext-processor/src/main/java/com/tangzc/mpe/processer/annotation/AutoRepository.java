@@ -31,4 +31,9 @@ public @interface AutoRepository {
      * 自动创建Mapper
      */
     AutoMapper autoMapper() default @AutoMapper;
+
+    /**
+     * 标记是否在Repository上根据实体的@Table(dsName="xxx")自动生成@DS("xxx")注解
+     */
+    boolean withDSAnnotation() default false;
 }

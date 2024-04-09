@@ -1,9 +1,17 @@
 package com.tangzc.mpe.processer.builder;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeSpec;
+import com.tangzc.mpe.autotable.annotation.Table;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
+import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import java.io.IOException;
 
@@ -15,6 +23,16 @@ public abstract class BaseBuilder {
     protected BaseBuilder(Filer filer, Messager messager) {
         this.filer = filer;
         this.messager = messager;
+    }
+
+    protected void addDsAnnotation(TypeElement element, TypeSpec.Builder builder) {
+        Table table = element.getAnnotation(Table.class);
+        if(table != null && StringUtils.hasText(table.dsName())) {
+            AnnotationSpec.Builder dsAnnotationBuilder = AnnotationSpec.builder(ClassName.get(DS.class));
+            dsAnnotationBuilder.addMember("value", CodeBlock.of("$S", table.dsName()));
+            AnnotationSpec dsAnnotation = dsAnnotationBuilder.build();
+            builder.addAnnotation(dsAnnotation);
+        }
     }
 
     protected String getTargetPackageName(String entityPackagePath, String customPackagePath) {

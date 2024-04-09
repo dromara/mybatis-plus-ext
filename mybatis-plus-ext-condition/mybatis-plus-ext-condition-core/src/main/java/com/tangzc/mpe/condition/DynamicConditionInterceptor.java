@@ -20,7 +20,6 @@ import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.SelectBody;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
@@ -106,19 +105,20 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
 
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
-        processSelectBody(select.getSelectBody());
+        processSelectBody(select);
     }
 
-    private void processSelectBody(SelectBody selectBody) {
-        if (selectBody instanceof PlainSelect) {
-            processPlainSelect((PlainSelect) selectBody);
-        } else if (selectBody instanceof WithItem) {
-            WithItem withItem = (WithItem) selectBody;
-            if (withItem.getSubSelect().getSelectBody() != null) {
-                processSelectBody(withItem.getSubSelect().getSelectBody());
+    private void processSelectBody(Select select) {
+        if (select instanceof PlainSelect) {
+            processPlainSelect((PlainSelect) select);
+        } else if (select instanceof WithItem) {
+            WithItem withItem = (WithItem) select;
+            Select subSelect = withItem.getSelect();
+            if (subSelect != null) {
+                processSelectBody(subSelect);
             }
         } else {
-            SetOperationList operationList = (SetOperationList) selectBody;
+            SetOperationList operationList = (SetOperationList) select;
             if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
                 operationList.getSelects().forEach(this::processSelectBody);
             }

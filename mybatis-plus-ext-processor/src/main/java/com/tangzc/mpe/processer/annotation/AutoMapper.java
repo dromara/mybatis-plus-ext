@@ -35,4 +35,9 @@ public @interface AutoMapper {
      * 3、自定义的父类Mapper必须保留泛型T
      */
     String superclassName() default "";
+
+    /**
+     * 标记是否在Mapper上根据实体的@Table(dsName="xxx")自动生成@DS("xxx")注解
+     */
+    boolean withDSAnnotation() default false;
 }

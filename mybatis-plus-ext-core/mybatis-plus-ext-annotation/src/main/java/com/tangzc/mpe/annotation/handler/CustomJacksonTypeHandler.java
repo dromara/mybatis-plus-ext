@@ -37,6 +37,7 @@ public class CustomJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
     private final Class<?> type;
 
     public CustomJacksonTypeHandler(Class<?> type) {
+        super(type);
         if (log.isTraceEnabled()) {
             log.trace("CustomJacksonTypeHandler(" + type + ")");
         }
@@ -45,7 +46,7 @@ public class CustomJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
     }
 
     @Override
-    protected Object parse(String json) {
+    public Object parse(String json) {
         try {
             return getObjectMapper().readValue(json, type);
         } catch (IOException e) {
@@ -54,7 +55,7 @@ public class CustomJacksonTypeHandler extends AbstractJsonTypeHandler<Object> {
     }
 
     @Override
-    protected String toJson(Object obj) {
+    public String toJson(Object obj) {
         try {
             return getObjectMapper().writeValueAsString(obj);
         } catch (JsonProcessingException e) {

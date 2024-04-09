@@ -1,7 +1,7 @@
 package com.tangzc.mpe.annotation;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.tangzc.mpe.annotation.handler.CustomJacksonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import org.apache.ibatis.type.TypeHandler;
 import org.springframework.core.annotation.AliasFor;
 
@@ -13,8 +13,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * 此种方式有一个弊端：会将类的签名（全名称）序列化到数据中，所以使用该注解的字段所在的类不能随意变更目录和名称。
- * 表示字段可被序列化
+ * 语法糖
  *
  * @author don
  */
@@ -22,8 +21,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @TableField
-@Deprecated
-public @interface Serializable {
+public @interface JsonSerializable {
 
     /**
      * 注意：需要配合 @TableName(autoResultMap = true)
@@ -31,5 +29,5 @@ public @interface Serializable {
      * 然后在类头上标注@MappedTypes({对象1.class,对象2.class})
      */
     @AliasFor(annotation = TableField.class, attribute = "typeHandler")
-    Class<? extends TypeHandler> typeHandler() default CustomJacksonTypeHandler.class;
+    Class<? extends TypeHandler> typeHandler() default JacksonTypeHandler.class;
 }
