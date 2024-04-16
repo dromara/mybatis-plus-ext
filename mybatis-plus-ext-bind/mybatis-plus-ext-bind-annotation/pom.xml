@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-bind</artifactId>
-        <version>3.5.6-EXT650</version>
+        <version>3.5.6-EXT660</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-bind-annotation</artifactId>
