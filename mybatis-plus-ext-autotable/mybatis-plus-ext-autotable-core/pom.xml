@@ -37,19 +37,19 @@
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-common</artifactId>
             <version>${dynamic-datasource.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring-boot-autoconfigure</artifactId>
             <version>${mybatis-plus.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-core</artifactId>
             <version>${mybatis-plus.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
     </dependencies>
