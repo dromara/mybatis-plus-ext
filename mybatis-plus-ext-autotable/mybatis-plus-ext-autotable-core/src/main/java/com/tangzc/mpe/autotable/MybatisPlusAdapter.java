@@ -150,6 +150,16 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
         return TableColumnNameUtil.getTableName(clazz);
     }
 
+    @Override
+    public String getTableSchema(Class<?> clazz) {
+
+        TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
+        if (mybatisPlusTableName != null && StringUtils.hasText(mybatisPlusTableName.schema())) {
+            return mybatisPlusTableName.schema();
+        }
+        return null;
+    }
+
     /**
      * 根据注解顺序和配置，获取字段对应的数据库字段名
      *

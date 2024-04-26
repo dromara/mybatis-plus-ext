@@ -2,6 +2,7 @@ package com.tangzc.mpe.autotable.annotation;
 
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.tangzc.autotable.annotation.AutoTable;
 import com.tangzc.autotable.annotation.TableComment;
 import org.springframework.core.annotation.AliasFor;
 
@@ -21,7 +22,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @TableName
-@TableComment("")
+@AutoTable
 public @interface Table {
 
     /**
@@ -33,9 +34,15 @@ public @interface Table {
     String value() default "";
 
     /**
+     * 表schema
+     */
+    @AliasFor(annotation = TableName.class, attribute = "schema")
+    String schema() default "";
+
+    /**
      * 表注释
      */
-    @AliasFor(annotation = TableComment.class, attribute = "value")
+    @AliasFor(annotation = AutoTable.class, attribute = "comment")
     String comment() default "";
 
     /**
