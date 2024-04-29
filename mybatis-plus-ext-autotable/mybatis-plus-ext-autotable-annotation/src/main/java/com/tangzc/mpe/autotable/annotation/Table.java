@@ -3,7 +3,6 @@ package com.tangzc.mpe.autotable.annotation;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.tangzc.autotable.annotation.AutoTable;
-import com.tangzc.autotable.annotation.TableComment;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;

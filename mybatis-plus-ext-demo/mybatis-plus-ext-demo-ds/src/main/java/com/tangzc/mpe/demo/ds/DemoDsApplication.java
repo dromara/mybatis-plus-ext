@@ -3,6 +3,7 @@ package com.tangzc.mpe.demo.ds;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tangzc.autotable.springboot.EnableAutoTable;
 import com.tangzc.mpe.demo.ds.entity.TestTable;
+import com.tangzc.mpe.demo.ds.entity.TestTable2;
 import com.tangzc.mpe.demo.ds.entity.TestTable2Mapper;
 import com.tangzc.mpe.demo.ds.entity.TestTable2Repository;
 import com.tangzc.mpe.demo.ds.entity.TestTableRepository;
@@ -39,6 +40,11 @@ public class DemoDsApplication {
         for (TestTable testTable : testTables) {
             System.out.println(testTable.toString());
         }
-        // testTable2Repository.selectList(new QueryWrapper<>());
+
+        List<TestTable2> testTable2s = testTable2Repository.selectList(new QueryWrapper<>());
+
+        for (TestTable2 testTable : testTable2s) {
+            System.out.println(testTable.toString());
+        }
     }
 }
