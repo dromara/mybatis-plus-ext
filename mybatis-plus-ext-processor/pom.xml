@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <dependency>
@@ -29,13 +29,11 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-core</artifactId>
             <version>${mybatis-plus.version}</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-common</artifactId>
             <version>${dynamic-datasource.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
