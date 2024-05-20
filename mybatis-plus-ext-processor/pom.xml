@@ -34,6 +34,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>dynamic-datasource-spring-boot-common</artifactId>
             <version>${dynamic-datasource.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

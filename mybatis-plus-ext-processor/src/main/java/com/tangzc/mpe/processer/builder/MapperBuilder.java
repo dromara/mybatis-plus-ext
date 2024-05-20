@@ -1,19 +1,14 @@
 package com.tangzc.mpe.processer.builder;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
-import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.processer.annotation.AutoMapper;
 import com.tangzc.mpe.processer.config.ConfigurationKey;
 import com.tangzc.mpe.processer.config.MybatisPlusExtProcessConfig;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
