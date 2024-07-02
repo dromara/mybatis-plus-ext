@@ -63,8 +63,6 @@ public @interface Column {
     int decimalLength() default -1;
 
     /**
-     * 是否为可以为null，true是可以，false是不可以，默认为true
-     *
      * @return 是否为可以为null，true是不可以，false是可以，默认为false
      */
     @AliasFor(annotation = ColumnNotNull.class, attribute = "value")
