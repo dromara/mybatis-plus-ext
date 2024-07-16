@@ -1,5 +1,5 @@
 # 版本升级
-version=3.5.6-EXT684
+version=3.5.7-EXT690
 
 echo "开始替换pom.xml的版本号：${version}"
 mvn versions:set -DnewVersion=${version}
