@@ -40,9 +40,9 @@
         <mybatis.version>3.5.14</mybatis.version>
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
-        <mybatis-plus.version>3.5.6</mybatis-plus.version>
-        <auto-table.version>1.7.4</auto-table.version>
-        <dynamic-datasource.version>4.3.0</dynamic-datasource.version>
+        <mybatis-plus.version>3.5.7</mybatis-plus.version>
+        <auto-table.version>1.7.5</auto-table.version>
+        <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- java版本 -->
         <java.version>1.8</java.version>
