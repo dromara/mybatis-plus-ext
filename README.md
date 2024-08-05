@@ -18,7 +18,7 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;增强功能具体体现在几个方面：代码（字段字符串、Mapper、Repository/Service）预生成、自动建表(<a href="https://gitee.com/tangzc/auto-table" target="_blank">auto-table</a>)、数据自动填充（类似JPA中的审计）、关联查询（类似sql中的join）、冗余数据自动更新、动态条件等功能做了补充完善。
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果感觉本框架对您有所帮助，烦请去[Gitee](https://gitee.com/tangzc/mybatis-plus-ext)、[GitCode](https://gitcode.com/tangzc/mybatis-plus-ext)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果感觉本框架对您有所帮助，烦请去[Gitee](https://gitee.com/dromara/mybatis-plus-ext)、[GitCode](https://gitcode.com/dromara/mybatis-plus-ext)
 给个小星星⭐️，欢迎来撩共同进步。
 
 <p align="center"><img src="https://s2.loli.net/2022/04/02/Sc6uMsaKNY9nWBE.png" alt="img" width="200px" /></p>
