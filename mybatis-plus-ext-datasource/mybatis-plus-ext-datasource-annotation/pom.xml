@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-datasource</artifactId>
-        <version>3.5.7-EXT691</version>
+        <version>3.5.7-EXT692</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-datasource-annotation</artifactId>
