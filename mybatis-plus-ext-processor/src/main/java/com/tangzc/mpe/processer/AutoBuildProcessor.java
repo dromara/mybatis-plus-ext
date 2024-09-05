@@ -81,6 +81,7 @@ public class AutoBuildProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> supportedAnnotations = new HashSet<>();
+        supportedAnnotations.add(AutoDefine.class.getCanonicalName());
         supportedAnnotations.add(AutoMapper.class.getCanonicalName());
         supportedAnnotations.add(AutoRepository.class.getCanonicalName());
         return supportedAnnotations;
