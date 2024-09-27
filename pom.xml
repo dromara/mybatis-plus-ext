@@ -44,7 +44,7 @@
         <auto-table.version>1.9.2</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
-        <!-- java版本 -->
+        <!-- maven配置-->
         <java.version>11</java.version>
         <resource.delimiter>@</resource.delimiter>
         <maven.compiler.source>${java.version}</maven.compiler.source>
