@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext-bind</artifactId>
-        <version>3.5.8-EXT700</version>
+        <version>3.5.8-EXT710</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-bind-core</artifactId>
