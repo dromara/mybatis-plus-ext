@@ -12,7 +12,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("add")
+    @GetMapping("adduser")
     public void add(String name) {
 
         userRepository.save(new User().setName(name));

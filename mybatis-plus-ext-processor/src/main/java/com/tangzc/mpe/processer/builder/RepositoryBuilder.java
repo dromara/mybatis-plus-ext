@@ -1,43 +1,33 @@
 package com.tangzc.mpe.processer.builder;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeSpec;
-import com.tangzc.mpe.base.repository.BaseRepository;
-import com.tangzc.mpe.processer.annotation.AutoMapper;
+import com.tangzc.mpe.autotable.annotation.Table;
 import com.tangzc.mpe.processer.annotation.AutoRepository;
 import com.tangzc.mpe.processer.config.ConfigurationKey;
 import com.tangzc.mpe.processer.config.MybatisPlusExtProcessConfig;
-import org.springframework.stereotype.Repository;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.util.Arrays;
+import java.util.List;
 
 public class RepositoryBuilder extends BaseBuilder {
 
-    private final Types typeUtils;
     private final Elements elementUtils;
     private final MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
-    private final MapperBuilder mapperBuilder;
 
     public RepositoryBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig, MapperBuilder mapperBuilder) {
-        super(filer, messager);
-        this.typeUtils = typeUtils;
+        super(filer, messager, elementUtils, mybatisPlusExtProcessConfig);
         this.elementUtils = elementUtils;
         this.mybatisPlusExtProcessConfig = mybatisPlusExtProcessConfig;
-        this.mapperBuilder = mapperBuilder;
     }
 
-    public void buildRepository(TypeElement element) {
+    public void buildRepository(TypeElement element, AutoRepository autoRepository, String fullMapperName) {
         /* 获取Entity的类名和包名 */
         String entityPackageName = elementUtils.getPackageOf(element).getQualifiedName().toString();
         String entityName = element.getSimpleName().toString();
-        AutoRepository autoRepository = element.getAnnotation(AutoRepository.class);
 
         /* 获取Repository的类名和包名 */
         String suffix = autoRepository.suffix();
@@ -49,46 +39,45 @@ public class RepositoryBuilder extends BaseBuilder {
         if (customPackageName.isEmpty()) {
             customPackageName = mybatisPlusExtProcessConfig.get(ConfigurationKey.REPOSITORY_PACKAGE_NAME);
         }
-        String repositoryPackageName = getTargetPackageName(entityPackageName, customPackageName);
+        String repositoryPackageName = getTargetPackageName(element, customPackageName);
+
+        // 检查文件已经被创建了，自动跳过
+        if (isExist(repositoryPackageName, repositoryName)) {
+            return;
+        }
 
         /* 获取mapper的类名和包名 */
-        String mapperName;
-        String mapperPackageName;
-        AutoMapper autoMapper = element.getAnnotation(AutoMapper.class);
-        if (autoMapper != null) {
-            // @AutoMapper不为空，说明已经通过@AutoMapper直接创建了
-            mapperName = getTargetName(autoMapper.value(), entityName, mapperBuilder.getMapperSuffix(autoMapper));
-            mapperPackageName = getTargetPackageName(entityPackageName, mapperBuilder.getMapperPackageName(autoMapper));
-        } else {
-            // 没有独立声明@AutoMapper，需要使用@AutoRepository中的@AutoMapper
-            autoMapper = autoRepository.autoMapper();
-            // 先构建Mapper
-            String fullMapperName = mapperBuilder.buildMapper(element, autoMapper);
-            int lastIndexOfPoint = fullMapperName.lastIndexOf(".");
-            mapperName = fullMapperName.substring(lastIndexOfPoint + 1);
-            mapperPackageName = fullMapperName.substring(0, lastIndexOfPoint);
-        }
+        int endIndex = fullMapperName.lastIndexOf(".");
+        String mapperPackageName = fullMapperName.substring(0, endIndex);
+        String mapperName = fullMapperName.substring(endIndex + 1);
 
-        /* 生成Repository */
-        TypeSpec.Builder builder = TypeSpec.classBuilder(repositoryName)
-                .addModifiers(Modifier.PUBLIC)
-                .superclass(ParameterizedTypeName.get(
-                        ClassName.get(BaseRepository.class),
-                        ClassName.get(mapperPackageName, mapperName),
-                        ClassName.get(entityPackageName, entityName)))
-                .addAnnotation(ClassName.get(Repository.class));
-
-        // 添加@DS注解
+        String dsAnnoImport = null;
+        String dsAnno = null;
         if (autoRepository.withDSAnnotation()) {
-            addDsAnnotation(element, builder);
+            Table table = element.getAnnotation(Table.class);
+            if (table != null) {
+                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
+                dsAnno = "@DS(\"" + table.dsName() + "\")";
+            } else {
+                warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + repositoryPackageName + "." + repositoryName + "添加@DS ");
+            }
         }
 
-        TypeSpec repository = builder.build();
+        List<String> lines = Arrays.asList(
+                "package " + repositoryPackageName + ";",
+                "",
+                dsAnnoImport,
+                "import com.tangzc.mpe.base.repository.BaseRepository;",
+                "import " + entityPackageName + "." + entityName + ";",
+                "import " + mapperPackageName + "." + mapperName + ";",
+                "import org.springframework.stereotype.Repository;",
+                "",
+                dsAnno,
+                "@Repository",
+                "public class " + repositoryName + " extends BaseRepository<" + mapperName + ", " + entityName + "> {",
+                "}"
+        );
 
-        JavaFile javaFile = JavaFile.builder(repositoryPackageName, repository)
-                .build();
-
-        // 持久化到本地
-        writeToFile(javaFile);
+        writeToFile(repositoryPackageName + "." + repositoryName, lines);
     }
 }

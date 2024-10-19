@@ -19,6 +19,7 @@
         <module>mybatis-plus-ext-demo-autotable</module>
         <module>mybatis-plus-ext-demo-datasource</module>
         <module>mybatis-plus-ext-demo-dict</module>
+        <module>mybatis-plus-ext-demo-processor</module>
     </modules>
 
     <properties>

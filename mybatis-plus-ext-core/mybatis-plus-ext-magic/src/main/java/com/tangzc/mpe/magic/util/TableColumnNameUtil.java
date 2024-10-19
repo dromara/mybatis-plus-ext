@@ -59,7 +59,7 @@ public class TableColumnNameUtil {
         if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
-        TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
+        TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
         if (tableId != null && StringUtils.hasText(tableId.value())) {
             return filterSpecialChar(tableId.value());
         }
@@ -80,7 +80,7 @@ public class TableColumnNameUtil {
         if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
-        TableId tableId = AnnotatedElementUtils.findMergedAnnotation(field, TableId.class);
+        TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
         if (tableId != null && StringUtils.hasText(tableId.value())) {
             return filterSpecialChar(tableId.value());
         }

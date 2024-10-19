@@ -1,6 +1,7 @@
 package com.tangzc.mpe.magic.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -14,7 +15,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class AnnotationDefaultValueHelper {
 
-    public static <A extends Annotation> A getAnnotationWithDefaultValues(Class<A> annotationType, Consumer<Map<String, Object>> changeDefaultValues) {
+    public static <A extends Annotation> A getAnnotationWithDefaultValues(Class<A> annotationType, @Nullable Consumer<Map<String, Object>> changeDefaultValues) {
         Map<String, Object> defaultValues = getDefaultValues(annotationType);
         if (changeDefaultValues != null) {
             changeDefaultValues.accept(defaultValues);

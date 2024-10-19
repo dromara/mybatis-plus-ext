@@ -44,7 +44,16 @@ public class MybatisPlusExtProcessConfig {
      */
     protected final Properties properties = new Properties();
 
-    public MybatisPlusExtProcessConfig(Filer filer) {
+    private static MybatisPlusExtProcessConfig INSTANCE = null;
+
+    public static synchronized MybatisPlusExtProcessConfig getInstance(Filer filer) {
+        if (INSTANCE == null) {
+            INSTANCE = new MybatisPlusExtProcessConfig(filer);
+        }
+        return INSTANCE;
+    }
+
+    private MybatisPlusExtProcessConfig(Filer filer) {
         try {
             //target/classes/
             FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", "mybatis-plus-ext");
@@ -55,7 +64,7 @@ public class MybatisPlusExtProcessConfig {
             List<File> aptConfigFiles = new ArrayList<>();
 
             while (projectRootPath != null && classPathFile != null
-                && projectRootPath.length() <= classPathFile.getAbsolutePath().length()) {
+                    && projectRootPath.length() <= classPathFile.getAbsolutePath().length()) {
                 File aptConfig = new File(classPathFile, APT_FILE_NAME);
                 if (aptConfig.exists()) {
                     aptConfigFiles.add(aptConfig);
@@ -77,7 +86,7 @@ public class MybatisPlusExtProcessConfig {
                             properties.put(key, config.getProperty((String) key));
                         }
                         if ("processor.stopBubbling".equalsIgnoreCase((String) key)
-                            && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
+                                && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
                             stopBubbling = true;
                         }
                     }

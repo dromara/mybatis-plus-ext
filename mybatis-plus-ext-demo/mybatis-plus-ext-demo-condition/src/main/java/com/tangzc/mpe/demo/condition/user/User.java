@@ -1,6 +1,7 @@
 package com.tangzc.mpe.demo.condition.user;
 
 import com.tangzc.autotable.annotation.ColumnComment;
+import com.tangzc.mpe.annotation.InsertFillData;
 import com.tangzc.mpe.annotation.InsertFillTime;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
@@ -20,8 +21,12 @@ public class User extends BaseLogicEntity<String, LocalDateTime> {
     @ColumnComment("主键")
     private String id;
     @Column(comment = "姓名", length = 300)
+    @InsertFillData(UserNameAutoFillHandler.class)
     private String name;
+    @Column(comment = "部门姓名", length = 300)
+    @InsertFillData(DeptNameAutoFillHandler.class)
+    private String deptName;
     @InsertFillTime
-    @Column(value = "registered_date1", comment = "注册时间")
+    @Column(value = "registered_date_rename", comment = "注册时间")
     private Long registeredDate;
 }

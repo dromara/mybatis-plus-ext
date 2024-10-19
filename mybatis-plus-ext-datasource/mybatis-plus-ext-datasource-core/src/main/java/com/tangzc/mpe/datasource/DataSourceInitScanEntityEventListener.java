@@ -2,6 +2,7 @@ package com.tangzc.mpe.datasource;
 
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.datasource.annotation.DataSource;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.util.BeanClassUtil;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -23,7 +24,7 @@ public class DataSourceInitScanEntityEventListener {
         for (Field entityField : allDeclaredFields) {
 
             // 扫描所有的Entity中的DataSource注解
-            DataSource dataSource = AnnotatedElementUtils.findMergedAnnotation(entityField, DataSource.class);
+            DataSource dataSource = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(entityField, DataSource.class);
             if (dataSource != null) {
                 DataSourceManager.addDataSource(entityClass, entityField, dataSource);
             }

@@ -39,14 +39,14 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
     @Override
     public boolean isIgnoreField(Field field, Class<?> clazz) {
 
-        TableField tableField = AnnotatedElementUtils.getMergedAnnotation(field, TableField.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         boolean ignore = tableField != null && !tableField.exist();
         if (ignore) {
             return true;
         }
 
         // 通过excludeProperty判断是否忽略
-        TableName tableName = AnnotatedElementUtils.getMergedAnnotation(field, TableName.class);
+        TableName tableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableName.class);
         if (tableName != null) {
             return Arrays.stream(tableName.excludeProperty()).anyMatch(property -> property.equals(field.getName()));
         }
@@ -64,7 +64,7 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
 
     @Override
     public boolean isPrimary(Field field, Class<?> clazz) {
-        if (AnnotatedElementUtils.isAnnotated(field, TableId.class)) {
+        if (AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class) != null) {
             return true;
         }
 
@@ -89,7 +89,7 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
         if (field.getType().isEnum()) {
             return EnumUtil.getEnumFieldSaveDbType(field.getType());
         }
-        TableField column = AnnotatedElementUtils.findMergedAnnotation(field, TableField.class);
+        TableField column = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         // json数据，按照字符串处理
         if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
             return String.class;
@@ -169,11 +169,11 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
     @Override
     public String getRealColumnName(Class<?> clazz, Field field) {
 
-        TableField tableField = AnnotatedElementUtils.getMergedAnnotation(field, TableField.class);
+        TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
         }
-        TableId tableId = AnnotatedElementUtils.getMergedAnnotation(field, TableId.class);
+        TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
         if (tableId != null && StringUtils.hasText(tableId.value())) {
             return filterSpecialChar(tableId.value());
         }

@@ -7,6 +7,6 @@ import java.io.Serializable;
  *
  * @author don
  */
-public interface IOptionByAutoFillHandler<ID_TYPE extends Serializable> extends AutoFillHandler<ID_TYPE> {
+public interface IAutoFillHandlerForBaseEntity<ID_TYPE extends Serializable> extends AutoFillHandler<ID_TYPE> {
 
 }

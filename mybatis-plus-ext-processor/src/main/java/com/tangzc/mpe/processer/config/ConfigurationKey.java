@@ -1,12 +1,21 @@
 package com.tangzc.mpe.processer.config;
 
-import lombok.Getter;
+import com.tangzc.mpe.autotable.annotation.Table;
 
 /**
  * 配置键值。
  */
-@Getter
 public enum ConfigurationKey {
+
+    /**
+     * 是否全局entity开启自动创建。
+     */
+    GLOBAL_ENABLE("processor.global.enable", "false"),
+
+    /**
+     * 全局entity开启自动创建的标志注解。
+     */
+    GLOBAL_ENABLE_ANNOTATION("processor.global.annotation", Table.class.getName()),
 
     /**
      * 包含实体所有字段的类的名称后缀。
@@ -55,17 +64,11 @@ public enum ConfigurationKey {
     REPOSITORY_PACKAGE_NAME("processor.repositoryPackageName", ".");
 
     /**
-     * -- GETTER --
-     *  获取配置键。
-     *
-     * @return 键
+     * 获取配置键。
      */
     private final String configKey;
     /**
-     * -- GETTER --
-     *  获取配置默认值。
-     *
-     * @return 默认值
+     * 获取配置默认值。
      */
     private final String defaultValue;
 
@@ -74,4 +77,11 @@ public enum ConfigurationKey {
         this.defaultValue = defaultValue;
     }
 
+    public String getConfigKey() {
+        return configKey;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 }

@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSour
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.tangzc.autotable.core.dynamicds.IDataSourceHandler;
 import com.tangzc.mpe.autotable.annotation.Table;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class DynamicDatasourceHandler implements IDataSourceHandler {
     @Override
     public String getDataSourceName(Class clazz) {
 
-        Table tableAnno = AnnotatedElementUtils.findMergedAnnotation(clazz, Table.class);
+        Table tableAnno = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, Table.class);
         if (tableAnno != null) {
             return tableAnno.dsName();
         }

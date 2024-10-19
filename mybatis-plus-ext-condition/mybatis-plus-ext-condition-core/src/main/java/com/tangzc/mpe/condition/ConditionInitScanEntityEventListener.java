@@ -2,6 +2,7 @@ package com.tangzc.mpe.condition;
 
 import com.tangzc.mpe.base.event.InitScanEntityEvent;
 import com.tangzc.mpe.condition.metadata.annotation.DynamicCondition;
+import com.tangzc.mpe.magic.util.AnnotatedElementUtilsPlus;
 import com.tangzc.mpe.magic.util.BeanClassUtil;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -23,7 +24,7 @@ public class ConditionInitScanEntityEventListener {
         for (Field field : allDeclaredFields) {
 
             // 扫描所有的Entity中的DataSource注解
-            DynamicCondition dynamicCondition = AnnotatedElementUtils.findMergedAnnotation(field, DynamicCondition.class);
+            DynamicCondition dynamicCondition = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, DynamicCondition.class);
             if (dynamicCondition != null) {
                 DynamicConditionManager.add(entityClass, field, dynamicCondition);
             }

@@ -12,25 +12,32 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.JavaFileObject;
-import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DefineBuilder extends BaseBuilder {
 
     private final Types typeUtils;
-    private final Elements elementUtils;
-    private final MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
 
     public DefineBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
-        super(filer, messager);
+        super(filer, messager, elementUtils, mybatisPlusExtProcessConfig);
         this.typeUtils = typeUtils;
-        this.elementUtils = elementUtils;
-        this.mybatisPlusExtProcessConfig = mybatisPlusExtProcessConfig;
     }
 
-    public void buildDefine(TypeElement classElement) {
+    public void buildDefine(TypeElement classElement, AutoDefine autoDefine) {
+
+        String suffix = getValueOrDefault(autoDefine.suffix(), ConfigurationKey.ENTITY_DEFINE_SUFFIX);
+        String defineName = classElement.getSimpleName().toString() + suffix;
+
+        String packageName = getValueOrDefault(autoDefine.packageName(), ConfigurationKey.ENTITY_DEFINE_PACKAGE_NAME);
+        String definePackageName = getTargetPackageName(classElement, packageName);
+
+        // 检查文件已经被创建了，自动跳过
+        if (isExist(definePackageName, defineName)) {
+            return;
+        }
 
         // 获取当前类中的所有字段
         Set<String> fields = classElement.getEnclosedElements().stream()
@@ -55,33 +62,14 @@ public class DefineBuilder extends BaseBuilder {
             superClassMirror = superClassElement.getSuperclass();
         }
 
-        AutoDefine autoDefine = classElement.getAnnotation(AutoDefine.class);
+        List<String> lines = Arrays.asList(
+                "package " + definePackageName + ";",
+                "",
+                "public interface " + defineName + " {",
+                fields.stream().map(field -> "    String " + field + " = \"" + field + "\";").collect(Collectors.joining("\n")),
+                "}"
+        );
 
-        String suffix = autoDefine.suffix();
-        if (suffix.isEmpty()) {
-            suffix = mybatisPlusExtProcessConfig.get(ConfigurationKey.ENTITY_DEFINE_SUFFIX);
-        }
-        String className = classElement.getSimpleName().toString() + suffix;
-
-        String packageName = autoDefine.packageName();
-        if(packageName.isEmpty()) {
-            packageName = mybatisPlusExtProcessConfig.get(ConfigurationKey.ENTITY_DEFINE_PACKAGE_NAME);
-        }
-        String entityPackageName = elementUtils.getPackageOf(classElement).getQualifiedName().toString();
-        packageName = getTargetPackageName(entityPackageName, packageName);
-        try {
-            JavaFileObject file = this.filer.createSourceFile(packageName + "." + className);
-            try (PrintWriter writer = new PrintWriter(file.openWriter())) {
-                writer.println("package " + packageName + ";");
-                writer.println();
-                writer.println("public interface " + className + " {");
-                for (String field : fields) {
-                    writer.println("    String " + field + " = \"" + field + "\";");
-                }
-                writer.println("}");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        writeToFile(definePackageName + "." + defineName, lines);
     }
 }
