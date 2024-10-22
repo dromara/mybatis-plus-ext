@@ -41,7 +41,7 @@
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-plus.version>3.5.8</mybatis-plus.version>
-        <auto-table.version>1.9.3</auto-table.version>
+        <auto-table.version>1.9.3.1</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- maven配置-->
