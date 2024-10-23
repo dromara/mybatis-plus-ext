@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.tangzc</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
-        <version>3.5.8-EXT711</version>
+        <version>3.5.8-EXT720</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-processor</artifactId>
