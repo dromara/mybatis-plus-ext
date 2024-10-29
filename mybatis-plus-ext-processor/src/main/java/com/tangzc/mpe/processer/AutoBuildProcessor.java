@@ -35,17 +35,15 @@ public class AutoBuildProcessor extends AbstractProcessor {
 
     private DefineBuilder defineBuilder;
     private MapperBuilder mapperBuilder;
-    private Elements elementUtils;
     private RepositoryBuilder repositoryBuilder;
     private MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
-    private boolean isGlobalMode;
-    private String globalActiveAnnotation;
+    private Class<? extends Annotation> globalAnnotationClass;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         Types typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
+        Elements elementUtils = processingEnv.getElementUtils();
         Filer filer = processingEnv.getFiler();
         Messager messager = processingEnv.getMessager();
         mybatisPlusExtProcessConfig = MybatisPlusExtProcessConfig.getInstance(filer);
@@ -62,7 +60,7 @@ public class AutoBuildProcessor extends AbstractProcessor {
             return true;
         }
 
-        Class<? extends Annotation> globalAnnotationClass = getGlobalType(annoations);
+        // Class<? extends Annotation> globalAnnotationClass = getGlobalType();
 
         Set<? extends Element> rootElements = env.getRootElements();
         for (Element element : rootElements) {
@@ -108,34 +106,6 @@ public class AutoBuildProcessor extends AbstractProcessor {
         return true;
     }
 
-    private Class<? extends Annotation> getGlobalType(Set<? extends TypeElement> annoations) {
-
-        if (!isGlobalMode) {
-            return null;
-        }
-
-        TypeElement globalType = annoations.stream()
-                .filter(type -> type.getQualifiedName().toString().equals(globalActiveAnnotation))
-                .findFirst()
-                .orElse(null);
-        if (globalType == null) {
-            throw new RuntimeException("未找到全局配置注解");
-        }
-
-        if (globalType.getKind() != ElementKind.ANNOTATION_TYPE) {
-            throw new RuntimeException("全局配置注解必须为注解类型");
-        }
-
-        // 获取全限定类名
-        String className = elementUtils.getBinaryName(globalType).toString();
-        // 使用反射根据类名加载Class对象
-        try {
-            return (Class<? extends Annotation>) Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private <ANNO extends Annotation> ANNO findAnnotation(Element typeElement, Class<ANNO> annotationClass, boolean isFindDefault) {
         ANNO annotation = typeElement.getAnnotation(annotationClass);
         if (annotation == null && isFindDefault) {
@@ -152,10 +122,19 @@ public class AutoBuildProcessor extends AbstractProcessor {
         supportedAnnotations.add(AutoRepository.class.getCanonicalName());
 
         String globalEnable = mybatisPlusExtProcessConfig.get(ConfigurationKey.GLOBAL_ENABLE);
-        isGlobalMode = "true".equalsIgnoreCase(globalEnable) || "on".equalsIgnoreCase(globalEnable);
+        boolean isGlobalMode = "true".equalsIgnoreCase(globalEnable) || "on".equalsIgnoreCase(globalEnable);
         if (isGlobalMode) {
-            globalActiveAnnotation = mybatisPlusExtProcessConfig.get(ConfigurationKey.GLOBAL_ENABLE_ANNOTATION);
-            supportedAnnotations.add(globalActiveAnnotation);
+            String globalAnnotationName = mybatisPlusExtProcessConfig.get(ConfigurationKey.GLOBAL_ENABLE_ANNOTATION);
+            if (globalAnnotationName.matches("^([a-zA-Z$][a-zA-Z\\d_$]*\\.)*([a-zA-Z$][a-zA-Z\\d_$]*)$")) {
+                supportedAnnotations.add(globalAnnotationName);
+            } else {
+                throw new RuntimeException("【代码生成】配置的全局注解类名格式不正确：\"" + globalAnnotationName + "\"");
+            }
+            try {
+                globalAnnotationClass = (Class<? extends Annotation>) Class.forName(globalAnnotationName);
+            } catch (Exception e) {
+                throw new RuntimeException("【代码生成】未找到全局注解", e);
+            }
         }
 
         return supportedAnnotations;

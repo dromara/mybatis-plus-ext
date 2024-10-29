@@ -42,16 +42,6 @@ public abstract class BaseBuilder {
         this.mybatisPlusExtProcessConfig = mybatisPlusExtProcessConfig;
     }
 
-    protected void addDsAnnotation(TypeElement element, TypeSpec.Builder builder) {
-        Table table = element.getAnnotation(Table.class);
-        if (table != null && StringUtils.hasText(table.dsName())) {
-            AnnotationSpec.Builder dsAnnotationBuilder = AnnotationSpec.builder(ClassName.get(DS.class));
-            dsAnnotationBuilder.addMember("value", CodeBlock.of("$S", table.dsName()));
-            AnnotationSpec dsAnnotation = dsAnnotationBuilder.build();
-            builder.addAnnotation(dsAnnotation);
-        }
-    }
-
     protected String getTargetPackageName(TypeElement classElement, String customPackagePath) {
         // 默认使用entity所在目录
         String entityPackagePath = elementUtils.getPackageOf(classElement).getQualifiedName().toString();
@@ -98,21 +88,6 @@ public abstract class BaseBuilder {
         return name;
     }
 
-    protected void writeToFile(JavaFile javaFile) {
-        try {
-            if (javaFile != null) {
-                javaFile.writeTo(this.filer);
-            }
-        } catch (FilerException e) {
-            if (e.getMessage().startsWith("Attempt to recreate a file for type ")) {
-                return;
-            }
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected void writeToFile(String path, List<String> lines) {
         try {
             JavaFileObject file = this.filer.createSourceFile(path);
@@ -143,6 +118,7 @@ public abstract class BaseBuilder {
         }
 
         if (fileObject != null) {
+            log("存在跳过:" + packageName + "." + fileName);
             return true;
         } else {
             log("自动创建:" + packageName + "." + fileName);
