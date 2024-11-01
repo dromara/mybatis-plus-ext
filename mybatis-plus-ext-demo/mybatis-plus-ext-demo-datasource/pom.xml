@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
-        <groupId>com.tangzc</groupId>
+        <groupId>org.dromara</groupId>
         <version>3.5.8-EXT722</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -11,20 +11,20 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>mybatis-plus-ext-demo-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <!-- 只引入单项功能 -->
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>mybatis-plus-ext-datasource-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- 只引入建表功能 -->
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>mybatis-plus-ext-autotable-core</artifactId>
             <version>${project.version}</version>
         </dependency>
