@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
-@EnableAutoTable
+@EnableAutoTable(basePackages = {"org.dromara.mpe.demo.autotable.mysql","org.dromara.mpe.demo.autotable.pgsql"})
 @SpringBootApplication
 public class DemoAutoTableApplication {
     public static void main(String[] args) {

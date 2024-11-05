@@ -32,11 +32,6 @@ public @interface BindEntityByMid {
     String[] selectFields() default {};
 
     /**
-     * 被关联的Entity不查询的字段
-     */
-    String[] notSelectFields() default {};
-
-    /**
      * 中间表关联条件
      */
     MidCondition conditions();

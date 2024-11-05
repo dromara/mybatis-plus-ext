@@ -21,7 +21,7 @@ spring:
           # 注：
           # :resource: 指向项目的 resources 路径（resource前后两个 `:` 不能省略）
           url: jdbc:sqlite::resource:mpe.db
-#          url: jdbc:sqlite:mybatis-plus-ext-demo/mybatis-plus-ext-demo-autotable/src/main/resources/mpe.db
+          #          url: jdbc:sqlite:mybatis-plus-ext-demo/mybatis-plus-ext-demo-autotable/src/main/resources/mpe.db
           driver-class-name: org.sqlite.JDBC
         my-pgsql:
           driver-class-name: org.postgresql.Driver
@@ -38,6 +38,5 @@ mybatis-plus:
       table-prefix: my_
 
 auto-table:
-  #    mode: create
+  mode: create
   auto-drop-column: true
-  model-package: com.tangzc.mpe.demo.autotable

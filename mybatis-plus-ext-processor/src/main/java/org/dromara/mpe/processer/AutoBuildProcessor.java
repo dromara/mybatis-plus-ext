@@ -1,6 +1,7 @@
 package org.dromara.mpe.processer;
 
 import com.google.auto.service.AutoService;
+import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.magic.util.AnnotationDefaultValueHelper;
 import org.dromara.mpe.processer.annotation.AutoDefine;
 import org.dromara.mpe.processer.annotation.AutoMapper;

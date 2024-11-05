@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.ColumnDefault;
 import com.tangzc.autotable.annotation.ColumnType;
-import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.autotable.annotation.IndexField;
 import com.tangzc.autotable.annotation.TableIndex;
@@ -13,14 +12,15 @@ import com.tangzc.autotable.annotation.enums.DefaultValueEnum;
 import com.tangzc.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
+import lombok.Data;
+import org.dromara.mpe.annotation.Exclude;
 import org.dromara.mpe.autotable.annotation.Column;
 import org.dromara.mpe.autotable.annotation.ColumnId;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.autotable.annotation.UniqueIndex;
-import lombok.Data;
+import org.dromara.mpe.processer.annotation.AutoMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * @author don
@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "name_age_index", fields = {"age", "username"}),
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
-// @Ignore
+@AutoMapper(withDSAnnotation = true)
 @Table(comment = "测试表", dsName = "my-sqlite")
 public class Sqlite3Table {
 
@@ -66,9 +66,9 @@ public class Sqlite3Table {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(comment = "注册时间")
-    private LocalDateTime registerTime;
+    private String registerTime;
 
-    @Ignore
+    @Exclude
     @Column(comment = "额外信息")
     private String extra;
 }

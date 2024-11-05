@@ -1,29 +1,23 @@
 package org.dromara.mpe.demo.condition;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.dromara.mpe.condition.metadata.IDynamicConditionHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 
 @Component
 public class FilterByCurrentUser implements IDynamicConditionHandler {
 
-    @Autowired
-    private HttpServletRequest request;
-
     @Override
     public List<Object> values() {
-
-        String id = request.getParameter("id");
-        return Collections.singletonList(id);
+        return Collections.singletonList(RandomUtils.nextInt(1, 3));
     }
 
     @Override
     public boolean enable() {
-        String id = request.getParameter("id");
-        return id != null;
+        // 动态判断是否启用该条件
+        return true;
     }
 }

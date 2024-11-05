@@ -12,6 +12,6 @@ public class UserIdAutoFillHandler implements AutoFillHandler<Integer> {
     @Override
     public Integer getVal(Object object, Class<?> clazz, Field field) {
 
-        return RandomUtils.nextInt(1, 2);
+        return RandomUtils.nextInt(1, 3);
     }
 }

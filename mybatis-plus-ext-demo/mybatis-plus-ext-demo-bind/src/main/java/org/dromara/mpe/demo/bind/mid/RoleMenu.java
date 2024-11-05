@@ -1,6 +1,7 @@
 package org.dromara.mpe.demo.bind.mid;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.experimental.Accessors;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.processer.annotation.AutoDefine;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.Data;
  * @author don
  */
 @Data
-@AutoDefine
+@Accessors(chain = true)
 @Table(comment = "中间表")
 public class RoleMenu {
 

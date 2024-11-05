@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.tangzc.autotable.annotation.ColumnComment;
 import com.tangzc.autotable.annotation.ColumnDefault;
 import com.tangzc.autotable.annotation.ColumnType;
-import com.tangzc.autotable.annotation.Ignore;
 import com.tangzc.autotable.annotation.Index;
 import com.tangzc.autotable.annotation.IndexField;
 import com.tangzc.autotable.annotation.TableIndex;
@@ -14,11 +13,13 @@ import com.tangzc.autotable.annotation.enums.IndexSortTypeEnum;
 import com.tangzc.autotable.annotation.enums.IndexTypeEnum;
 import com.tangzc.autotable.annotation.mysql.MysqlCharset;
 import com.tangzc.autotable.annotation.mysql.MysqlTypeConstant;
+import lombok.Data;
+import org.dromara.mpe.annotation.Exclude;
 import org.dromara.mpe.autotable.annotation.Column;
 import org.dromara.mpe.autotable.annotation.ColumnId;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.autotable.annotation.UniqueIndex;
-import lombok.Data;
+import org.dromara.mpe.processer.annotation.AutoMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ import java.time.LocalDateTime;
         @TableIndex(name = "phone_index", fields = {}, indexFields = {@IndexField(field = "phone", sort = IndexSortTypeEnum.DESC)}, type = IndexTypeEnum.UNIQUE)
 })
 @MysqlCharset(charset = "utf8mb4", collate = "utf8mb4_0900_ai_ci")
-// @Ignore
+@AutoMapper(withDSAnnotation = true)
 @Table(comment = "测试表", dsName = "my-mysql")
 public class MysqlTable {
 
@@ -70,7 +71,7 @@ public class MysqlTable {
     @Column(comment = "注册时间")
     private LocalDateTime registerTime;
 
-    @Ignore
+    @Exclude
     @Column(comment = "额外信息")
     private String extra;
 }

@@ -1,24 +1,20 @@
 package org.dromara.mpe.demo.bind.mid;
 
-import org.dromara.mpe.annotation.InsertFillTime;
-import org.dromara.mpe.autotable.annotation.Column;
-import org.dromara.mpe.autotable.annotation.ColumnId;
-import org.dromara.mpe.autotable.annotation.Table;
-import org.dromara.mpe.processer.annotation.AutoDefine;
 import lombok.Data;
+import lombok.experimental.Accessors;
+import org.dromara.mpe.annotation.InsertFillTime;
+import org.dromara.mpe.autotable.annotation.Table;
 
 /**
  * @author don
  */
 @Data
-@AutoDefine
+@Accessors(chain = true)
 @Table(comment = "菜单")
 public class Menu {
 
-    @ColumnId(comment = "id")
     private String id;
-    @Column(comment = "名称")
     private String name;
     @InsertFillTime
-    private String registeredDate;
+    private String createTime;
 }

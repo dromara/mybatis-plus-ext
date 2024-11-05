@@ -2,6 +2,7 @@ package org.dromara.mpe.base.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
+import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.mpe.base.event.EntityUpdateEvent;
 import org.dromara.mpe.magic.util.SpringContextUtil;
@@ -15,7 +16,7 @@ import java.util.Collection;
  * @param <E> Entity
  * @author don
  */
-public abstract class BaseRepository<M extends BaseMapper<E>, E> extends ServiceImpl<M, E> implements IBaseRepository<E> {
+public abstract class BaseRepository<M extends BaseMapper<E>, E> extends CrudRepository<M, E> implements IBaseRepository<E> {
 
     @Override
     public boolean updateById(E entity) {
@@ -35,15 +36,5 @@ public abstract class BaseRepository<M extends BaseMapper<E>, E> extends Service
             }
         }
         return result;
-    }
-
-    @Override
-    protected Class<M> currentMapperClass() {
-        return (Class<M>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 0);
-    }
-
-    @Override
-    protected Class<E> currentModelClass() {
-        return (Class<E>) ReflectionKit.getSuperClassGenericType(this.getClass(), BaseRepository.class, 1);
     }
 }

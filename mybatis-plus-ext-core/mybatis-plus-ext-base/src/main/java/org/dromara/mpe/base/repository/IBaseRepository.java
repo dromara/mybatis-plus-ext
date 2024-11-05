@@ -1,5 +1,6 @@
 package org.dromara.mpe.base.repository;
 
+import com.baomidou.mybatisplus.extension.repository.IRepository;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.mpe.base.wrapper.MyLambdaQueryChainWrapper;
 
@@ -9,7 +10,7 @@ import org.dromara.mpe.base.wrapper.MyLambdaQueryChainWrapper;
  * @param <E> Entity
  * @author don
  */
-public interface IBaseRepository<E> extends IService<E> {
+public interface IBaseRepository<E> extends IRepository<E> {
 
     /**
      * lambda快捷查询，自动绑定需要关联的字段

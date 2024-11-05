@@ -9,9 +9,11 @@ import java.util.List;
 @Component
 public class FilterByFixedUser implements IDynamicConditionHandler {
 
+    public static Integer fixId = 2;
+
     @Override
     public List<Object> values() {
 
-        return Collections.singletonList("111");
+        return Collections.singletonList(fixId);
     }
 }

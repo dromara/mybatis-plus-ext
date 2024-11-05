@@ -15,11 +15,5 @@
             <artifactId>mybatis-plus-ext-demo-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>mybatis-plus-ext-spring-boot-starter</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>

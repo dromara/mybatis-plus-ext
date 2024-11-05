@@ -12,11 +12,11 @@
     <artifactId>mybatis-plus-ext-demo</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>mybatis-plus-ext-demo-autofill</module>
+        <module>mybatis-plus-ext-demo-autotable</module>
+        <module>mybatis-plus-ext-demo-bind</module>
         <module>mybatis-plus-ext-demo-condition</module>
         <module>mybatis-plus-ext-demo-common</module>
-        <module>mybatis-plus-ext-demo-bind</module>
-        <module>mybatis-plus-ext-demo-ds</module>
-        <module>mybatis-plus-ext-demo-autotable</module>
         <module>mybatis-plus-ext-demo-datasource</module>
         <module>mybatis-plus-ext-demo-dict</module>
         <module>mybatis-plus-ext-demo-processor</module>

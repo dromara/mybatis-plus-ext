@@ -11,3 +11,8 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+auto-table:
+  mode: create
+  auto-drop-column: true
+

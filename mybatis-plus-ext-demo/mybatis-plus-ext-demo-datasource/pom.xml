@@ -15,24 +15,5 @@
             <artifactId>mybatis-plus-ext-demo-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!-- 只引入单项功能 -->
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>mybatis-plus-ext-datasource-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- 只引入建表功能 -->
-        <dependency>
-            <groupId>org.dromara</groupId>
-            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- mybatis plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>${mybatis-plus.version}</version>
-        </dependency>
     </dependencies>
 </project>

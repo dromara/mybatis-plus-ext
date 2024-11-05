@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Documented
-@Target({ElementType.LOCAL_VARIABLE})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JoinCondition {
 

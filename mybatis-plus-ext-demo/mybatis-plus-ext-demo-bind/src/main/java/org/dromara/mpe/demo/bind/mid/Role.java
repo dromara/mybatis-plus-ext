@@ -1,12 +1,12 @@
 package org.dromara.mpe.demo.bind.mid;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.dromara.mpe.autotable.annotation.Column;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.bind.metadata.annotation.BindEntityByMid;
 import org.dromara.mpe.bind.metadata.annotation.BindFieldByMid;
 import org.dromara.mpe.bind.metadata.annotation.MidCondition;
-import org.dromara.mpe.processer.annotation.AutoDefine;
-import lombok.Data;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author don
  */
 @Data
-@AutoDefine
+@Accessors(chain = true)
 @Table(comment = "角色")
 public class Role {
 
@@ -33,7 +33,8 @@ public class Role {
     private List<Menu> menus;
 
     @BindFieldByMid(
-            entity = Menu.class, field = MenuDefine.registeredDate,
-            conditions = @MidCondition(midEntity = RoleMenu.class, selfMidField = RoleMenuDefine.sysRuleId, joinMidField = RoleMenuDefine.sysMenuId))
-    private List<String> registeredDates;
+            entity = Menu.class, field = MenuDefine.name,
+            conditions = @MidCondition(midEntity = RoleMenu.class, selfMidField = RoleMenuDefine.sysRuleId, joinMidField = RoleMenuDefine.sysMenuId)
+    )
+    private List<String> menuNames;
 }

@@ -11,13 +11,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 自定义字典注解
+ */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-@BindField(entity = SysDict.class, field = "dictVal", conditions = @JoinCondition(selfField = ""))
+// 声明字典关联关系
+@BindField(entity = SysDict.class, field = SysDictDefine.dictVal, conditions = @JoinCondition(selfField = "", joinField = ""))
+@JoinCondition(selfField = "", joinField = SysDictDefine.dictKey)
 public @interface Dict {
 
-    @AliasFor(annotation = BindField.class, attribute = "conditions")
-    JoinCondition value();
+    @AliasFor(annotation = JoinCondition.class, attribute = "selfField")
+    String value();
 }
