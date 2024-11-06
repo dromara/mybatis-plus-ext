@@ -59,7 +59,7 @@ public class MapperBuilder extends BaseBuilder {
         List<String> lines = Arrays.asList(
                 "package " + mapperPackageName + ";",
                 "",
-                "import " + mapperSuperclassName.getCanonicalName() + ";",
+                "import " + mapperSuperclassName.canonicalName() + ";",
                 dsAnnoImport,
                 "import " + entityPackageName + "." + entityName + ";",
                 "import org.apache.ibatis.annotations.Mapper;",
