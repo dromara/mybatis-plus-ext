@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  org.dromara.mpe.condition.ConditionAutoConfig
+  com.tangzc.mpe.condition.ConditionAutoConfig

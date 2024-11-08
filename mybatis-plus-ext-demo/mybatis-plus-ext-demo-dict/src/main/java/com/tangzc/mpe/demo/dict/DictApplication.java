@@ -1,0 +1,17 @@
+package com.tangzc.mpe.demo.dict;
+
+import com.tangzc.autotable.springboot.EnableAutoTable;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Hello world!
+ */
+@EnableAutoTable
+@SpringBootApplication
+public class DictApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DictApplication.class, args);
+    }
+}

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.dromara</groupId>
+    <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
     <version>3.5.8-EXT722</version>
@@ -41,7 +41,7 @@
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
-        <auto-table.version>1.9.5</auto-table.version>
+        <auto-table.version>1.9.6</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- maven配置-->
@@ -62,7 +62,7 @@
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <versions-maven-plugin.version>2.16.2</versions-maven-plugin.version>
-        <central-publishing-maven-plugin.version>0.5.0</central-publishing-maven-plugin.version>
+        <central-publishing-maven-plugin.version>0.6.0</central-publishing-maven-plugin.version>
 
         <projectUrl>https://gitee.com/tangzc/mybatis-plus-ext</projectUrl>
     </properties>
