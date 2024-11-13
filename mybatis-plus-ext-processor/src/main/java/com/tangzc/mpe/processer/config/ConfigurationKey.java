@@ -25,7 +25,7 @@ public enum ConfigurationKey {
     /**
      * 包含实体父类的字段是否使用严格模式：只有protected或者public修饰的可悲子类继承的才算。
      */
-    ENTITY_DEFINE_STRICT_EXTENDS("processor.entityDefineStrictExtends", "false"),
+    ENTITY_DEFINE_STRICT_EXTENDS("processor.entityDefineStrictExtends", "true"),
 
     /**
      * <p>包含实体所有字段的类生成后的路径，支持相对路径的写法
