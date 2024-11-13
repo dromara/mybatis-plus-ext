@@ -23,6 +23,11 @@ public enum ConfigurationKey {
     ENTITY_DEFINE_SUFFIX("processor.entityDefineSuffix", "Define"),
 
     /**
+     * 包含实体父类的字段是否使用严格模式：只有protected或者public修饰的可悲子类继承的才算。
+     */
+    ENTITY_DEFINE_STRICT_EXTENDS("processor.entityDefineStrictExtends", "false"),
+
+    /**
      * <p>包含实体所有字段的类生成后的路径，支持相对路径的写法
      * <p>比如：..define，..表示在上一级目录，即实体所在目录同级的define目录下
      * <p>比如：. 表示在实体所在的目录下

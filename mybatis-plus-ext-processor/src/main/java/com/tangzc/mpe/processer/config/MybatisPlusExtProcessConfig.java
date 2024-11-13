@@ -102,7 +102,9 @@ public class MybatisPlusExtProcessConfig {
     }
 
     public String get(ConfigurationKey key) {
-        return properties.getProperty(key.getConfigKey(), key.getDefaultValue());
+        String value = properties.getProperty(key.getConfigKey(), key.getDefaultValue());
+        System.out.println("配置项：" + key.getConfigKey() + "=" + value);
+        return value;
     }
 
 }

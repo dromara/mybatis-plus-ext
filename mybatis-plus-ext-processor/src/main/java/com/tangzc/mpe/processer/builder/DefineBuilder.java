@@ -44,6 +44,10 @@ public class DefineBuilder extends BaseBuilder {
                 .filter(e -> e.getKind() == ElementKind.FIELD && !e.getModifiers().contains(Modifier.STATIC))
                 .map(e -> e.getSimpleName().toString())
                 .collect(Collectors.toSet());
+
+        String strictExtends = mybatisPlusExtProcessConfig.get(ConfigurationKey.ENTITY_DEFINE_STRICT_EXTENDS);
+        boolean isStrictExtends = "true".equalsIgnoreCase(strictExtends) || "on".equalsIgnoreCase(strictExtends);
+
         // 检索父类中的可用字段
         TypeMirror superClassMirror = classElement.getSuperclass();
         while (!superClassMirror.toString().equals(Object.class.getName())) {
@@ -53,7 +57,7 @@ public class DefineBuilder extends BaseBuilder {
                             .filter(e -> {
                                 Set<Modifier> modifiers = e.getModifiers();
                                 return e.getKind() == ElementKind.FIELD &&
-                                        modifiers.contains(Modifier.PROTECTED) &&
+                                        (!isStrictExtends || modifiers.contains(Modifier.PROTECTED) || modifiers.contains(Modifier.PUBLIC)) &&
                                         !modifiers.contains(Modifier.STATIC);
                             })
                             .map(e -> e.getSimpleName().toString())
