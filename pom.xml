@@ -7,7 +7,7 @@
     <groupId>com.tangzc</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
-    <version>3.5.9-EXT724</version>
+    <version>3.5.9-EXT725</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>mybatis-plus框架的拓展包，基于spring
