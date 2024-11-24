@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.tangzc</groupId>
+        <groupId>org.dromara.mpe</groupId>
         <artifactId>mybatis-plus-ext-condition</artifactId>
         <version>3.5.9-EXT726</version>
     </parent>

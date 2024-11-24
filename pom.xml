@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.tangzc</groupId>
+    <groupId>org.dromara.mpe</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
     <version>3.5.9-EXT726</version>
@@ -41,7 +41,7 @@
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-spring.version>2.1.2</mybatis-spring.version>
         <mybatis-plus.version>3.5.9</mybatis-plus.version>
-        <auto-table.version>1.9.7</auto-table.version>
+        <auto-table.version>2.0.0</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- maven配置-->

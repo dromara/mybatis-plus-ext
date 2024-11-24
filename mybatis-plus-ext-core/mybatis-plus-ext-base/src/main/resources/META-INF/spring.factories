@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tangzc.mpe.base.BaseAutoConfig
+  org.dromara.mpe.base.BaseAutoConfig

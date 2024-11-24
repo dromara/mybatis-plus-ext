@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.tangzc</groupId>
+        <groupId>org.dromara.mpe</groupId>
         <artifactId>mybatis-plus-ext</artifactId>
         <version>3.5.9-EXT726</version>
     </parent>
@@ -17,37 +17,37 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-base</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-bind-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-datasource-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-condition-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-autotable-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>com.tangzc</groupId>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
