@@ -6,7 +6,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
         <groupId>org.dromara.mpe</groupId>
-        <version>3.5.9-EXT800</version>
+        <version>3.5.9-EXT801</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-demo-processor</artifactId>
