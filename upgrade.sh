@@ -22,7 +22,7 @@ echo "新建标签：${tagName}"
 git tag -a ${tagName} -m "版本号：${version}"
 
 echo "开始提交到远程git仓库：${version}"
-git push origin main --tags
+git push origin com.tangzc --tags
 
 echo "开始发布新的版本到maven仓库：${version}"
 mvn clean deploy -Dmaven.test.skip=true -pl mybatis-plus-ext-autotable,mybatis-plus-ext-bind,mybatis-plus-ext-core,mybatis-plus-ext-condition,mybatis-plus-ext-datasource,mybatis-plus-ext-processor,mybatis-plus-ext-spring-boot-starter,mybatis-plus-ext-spring-boot3-starter -am
