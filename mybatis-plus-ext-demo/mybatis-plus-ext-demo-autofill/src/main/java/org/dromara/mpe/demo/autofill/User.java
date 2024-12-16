@@ -1,5 +1,6 @@
 package org.dromara.mpe.demo.autofill;
 
+import lombok.EqualsAndHashCode;
 import org.dromara.autotable.annotation.ColumnComment;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,6 +12,7 @@ import org.dromara.mpe.base.entity.BaseLogicEntity;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Accessors(chain = true)
 @Table(comment = "用户")
