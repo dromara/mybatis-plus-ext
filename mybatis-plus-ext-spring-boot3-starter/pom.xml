@@ -12,7 +12,7 @@
     <artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
 
     <properties>
-        <mybatis-spring.version>3.0.3</mybatis-spring.version>
+        <mybatis-spring.version>3.0.4</mybatis-spring.version>
     </properties>
 
     <dependencies>
@@ -64,7 +64,11 @@
             <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
         <!--升级mybatis-spring版本，兼容springboot3-->
         <dependency>
             <groupId>org.mybatis</groupId>

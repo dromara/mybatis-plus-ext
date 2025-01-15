@@ -1,17 +1,19 @@
 package org.dromara.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.AllArgsConstructor;
 import org.dromara.mpe.base.MapperScanner;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.JoinConditionDescription;
-import lombok.AllArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -69,10 +71,12 @@ public class ResultBuilder<BEAN, ENTITY> {
         List<ENTITY> entities = new ArrayList<>();
         // 存在last sql的情况下，目前发现的就是limit 1，而limit 1这种情况无法合并查询，需要单独查询，然后合并结果
         if (StringUtils.hasText(lastSql)) {
+            Set<ENTITY> norepeatEntities = new HashSet<>();
             for (BEAN bean : beans) {
                 List<BEAN> beanList = Collections.singletonList(bean);
-                entities.addAll(listEntitiesByCondition(beanList));
+                norepeatEntities.addAll(listEntitiesByCondition(beanList));
             }
+            entities.addAll(norepeatEntities);
         } else {
             entities = listEntitiesByCondition(beans);
         }
