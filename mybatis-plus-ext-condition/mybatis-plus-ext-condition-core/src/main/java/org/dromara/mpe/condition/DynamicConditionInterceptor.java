@@ -13,11 +13,9 @@ import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.select.FromItem;
-import net.sf.jsqlparser.statement.select.LateralSubSelect;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SetOperationList;
-import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -112,20 +110,13 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
     private void processSelectBody(Select select) {
         if (select instanceof PlainSelect) {
             processPlainSelect((PlainSelect) select);
-        } else if (select instanceof LateralSubSelect) {
-            LateralSubSelect lateralSubSelect = (LateralSubSelect) select;
-            List<WithItem<?>> withItemsList = lateralSubSelect.getWithItemsList();
-            for (WithItem<?> withItem : withItemsList) {
-                Select subSelect = withItem.getSelect();
-                if (subSelect != null) {
-                    processSelectBody(subSelect);
-                }
-            }
         } else if (select instanceof SetOperationList) {
             SetOperationList operationList = (SetOperationList) select;
             if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
                 operationList.getSelects().forEach(this::processSelectBody);
             }
+        } else {
+            log.warn("不支持的查询对象: {}", select);
         }
     }
 

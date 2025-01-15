@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-jsqlparser</artifactId>
+            <artifactId>mybatis-plus-jsqlparser-4.9</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
     </dependencies>
