@@ -1,11 +1,12 @@
 package org.dromara.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.AllArgsConstructor;
 import org.dromara.mpe.base.MapperScanner;
+import org.dromara.mpe.bind.CollectionSplitter;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.MidConditionDescription;
 import org.dromara.mpe.bind.metadata.OrderByDescription;
-import lombok.AllArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -113,31 +114,40 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
     /**
      * 查询join表的数据
      */
-    private List<ENTITY> listEntities(MidConditionDescription midConditionDescription, Set<Object> joinMidFieldVals) {
+    private List<ENTITY> listEntities(MidConditionDescription midConditionDescription, Set<Object> joinMidFieldValSet) {
 
-        if (joinMidFieldVals.isEmpty()) {
+        if (joinMidFieldValSet.isEmpty()) {
             return Collections.emptyList();
         }
 
-        QueryWrapper<ENTITY> queryWrapper = new QueryWrapper<>();
+        // 循环查询，防止数据量过大，一次查询失败
+        List<List<Object>> joinMidFieldValList = CollectionSplitter.splitList(joinMidFieldValSet, 500);
+
         // 查询某些列值
         String[] selectColumns = fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions);
-        if (selectColumns != null && selectColumns.length > 0) {
-            queryWrapper.select(selectColumns);
-        }
-        // 添加主要条件
-        queryWrapper.in(midConditionDescription.getJoinColumnName(), joinMidFieldVals);
-        // 自定义条件
-        queryWrapper.apply(StringUtils.hasText(conditionSign.getCustomCondition()), conditionSign.getCustomCondition());
-        // 排序
-        for (OrderByDescription orderBy : conditionSign.getOrderBys()) {
-            queryWrapper.orderBy(true, orderBy.isAsc(), orderBy.getColumnName());
-        }
-        // last sql
-        queryWrapper.last(conditionSign.getLast());
 
-        Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-        return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
+        return joinMidFieldValList.parallelStream()
+                .map(joinMidFieldVals -> {
+                    QueryWrapper<ENTITY> queryWrapper = new QueryWrapper<>();
+                    if (selectColumns != null && selectColumns.length > 0) {
+                        queryWrapper.select(selectColumns);
+                    }
+                    // 添加主要条件
+                    queryWrapper.in(midConditionDescription.getJoinColumnName(), joinMidFieldVals);
+                    // 自定义条件
+                    queryWrapper.apply(StringUtils.hasText(conditionSign.getCustomCondition()), conditionSign.getCustomCondition());
+                    // 排序
+                    for (OrderByDescription orderBy : conditionSign.getOrderBys()) {
+                        queryWrapper.orderBy(true, orderBy.isAsc(), orderBy.getColumnName());
+                    }
+                    // last sql
+                    queryWrapper.last(conditionSign.getLast());
+
+                    System.out.println("-------");
+                    return MapperScanner.getMapperExecute(conditionSign.getJoinEntityClass(), mapper -> mapper.selectList(queryWrapper));
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -159,20 +169,28 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
             return Collections.emptyList();
         }
 
-        // 构建查询器
-        QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
-        // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
-        String joinMidColumnName = midConditionDescription.getJoinMidColumnName();
-        String selfMidColumnName = midConditionDescription.getSelfMidColumnName();
-        queryWrapper.select(joinMidColumnName + " as " + midConditionDescription.getJoinMidFieldName(),
-                selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
-        queryWrapper.in(selfMidColumnName, selfFieldVals);
-        if(StringUtils.hasText(midConditionDescription.getCustomCondition())) {
-            queryWrapper.apply(midConditionDescription.getCustomCondition());
-        }
+        List<List<Object>> selfFieldValList = CollectionSplitter.splitList(selfFieldVals, 500);
 
-        Class<MID> entity = (Class<MID>) midConditionDescription.getMidEntity();
-        return MapperScanner.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
+        return selfFieldValList.parallelStream()
+                .map(selfFieldValues -> {
+
+                    // 构建查询器
+                    QueryWrapper<MID> queryWrapper = new QueryWrapper<>();
+                    // 仅仅查询关联关系的两列（对于性能提升只在中间表列数很多的情况下有意义）
+                    // String joinMidColumnName = midConditionDescription.getJoinMidColumnName();
+                    String selfMidColumnName = midConditionDescription.getSelfMidColumnName();
+                    // queryWrapper.select(joinMidColumnName + " as " + midConditionDescription.getJoinMidFieldName(),
+                    //         selfMidColumnName + " as " + midConditionDescription.getSelfMidFieldName());
+                    queryWrapper.in(selfMidColumnName, selfFieldValues);
+                    if (StringUtils.hasText(midConditionDescription.getCustomCondition())) {
+                        queryWrapper.apply(midConditionDescription.getCustomCondition());
+                    }
+
+                    Class<MID> entity = (Class<MID>) midConditionDescription.getMidEntity();
+                    return MapperScanner.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     private void fullDataToBeanField(BEAN bean, FieldDescription<?, MidConditionDescription> fieldAnnotation, List<?> dataList) {

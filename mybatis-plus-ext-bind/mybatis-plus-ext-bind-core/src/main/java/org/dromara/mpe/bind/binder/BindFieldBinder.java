@@ -1,13 +1,14 @@
 package org.dromara.mpe.bind.binder;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.mpe.bind.builder.ResultBuilder;
 import org.dromara.mpe.bind.metadata.BindFieldDescription;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.JoinConditionDescription;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +35,9 @@ public class BindFieldBinder<BEAN> implements IBinder<BEAN, BindFieldDescription
             public String[] selectColumns(List<?> beans, FieldDescription.ConditionSign<?, JoinConditionDescription> entityJoinCondition,
                                           List<? extends FieldDescription<?, JoinConditionDescription>> fieldAnnotationList) {
 
-                List<String> columns = bindFieldDescriptions.stream()
+                Set<String> columns = bindFieldDescriptions.stream()
                         .map(BindFieldDescription::getRealColumnName)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toSet());
 
                 // 追加条件查询字段，用于标识查询数据的
                 for (JoinConditionDescription condition : entityJoinCondition.getConditions()) {

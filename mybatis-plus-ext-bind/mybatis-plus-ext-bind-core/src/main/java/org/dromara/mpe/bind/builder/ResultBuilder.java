@@ -3,12 +3,15 @@ package org.dromara.mpe.bind.builder;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import org.dromara.mpe.base.MapperScanner;
+import org.dromara.mpe.bind.CollectionSplitter;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.JoinConditionDescription;
+import org.dromara.mpe.bind.parser.CustomConditionParser;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -88,15 +91,40 @@ public class ResultBuilder<BEAN, ENTITY> {
     }
 
     private List<ENTITY> listEntitiesByCondition(List<BEAN> beanList) {
-        QueryWrapper<ENTITY> queryWrapper = QueryWrapperBuilder.<ENTITY>newInstance()
-                .select(fillDataCallback.selectColumns(beanList, conditionSign, fieldDescriptions))
-                .where(conditionSign.getConditions(), conditionSign.getCustomCondition())
-                .orderBy(conditionSign.getOrderBys())
-                .last(conditionSign.getLast())
-                .build(beanList);
 
-        Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-        return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
+        // 提取bean集合中的所有条件
+        Set<QueryWrapperBuilder.Where> whereSet = new HashSet<>();
+        // 汇总所有对象上的查询条件
+        for (BEAN bean : beanList) {
+            List<QueryWrapperBuilder.WhereItem> whereItemList = new ArrayList<>();
+            for (JoinConditionDescription condition : conditionSign.getConditions()) {
+                try {
+                    String column = condition.getJoinColumnName();
+                    Object val = condition.getSelfFieldGetMethod().invoke(bean);
+                    whereItemList.add(new QueryWrapperBuilder.WhereItem(column, val));
+                } catch (Exception e) {
+                    throw new RuntimeException("获取字段" + condition.getSelfFieldName() + "的值失败。", e);
+                }
+            }
+            whereSet.add(new QueryWrapperBuilder.Where(whereItemList, CustomConditionParser.parse(bean, conditionSign.getCustomCondition())));
+        }
+
+        // 拆分查询条件，防止条件过多导致sql中in条件内容过长
+        List<List<QueryWrapperBuilder.Where>> splitWhereList = CollectionSplitter.splitList(whereSet, 500);
+
+        return splitWhereList.parallelStream().map(wheres -> {
+                    QueryWrapper<ENTITY> queryWrapper = QueryWrapperBuilder.<ENTITY>newInstance()
+                            .select(fillDataCallback.selectColumns(beans, conditionSign, fieldDescriptions))
+                            .where(conditionSign.getConditions(), conditionSign.getCustomCondition())
+                            .orderBy(conditionSign.getOrderBys())
+                            .last(conditionSign.getLast())
+                            .build(wheres);
+
+                    Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
+                    return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
+                })
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     private void fullDataToBeanField(BEAN bean,

@@ -19,8 +19,8 @@ public class Article {
     private String id;
     private String content;
     private String submitter;
-    @BindEntity(selectFields = {UserDefine.id, UserDefine.name}, conditions = @JoinCondition(selfField = ArticleDefine.submitter, joinField = UserDefine.id), last = "limit 1")
+    @BindEntity(selectFields = {UserDefine.id, UserDefine.name}, conditions = @JoinCondition(selfField = ArticleDefine.submitter, joinField = UserDefine.id))
     private User submitterUser;
-    @BindField(entity = User.class, field = UserDefine.registeredDate, conditions = @JoinCondition(selfField = ArticleDefine.submitter, joinField = UserDefine.id), last = "limit 1")
+    @BindField(entity = User.class, field = UserDefine.registeredDate, conditions = @JoinCondition(selfField = ArticleDefine.submitter, joinField = UserDefine.id))
     private Long registeredDate;
 }

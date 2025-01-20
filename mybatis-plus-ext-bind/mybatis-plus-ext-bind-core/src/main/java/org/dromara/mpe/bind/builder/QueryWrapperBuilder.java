@@ -1,22 +1,18 @@
 package org.dromara.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.dromara.mpe.bind.metadata.JoinConditionDescription;
-import org.dromara.mpe.bind.metadata.OrderByDescription;
-import org.dromara.mpe.bind.parser.CustomConditionParser;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import org.dromara.mpe.bind.metadata.JoinConditionDescription;
+import org.dromara.mpe.bind.metadata.OrderByDescription;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +37,7 @@ public class QueryWrapperBuilder<ENTITY> {
         return this;
     }
 
-    public QueryWrapperBuilder<ENTITY> where(List<JoinConditionDescription> conditions, String customCondition) {
+    public QueryWrapperBuilder<ENTITY> where(@NonNull List<JoinConditionDescription> conditions, String customCondition) {
         // 查询某些列值
         this.conditions = conditions;
         this.customCondition = customCondition;
@@ -62,34 +58,15 @@ public class QueryWrapperBuilder<ENTITY> {
         return this;
     }
 
-    public <BEAN> QueryWrapper<ENTITY> build(List<BEAN> beans) {
-
-        // 提取bean集合中的所有条件
-        Set<Where> whereSet = new HashSet<>();
-        if (!conditions.isEmpty()) {
-            // 汇总所有对象上的查询条件
-            for (BEAN bean : beans) {
-                List<WhereItem> whereItemList = new ArrayList<>();
-                for (JoinConditionDescription condition : conditions) {
-                    try {
-                        String column = condition.getJoinColumnName();
-                        Object val = condition.getSelfFieldGetMethod().invoke(bean);
-                        whereItemList.add(new WhereItem(column, val));
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-                whereSet.add(new Where(whereItemList, CustomConditionParser.parse(bean, customCondition)));
-            }
-        }
+    public QueryWrapper<ENTITY> build(List<Where> wheres) {
 
         // 如果没有用户自定义条件，只有固定条件。所有固定条件之间是 OR 的关系
         if (!StringUtils.hasText(customCondition)) {
-            joinCondition(queryWrapper, whereSet);
+            joinCondition(queryWrapper, wheres);
         } else {
             // 存在自定义条件的情况下，由于自定义条件是固定死的，可以通用，提取出来
             // 优先根据自定义查询条件分组，同一个自定义查询条件下的 规范查询 彼此之间就是或的关系了
-            Map<String, List<Where>> whereMap = whereSet.stream().collect(Collectors.groupingBy(Where::getCustomCondition));
+            Map<String, List<Where>> whereMap = wheres.stream().collect(Collectors.groupingBy(Where::getCustomCondition));
 
             for (Map.Entry<String, List<Where>> whereEntry : whereMap.entrySet()) {
                 String customCondition = whereEntry.getKey();
@@ -141,7 +118,7 @@ public class QueryWrapperBuilder<ENTITY> {
     @Getter
     @AllArgsConstructor
     @EqualsAndHashCode
-    private static class Where {
+    public static class Where {
         private final List<WhereItem> whereItems;
         private final String customCondition;
     }
@@ -149,7 +126,7 @@ public class QueryWrapperBuilder<ENTITY> {
     @Getter
     @AllArgsConstructor
     @EqualsAndHashCode
-    private static class WhereItem {
+    public static class WhereItem {
         private final String column;
         private final Object value;
     }

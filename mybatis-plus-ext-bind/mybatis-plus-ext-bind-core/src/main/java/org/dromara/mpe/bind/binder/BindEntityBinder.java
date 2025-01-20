@@ -1,15 +1,16 @@
 package org.dromara.mpe.bind.binder;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.mpe.bind.builder.ResultBuilder;
 import org.dromara.mpe.bind.metadata.BindEntityDescription;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.JoinConditionDescription;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,11 +46,10 @@ public class BindEntityBinder<BEAN> implements IBinder<BEAN, BindEntityDescripti
                     }
                 }
 
-                List<String> columns = fieldAnnotations.stream()
+                Set<String> columns = fieldAnnotations.stream()
                         .map(BindEntityDescription::getSelectColumns)
                         .flatMap(Collection::stream)
-                        .distinct()
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toSet());
 
                 // 如果有字段设置了selectColumns，则追加条件查询字段
                 if (!columns.isEmpty()) {

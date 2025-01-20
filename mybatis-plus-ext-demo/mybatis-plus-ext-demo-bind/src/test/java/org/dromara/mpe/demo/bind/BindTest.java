@@ -6,6 +6,7 @@ import org.dromara.mpe.demo.bind.normal.Article;
 import org.dromara.mpe.demo.bind.normal.ArticleRepository;
 import org.dromara.mpe.demo.bind.normal.User;
 import org.dromara.mpe.demo.bind.normal.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @EnableAutoTableTest
 @SpringBootTest(classes = DemoBindApplication.class)
@@ -49,11 +52,11 @@ public class BindTest {
 
         List<Article> dailies = articleRepository.list();
         Binder.bindOn(dailies, Article::getSubmitterUser, Article::getRegisteredDate);
-        System.out.println(dailies.size());
-        for (Article daily : dailies) {
-            System.out.println();
-            System.out.println(daily.getSubmitterUser().getName());
-            System.out.println(daily.getRegisteredDate());
-        }
+
+        Assertions.assertEquals(2, dailies.size());
+
+        Set<String> ids = dailies.stream().map(Article::getSubmitterUser).map(User::getId).collect(Collectors.toSet());
+        Assertions.assertTrue(ids.containsAll(Arrays.asList("1", "2")));
+        Assertions.assertNotNull(dailies.get(1).getRegisteredDate());
     }
 }
