@@ -5,17 +5,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.dromara.autotable.core.AutoTableOrmFrameAdapter;
-import org.dromara.mpe.annotation.handler.FieldDateTypeHandler;
-import org.dromara.mpe.autotable.annotation.Table;
-import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
+import org.dromara.autotable.core.AutoTableMetadataAdapter;
 import org.dromara.mpe.magic.MybatisPlusProperties;
+import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
 import org.dromara.mpe.magic.util.TableColumnNameUtil;
-import org.dromara.mpe.magic.util.EnumUtil;
-import org.apache.ibatis.type.UnknownTypeHandler;
 import org.springframework.util.StringUtils;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -25,14 +20,12 @@ import java.util.stream.Collectors;
 /**
  * @author don
  */
-public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
+public class CustomAutoTableMetadataAdapter implements AutoTableMetadataAdapter {
+
     private final List<IgnoreExt> ignoreExts;
 
-    private final List<FieldDateTypeHandler> fieldDateTypeHandlers;
-
-    public MybatisPlusAdapter(List<IgnoreExt> ignoreExts, List<FieldDateTypeHandler> fieldDateTypeHandlers) {
+    public CustomAutoTableMetadataAdapter(List<IgnoreExt> ignoreExts) {
         this.ignoreExts = ignoreExts;
-        this.fieldDateTypeHandlers = fieldDateTypeHandlers;
     }
 
     @Override
@@ -82,33 +75,7 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
     }
 
     @Override
-    public Class<?> customFieldTypeHandler(Class<?> clazz, Field field) {
-
-        // 枚举，按照字符串处理
-        if (field.getType().isEnum()) {
-            return EnumUtil.getEnumFieldSaveDbType(field.getType());
-        }
-        TableField column = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
-        // json数据，按照字符串处理
-        if (column != null && column.typeHandler() != UnknownTypeHandler.class) {
-            return String.class;
-        }
-
-        // 自定义获取字段的类型
-        Class<?> fieldType = fieldDateTypeHandlers.stream()
-                .map(handler -> handler.getDateType(clazz, field))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
-        if (fieldType == null) {
-            fieldType = field.getType();
-        }
-
-        return fieldType;
-    }
-
-    @Override
-    public List<String> getEnumValues(Class<?> enumClassType) {
+    public List<String> getColumnEnumValues(Class<?> enumClassType) {
         if (enumClassType.isEnum()) {
             Field valField = Arrays.stream(enumClassType.getDeclaredFields())
                     .filter(field -> field.isAnnotationPresent(EnumValue.class))
@@ -138,12 +105,6 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
     }
 
     @Override
-    public List<Class<? extends Annotation>> scannerAnnotations() {
-
-        return Arrays.asList(Table.class, TableName.class);
-    }
-
-    @Override
     public String getTableName(Class<?> clazz) {
 
         return TableColumnNameUtil.getTableName(clazz);
@@ -166,7 +127,7 @@ public class MybatisPlusAdapter implements AutoTableOrmFrameAdapter {
      * @return
      */
     @Override
-    public String getRealColumnName(Class<?> clazz, Field field) {
+    public String getColumnName(Class<?> clazz, Field field) {
 
         TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
