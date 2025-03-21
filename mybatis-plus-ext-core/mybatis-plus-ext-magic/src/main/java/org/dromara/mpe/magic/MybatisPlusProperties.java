@@ -23,11 +23,18 @@ public class MybatisPlusProperties {
      * 表名前缀
      */
     public static String tablePrefix;
-
     /**
      * 表名前缀
      */
     public static boolean capitalMode;
+    /**
+     * 逻辑删除字段：logic-delete-field
+     */
+    public static String logicDeleteField;
+    /**
+     * 逻辑删除字段为删除 默认值
+     */
+    public static String logicNotDeleteValue;
 
     @Value("${mybatis-plus.configuration.map-underscore-to-camel-case:true}")
     public void setMapUnderscoreToCamelCase(boolean mapUnderscoreToCamelCase) {
@@ -37,6 +44,16 @@ public class MybatisPlusProperties {
     @Value("${mybatis-plus.global-config.db-config.table-underline:true}")
     public void setTableUnderline(boolean tableUnderline) {
         MybatisPlusProperties.tableUnderline = tableUnderline;
+    }
+
+    @Value("${mybatis-plus.global-config.db-config.logic-delete-field:}")
+    public void setLogicDeleteField(String logicDeleteField) {
+        MybatisPlusProperties.logicDeleteField = logicDeleteField;
+    }
+
+    @Value("${mybatis-plus.global-config.db-config.logic-not-delete-value:}")
+    public void setLogicNotDeleteValue(String logicNotDeleteValue) {
+        MybatisPlusProperties.logicNotDeleteValue = logicNotDeleteValue;
     }
 
     @Value("${mybatis-plus.global-config.db-config.table-prefix:}")

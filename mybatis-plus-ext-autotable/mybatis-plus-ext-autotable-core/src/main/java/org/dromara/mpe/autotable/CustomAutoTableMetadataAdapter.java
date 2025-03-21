@@ -5,12 +5,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import org.dromara.autotable.annotation.ColumnDefault;
+import org.dromara.autotable.annotation.enums.DefaultValueEnum;
 import org.dromara.autotable.core.AutoTableMetadataAdapter;
 import org.dromara.mpe.magic.MybatisPlusProperties;
 import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
 import org.dromara.mpe.magic.util.TableColumnNameUtil;
 import org.springframework.util.StringUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -139,6 +142,34 @@ public class CustomAutoTableMetadataAdapter implements AutoTableMetadataAdapter 
         }
 
         return smartConvert(MybatisPlusProperties.mapUnderscoreToCamelCase, field.getName());
+    }
+
+    @Override
+    public ColumnDefault getColumnDefaultValue(Field field, Class<?> clazz) {
+
+        // 当没有配置任何默认值，且mybatis-plus配置了logic的默认 常规值的情况下，设置为默认值
+        boolean isLogicDeleteField = Objects.equals(MybatisPlusProperties.logicDeleteField, field.getName());
+        String logicNotDeleteValue = MybatisPlusProperties.logicNotDeleteValue;
+        if(isLogicDeleteField && StringUtils.hasText(logicNotDeleteValue)) {
+            return new ColumnDefault() {
+
+                @Override
+                public Class<? extends Annotation> annotationType() {
+                    return null;
+                }
+
+                @Override
+                public DefaultValueEnum type() {
+                    return null;
+                }
+
+                @Override
+                public String value() {
+                    return logicNotDeleteValue;
+                }
+            };
+        }
+        return AutoTableMetadataAdapter.super.getColumnDefaultValue(field, clazz);
     }
 
     private static String filterSpecialChar(String name) {

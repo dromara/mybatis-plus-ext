@@ -21,7 +21,8 @@ import java.util.stream.Collectors;
 @Import({
         SpringContextUtil.class,
         DynamicDatasourceHandler.class,
-        CustomRunStateCallback.class,
+        CustomRunStateCallback.CustomRunBeforeCallback.class,
+        CustomRunStateCallback.CustomRunAfterCallback.class,
 })
 public class MpeAutoTableAutoConfig {
 
