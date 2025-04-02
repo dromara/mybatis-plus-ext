@@ -1,6 +1,8 @@
 package org.dromara.mpe.processer.builder;
 
+import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
+import org.dromara.mpe.base.repository.BaseRepository;
 import org.dromara.mpe.processer.annotation.AutoRepository;
 import org.dromara.mpe.processer.config.ConfigurationKey;
 import org.dromara.mpe.processer.config.MybatisPlusExtProcessConfig;
@@ -63,21 +65,39 @@ public class RepositoryBuilder extends BaseBuilder {
             }
         }
 
+        ClassName repositorySuperclassName = getRepositorySuperclassName(autoRepository);
+
         List<String> lines = Arrays.asList(
                 "package " + repositoryPackageName + ";",
                 "",
                 dsAnnoImport,
-                "import org.dromara.mpe.base.repository.BaseRepository;",
+                "import " + repositorySuperclassName.canonicalName() + ";",
                 "import " + entityPackageName + "." + entityName + ";",
                 "import " + mapperPackageName + "." + mapperName + ";",
                 "import org.springframework.stereotype.Repository;",
                 "",
                 dsAnno,
                 "@Repository",
-                "public class " + repositoryName + " extends BaseRepository<" + mapperName + ", " + entityName + "> {",
+                "public class " + repositoryName + " extends " + repositorySuperclassName.simpleName() + "<" + mapperName + ", " + entityName + "> {",
                 "}"
         );
 
         writeToFile(repositoryPackageName + "." + repositoryName, lines);
+    }
+
+    private ClassName getRepositorySuperclassName(AutoRepository autoRepository) {
+
+        ClassName repositorySuperclassName = ClassName.get(BaseRepository.class);
+        String baseRepositoryClassName = autoRepository.superclassName();
+        if (baseRepositoryClassName.isEmpty()) {
+            baseRepositoryClassName = mybatisPlusExtProcessConfig.get(ConfigurationKey.REPOSITORY_SUPERCLASS_NAME);
+        }
+        if (!baseRepositoryClassName.isEmpty()) {
+            int lastIndexOf = baseRepositoryClassName.lastIndexOf(".");
+            String baseRepositoryPackageName = baseRepositoryClassName.substring(0, lastIndexOf);
+            String baseRepositoryName = baseRepositoryClassName.substring(lastIndexOf + 1);
+            repositorySuperclassName = ClassName.get(baseRepositoryPackageName, baseRepositoryName);
+        }
+        return repositorySuperclassName;
     }
 }

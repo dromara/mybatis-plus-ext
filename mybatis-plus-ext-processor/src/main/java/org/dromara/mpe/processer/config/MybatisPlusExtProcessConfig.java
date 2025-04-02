@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * mpe Mapper生成配置。
@@ -80,18 +81,19 @@ public class MybatisPlusExtProcessConfig {
                     Properties config = new Properties();
                     config.load(reader);
 
-                    boolean stopBubbling = false;
-                    for (Object key : config.keySet()) {
+                    Set<Object> keySet = config.keySet();
+                    for (Object key : keySet) {
                         if (!properties.containsKey(key)) {
                             properties.put(key, config.getProperty((String) key));
                         }
-                        if ("processor.stopBubbling".equalsIgnoreCase((String) key)
-                                && "true".equalsIgnoreCase(String.valueOf(config.getProperty((String) key)))) {
-                            stopBubbling = true;
-                        }
                     }
-                    if (stopBubbling) {
-                        break;
+                    // 终止向上继续查找父类的配置
+                    String stopPropagationConfigKey = ConfigurationKey.STOP_PROPAGATION.getConfigKey();
+                    if (keySet.contains(stopPropagationConfigKey)) {
+                        String stopPropagation = String.valueOf(config.getProperty(stopPropagationConfigKey));
+                        if ("true".equalsIgnoreCase(stopPropagation) || "on".equalsIgnoreCase(stopPropagation)) {
+                            break;
+                        }
                     }
                 }
             }

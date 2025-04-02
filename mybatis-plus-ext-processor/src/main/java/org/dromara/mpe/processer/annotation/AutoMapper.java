@@ -28,11 +28,11 @@ public @interface AutoMapper {
     String packageName() default "";
 
     /**
-     * 指定的Mapper的父类，通常用于自定义Mapper的场景，
-     * 要求：
-     * 1、值需要是类的全路径
-     * 2、自定义的父类Mapper必须继承自com.baomidou.mybatisplus.core.mapper.BaseMapper
-     * 3、自定义的父类Mapper必须保留泛型T
+     * <p>指定的Mapper的父类，通常用于自定义Mapper的场景
+     * <p>要求：
+     * <p>1、值需要是类的全路径
+     * <p>2、自定义的父类Mapper必须继承自com.baomidou.mybatisplus.core.mapper.BaseMapper
+     * <p>3、自定义的父类Mapper必须保留泛型T
      */
     String superclassName() default "";
 

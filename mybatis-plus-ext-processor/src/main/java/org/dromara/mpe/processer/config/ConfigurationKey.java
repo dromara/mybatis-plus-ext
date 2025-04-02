@@ -13,6 +13,11 @@ public enum ConfigurationKey {
     GLOBAL_ENABLE("processor.global.enable", "false"),
 
     /**
+     * 终止向上继续查找父类的配置。即 false:继承父模块中的配置，true:不继承
+     */
+    STOP_PROPAGATION("processor.stopPropagation", "false"),
+
+    /**
      * 全局entity开启自动创建的标志注解。
      */
     GLOBAL_ENABLE_ANNOTATION("processor.global.annotation", Table.class.getName()),
@@ -66,7 +71,16 @@ public enum ConfigurationKey {
      * <p>比如：..repository，..表示在上一级目录，即实体所在目录同级的repository目录下
      * <p>比如：. 表示在实体所在的目录下
      */
-    REPOSITORY_PACKAGE_NAME("processor.repositoryPackageName", ".");
+    REPOSITORY_PACKAGE_NAME("processor.repositoryPackageName", "."),
+
+    /**
+     * <p>指定的Repository的父类，通常用于自定义Repository的场景
+     * <p>要求：
+     * <p>1、值需要是类的全路径
+     * <p>2、自定义的父类Repository必须继承自org.dromara.mpe.base.repository.BaseRepository
+     * <p>3、自定义的父类Repository必须保留泛型M,E
+     */
+    REPOSITORY_SUPERCLASS_NAME("processor.repositorySuperclassName", "");
 
     /**
      * 获取配置键。

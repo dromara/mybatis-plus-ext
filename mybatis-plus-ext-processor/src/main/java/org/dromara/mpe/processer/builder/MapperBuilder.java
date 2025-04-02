@@ -42,8 +42,6 @@ public class MapperBuilder extends BaseBuilder {
             return filePath;
         }
 
-        ClassName mapperSuperclassName = getMapperSuperclassName(autoMapper);
-
         String dsAnnoImport = null;
         String dsAnno = null;
         if (autoMapper.withDSAnnotation()) {
@@ -55,6 +53,8 @@ public class MapperBuilder extends BaseBuilder {
                 warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + mapperPackageName + "." + mapperName + "添加@DS ");
             }
         }
+
+        ClassName mapperSuperclassName = getMapperSuperclassName(autoMapper);
 
         List<String> lines = Arrays.asList(
                 "package " + mapperPackageName + ";",

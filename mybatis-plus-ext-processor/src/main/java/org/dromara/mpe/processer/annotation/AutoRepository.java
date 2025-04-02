@@ -28,6 +28,15 @@ public @interface AutoRepository {
     String packageName() default "";
 
     /**
+     * <p>指定的Repository的父类，通常用于自定义Repository的场景
+     * <p>要求：
+     * <p>1、值需要是类的全路径
+     * <p>2、自定义的父类Repository必须继承自org.dromara.mpe.base.repository.BaseRepository
+     * <p>3、自定义的父类Repository必须保留泛型M,E
+     */
+    String superclassName() default "";
+
+    /**
      * 标记是否在Repository上根据实体的@Table(dsName="xxx")自动生成@DS("xxx")注解
      */
     boolean withDSAnnotation() default false;
