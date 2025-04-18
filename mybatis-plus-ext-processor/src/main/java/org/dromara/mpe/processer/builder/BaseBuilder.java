@@ -103,6 +103,11 @@ public abstract class BaseBuilder {
         FileObject fileObject = null;
         try {
             fileObject = this.filer.getResource(StandardLocation.SOURCE_PATH, packageName, fileName);
+            // 兼容IDEA的默认编译行为
+            if (fileObject == null) {
+                fileObject = this.filer.getResource(StandardLocation.CLASS_PATH, packageName, fileName);
+                return true;
+            }
         } catch (IOException ignored) {
         }
 

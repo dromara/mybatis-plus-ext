@@ -3,6 +3,8 @@ package org.dromara.mpe.demo.autotable;
 import org.dromara.autotable.springboot.EnableAutoTableTest;
 import org.dromara.mpe.demo.autotable.sqlite.Sqlite3Table;
 import org.dromara.mpe.demo.autotable.sqlite.Sqlite3TableRepository;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -10,12 +12,13 @@ import java.util.List;
 
 @EnableAutoTableTest(basePackages = "org.dromara.mpe.demo.autotable.sqlite")
 @SpringBootTest()
+@Disabled
 public class SqliteTableTest {
 
     @Autowired
     private Sqlite3TableRepository sqlite3TableRepository;
 
-    // @Test
+    @Test
     public void test() {
         Sqlite3Table entity = new Sqlite3Table();
         entity.setUsername("sqlite");
