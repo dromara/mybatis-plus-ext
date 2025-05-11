@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.dromara.mpe</groupId>
         <artifactId>mybatis-plus-ext-datasource</artifactId>
-        <version>3.5.12-EXT837</version>
+        <version>3.5.12-EXT838</version>
     </parent>
 
     <artifactId>mybatis-plus-ext-datasource-core</artifactId>
