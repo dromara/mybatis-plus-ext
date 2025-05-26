@@ -1,8 +1,8 @@
 # 版本升级
-version=3.5.12-EXT840
+version=3.5.12-EXT841
 
 echo "开始替换pom.xml的版本号：${version}"
-mvn versions:set -DnewVersion=${version}
+mvnd versions:set -DnewVersion=${version}
 
 echo "开始commit到本地仓库：${version}"
 git commit -am "版本升级：${version}"
@@ -25,4 +25,4 @@ echo "开始提交到远程git仓库：${version}"
 git push origin main --tags
 
 echo "开始发布新的版本到maven仓库：${version}"
-mvn clean deploy -pl mybatis-plus-ext-autotable,mybatis-plus-ext-bind,mybatis-plus-ext-core,mybatis-plus-ext-condition,mybatis-plus-ext-datasource,mybatis-plus-ext-processor,mybatis-plus-ext-spring-boot-starter,mybatis-plus-ext-spring-boot3-starter -am
+mvnd clean deploy -pl mybatis-plus-ext-autotable,mybatis-plus-ext-bind,mybatis-plus-ext-core,mybatis-plus-ext-condition,mybatis-plus-ext-datasource,mybatis-plus-ext-processor,mybatis-plus-ext-spring-boot-starter,mybatis-plus-ext-spring-boot3-starter -am
