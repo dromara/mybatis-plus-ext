@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
 
+    <name>mybatis-plus-ext-datasource</name>
     <artifactId>mybatis-plus-ext-datasource</artifactId>
 
     <modules>

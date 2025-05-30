@@ -5,6 +5,7 @@
         <groupId>org.dromara.mpe</groupId>
         <version>3.5.12-EXT850</version>
     </parent>
+    <name>mybatis-plus-ext-autotable-core</name>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-ext-autotable-core</artifactId>

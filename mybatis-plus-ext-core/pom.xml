@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-ext-core</artifactId>
+    <name>mybatis-plus-ext-core</name>
     <packaging>pom</packaging>
     <modules>
         <module>mybatis-plus-ext-magic</module>
