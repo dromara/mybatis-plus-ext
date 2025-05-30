@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 @Import({
         SpringContextUtil.class,
         DynamicDatasourceHandler.class,
-        CustomRunStateCallback.CustomRunBeforeCallback.class,
-        CustomRunStateCallback.CustomRunAfterCallback.class,
+        CustomAutoTableClassScanner.class,
 })
 public class MpeAutoTableAutoConfig {
 
@@ -34,10 +33,5 @@ public class MpeAutoTableAutoConfig {
     @Bean
     public JavaTypeToDatabaseTypeConverter customJavaTypeToDatabaseTypeConverter(ObjectProvider<FieldDateTypeHandler> fieldDateTypeHandlers) {
         return new CustomJavaTypeToDatabaseTypeConverter(fieldDateTypeHandlers.stream().collect(Collectors.toList()));
-    }
-
-    @Bean
-    public CustomAutoTableClassScanner customAutoTableClassScanner() {
-        return new CustomAutoTableClassScanner();
     }
 }

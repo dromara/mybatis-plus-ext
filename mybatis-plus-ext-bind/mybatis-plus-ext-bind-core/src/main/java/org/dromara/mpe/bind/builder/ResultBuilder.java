@@ -2,11 +2,11 @@ package org.dromara.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
-import org.dromara.mpe.base.MapperScanner;
 import org.dromara.mpe.bind.CollectionSplitter;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.JoinConditionDescription;
 import org.dromara.mpe.bind.parser.CustomConditionParser;
+import org.dromara.mpe.magic.MapperExecuter;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -121,7 +121,7 @@ public class ResultBuilder<BEAN, ENTITY> {
                             .build(wheres);
 
                     Class<ENTITY> joinEntityClass = conditionSign.getJoinEntityClass();
-                    return MapperScanner.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
+                    return MapperExecuter.getMapperExecute(joinEntityClass, mapper -> mapper.selectList(queryWrapper));
                 })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

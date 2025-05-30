@@ -1,4 +1,4 @@
-package org.dromara.mpe.base.wrapper;
+package org.dromara.mpe.bind.wrapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.Query;

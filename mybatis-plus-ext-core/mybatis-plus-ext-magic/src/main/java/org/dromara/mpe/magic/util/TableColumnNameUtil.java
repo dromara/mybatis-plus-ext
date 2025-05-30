@@ -53,7 +53,7 @@ public class TableColumnNameUtil {
      * @param field
      * @return
      */
-    public static String getRealColumnName(Field field) {
+    public static String getColumnName(Field field) {
         TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
         if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
             return filterSpecialChar(tableField.value());
@@ -72,7 +72,7 @@ public class TableColumnNameUtil {
      * @param beanClazz bean class
      * @param fieldName 字段名
      */
-    public static String getRealColumnName(Class<?> beanClazz, String fieldName) {
+    public static String getColumnName(Class<?> beanClazz, String fieldName) {
 
         Field field = BeanClassUtil.getField(beanClazz, fieldName);
         TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);

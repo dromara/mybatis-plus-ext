@@ -1,8 +1,8 @@
 package org.dromara.mpe.processer.builder;
 
+import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
-import org.dromara.mpe.base.repository.BaseRepository;
 import org.dromara.mpe.processer.annotation.AutoRepository;
 import org.dromara.mpe.processer.config.ConfigurationKey;
 import org.dromara.mpe.processer.config.MybatisPlusExtProcessConfig;
@@ -67,9 +67,19 @@ public class RepositoryBuilder extends BaseBuilder {
 
         ClassName repositorySuperclassName = getRepositorySuperclassName(autoRepository);
 
+        String implExtInterface = "";
+        String importExtInterface = "";
+        try {
+            Class<?> iBaseRepositoryClass = Class.forName("org.dromara.mpe.bind.repository.IBaseRepository");
+            importExtInterface = "import " + iBaseRepositoryClass.getName() + ";";
+            implExtInterface = " implements " + iBaseRepositoryClass.getSimpleName() + "<" + entityName + ">";
+        } catch (ClassNotFoundException ignored) {
+        }
+
         List<String> lines = Arrays.asList(
                 "package " + repositoryPackageName + ";",
                 "",
+                importExtInterface,
                 dsAnnoImport,
                 "import " + repositorySuperclassName.canonicalName() + ";",
                 "import " + entityPackageName + "." + entityName + ";",
@@ -78,7 +88,7 @@ public class RepositoryBuilder extends BaseBuilder {
                 "",
                 dsAnno,
                 "@Repository",
-                "public class " + repositoryName + " extends " + repositorySuperclassName.simpleName() + "<" + mapperName + ", " + entityName + "> {",
+                "public class " + repositoryName + " extends " + repositorySuperclassName.simpleName() + "<" + mapperName + ", " + entityName + ">" + implExtInterface + " {",
                 "}"
         );
 
@@ -87,7 +97,6 @@ public class RepositoryBuilder extends BaseBuilder {
 
     private ClassName getRepositorySuperclassName(AutoRepository autoRepository) {
 
-        ClassName repositorySuperclassName = ClassName.get(BaseRepository.class);
         String baseRepositoryClassName = autoRepository.superclassName();
         if (baseRepositoryClassName.isEmpty()) {
             baseRepositoryClassName = mybatisPlusExtProcessConfig.get(ConfigurationKey.REPOSITORY_SUPERCLASS_NAME);
@@ -96,8 +105,9 @@ public class RepositoryBuilder extends BaseBuilder {
             int lastIndexOf = baseRepositoryClassName.lastIndexOf(".");
             String baseRepositoryPackageName = baseRepositoryClassName.substring(0, lastIndexOf);
             String baseRepositoryName = baseRepositoryClassName.substring(lastIndexOf + 1);
-            repositorySuperclassName = ClassName.get(baseRepositoryPackageName, baseRepositoryName);
+            return ClassName.get(baseRepositoryPackageName, baseRepositoryName);
         }
-        return repositorySuperclassName;
+
+        return ClassName.get(CrudRepository.class);
     }
 }

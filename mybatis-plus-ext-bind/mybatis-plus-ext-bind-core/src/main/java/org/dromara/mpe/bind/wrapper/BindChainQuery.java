@@ -1,10 +1,9 @@
-package org.dromara.mpe.base.wrapper;
+package org.dromara.mpe.bind.wrapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.query.ChainQuery;
-import org.dromara.mpe.base.ext.BindHandler;
-import org.dromara.mpe.magic.util.SpringContextUtil;
+import org.dromara.mpe.bind.Binder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,15 +82,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default List<T> bindList(List<SFunction<T, ?>> filedList) {
         List<T> list = list();
-        BindHandler bindHandler = null;
-        try {
-            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
-        } catch (Exception ignore) {
-            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
-        }
-        if (bindHandler != null) {
-            bindHandler.bindOn(list, filedList);
-        }
+        Binder.bindOn(list, filedList);
         return list;
     }
 
@@ -156,15 +147,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default T bindOne(List<SFunction<T, ?>> filedList) {
         T one = one();
-        BindHandler bindHandler = null;
-        try {
-            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
-        } catch (Exception ignore) {
-            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
-        }
-        if (bindHandler != null) {
-            bindHandler.bindOn(one, filedList);
-        }
+        Binder.bindOn(one, filedList);
         return one;
     }
 
@@ -285,15 +268,7 @@ public interface BindChainQuery<T> extends ChainQuery<T> {
 
     default <E extends IPage<T>> E bindPage(E page, List<SFunction<T, ?>> filedList) {
         E pageRet = page(page);
-        BindHandler bindHandler = null;
-        try {
-            bindHandler = SpringContextUtil.getBeanOfType(BindHandler.class);
-        } catch (Exception ignore) {
-            log.warn("没有找到BindHandler的实现，无法实现数据关联查询");
-        }
-        if (bindHandler != null) {
-            bindHandler.bindOn(pageRet, filedList);
-        }
+        Binder.bindOn(pageRet, filedList);
         return pageRet;
     }
 

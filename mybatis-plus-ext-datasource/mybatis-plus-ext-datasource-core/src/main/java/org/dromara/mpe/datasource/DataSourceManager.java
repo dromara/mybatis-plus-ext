@@ -2,17 +2,16 @@ package org.dromara.mpe.datasource;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import org.dromara.mpe.base.MapperScanner;
-import org.dromara.mpe.base.event.EntityUpdateEvent;
+import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.mpe.datasource.annotation.DataSource;
 import org.dromara.mpe.datasource.description.DataSourceConditionDescription;
 import org.dromara.mpe.datasource.description.WaitUpdateDescription;
 import org.dromara.mpe.datasource.description.WaitUpdateFieldDescription;
+import org.dromara.mpe.magic.MapperExecuter;
 import org.dromara.mpe.magic.util.BeanClassUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
  * @author don
  */
 @Slf4j
-//@Component
 public class DataSourceManager {
 
     /**
@@ -87,10 +85,17 @@ public class DataSourceManager {
         waitUpdateDescription.getWaitUpdateFields().add(new WaitUpdateFieldDescription(entityField, sourceField));
     }
 
-    @EventListener
-    public void onApplicationEvent(EntityUpdateEvent<?> entityUpdateEvent) {
+    /**
+     * 触发更新
+     *
+     * @param entity 变化的数据实体
+     * @param fields 具体产生变更需要对外通知更新的字段
+     */
+    public static <E> void triggerUpdate(E entity, SFunction<E, ?>... fields) {
 
-        Map<DescriptionSignature, WaitUpdateDescription> waitUpdateEntityDescGroupByCondition = ENTITY_GROUP_CACHE_MAP.get(entityUpdateEvent.getEntityName());
+        EntityUpdateDto<E> entityUpdateDto = EntityUpdateDto.create(entity, fields);
+
+        Map<DescriptionSignature, WaitUpdateDescription> waitUpdateEntityDescGroupByCondition = ENTITY_GROUP_CACHE_MAP.get(entityUpdateDto.getEntityName());
         if (waitUpdateEntityDescGroupByCondition == null) {
             return;
         }
@@ -98,7 +103,7 @@ public class DataSourceManager {
         // 针对分好组的数据，做分组批量更新(提升性能，同一个类下多个属性冗余了同一个源下的多个属性的情况)
         for (WaitUpdateDescription waitUpdateDescription : waitUpdateEntityDescGroupByCondition.values()) {
             // 待更新的字段
-            executeUpdate(entityUpdateEvent, waitUpdateDescription);
+            executeUpdate(entityUpdateDto, waitUpdateDescription);
         }
     }
 
@@ -109,7 +114,7 @@ public class DataSourceManager {
      * @param waitUpdateDescription 待更新数据的描述
      * @param <E>                   待更新的实体
      */
-    private <E> void executeUpdate(EntityUpdateEvent<?> entityUpdateEvent, WaitUpdateDescription waitUpdateDescription) {
+    private static <E> void executeUpdate(EntityUpdateDto<?> entityUpdateEvent, WaitUpdateDescription waitUpdateDescription) {
 
         Object sourceEntity = entityUpdateEvent.getEntity();
 
@@ -155,7 +160,7 @@ public class DataSourceManager {
             // 获取mapper， 执行sql
             Class<E> waitUpdateEntityClass = (Class<E>) waitUpdateDescription.getEntityClass();
             UpdateWrapper<E> finalUpdateWrapper = updateWrapper;
-            MapperScanner.getMapperExecute(waitUpdateEntityClass, mapper -> mapper.update(null, finalUpdateWrapper));
+            MapperExecuter.getMapperExecute(waitUpdateEntityClass, mapper -> mapper.update(null, finalUpdateWrapper));
         }
     }
 

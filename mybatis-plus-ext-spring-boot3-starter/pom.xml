@@ -24,7 +24,19 @@
 
         <dependency>
             <groupId>org.dromara.mpe</groupId>
+            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-bind-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara.mpe</groupId>
+            <artifactId>mybatis-plus-ext-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -37,18 +49,6 @@
         <dependency>
             <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-condition-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara.mpe</groupId>
-            <artifactId>mybatis-plus-ext-autotable-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dromara.mpe</groupId>
-            <artifactId>mybatis-plus-ext-processor</artifactId>
             <version>${project.version}</version>
         </dependency>
 

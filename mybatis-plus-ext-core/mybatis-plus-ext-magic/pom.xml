@@ -7,17 +7,18 @@
         <groupId>org.dromara.mpe</groupId>
         <version>3.5.12-EXT841</version>
     </parent>
-    <dependencies>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
-            <version>${mybatis-plus.version}</version>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>mybatis-plus-ext-magic</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
+            <version>${mybatis-plus.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

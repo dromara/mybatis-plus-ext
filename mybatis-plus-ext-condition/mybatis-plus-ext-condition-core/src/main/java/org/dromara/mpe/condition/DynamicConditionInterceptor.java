@@ -148,7 +148,7 @@ public class DynamicConditionInterceptor extends JsqlParserSupport implements In
 
                 String condExpr;
                 List<Object> values = conditionHandler.values();
-                String realColumnName = TableColumnNameUtil.getRealColumnName(entityField);
+                String realColumnName = TableColumnNameUtil.getColumnName(entityField);
                 if (values == null || values.isEmpty()) {
                     condExpr = realColumnName + " is null";
                 } else {

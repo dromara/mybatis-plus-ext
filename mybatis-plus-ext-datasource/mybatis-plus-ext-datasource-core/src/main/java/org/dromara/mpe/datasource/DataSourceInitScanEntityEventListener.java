@@ -1,10 +1,9 @@
 package org.dromara.mpe.datasource;
 
-import org.dromara.mpe.base.event.InitScanEntityEvent;
+import org.dromara.mpe.base.IEntityRegister;
 import org.dromara.mpe.datasource.annotation.DataSource;
 import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
 import org.dromara.mpe.magic.util.BeanClassUtil;
-import org.springframework.context.event.EventListener;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -13,12 +12,10 @@ import java.util.List;
  * @author don
  */
 //@Component
-public class DataSourceInitScanEntityEventListener {
+public class DataSourceInitScanEntityEventListener implements IEntityRegister {
 
-    @EventListener
-    public void onApplicationEvent(InitScanEntityEvent event) {
-
-        Class<?> entityClass = event.getEntityClass();
+    @Override
+    public void register(Class<?> entityClass) {
         List<Field> allDeclaredFields = BeanClassUtil.getAllDeclaredFieldsExcludeStatic(entityClass);
         for (Field entityField : allDeclaredFields) {
 

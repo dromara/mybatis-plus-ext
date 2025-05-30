@@ -29,10 +29,10 @@ public class DataSourceConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnNameUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getColumnName(selfField);
     }
 
     public String getSourceColumnName() {
-        return TableColumnNameUtil.getRealColumnName(sourceField);
+        return TableColumnNameUtil.getColumnName(sourceField);
     }
 }

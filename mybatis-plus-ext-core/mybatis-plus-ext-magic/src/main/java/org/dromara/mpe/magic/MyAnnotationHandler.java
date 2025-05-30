@@ -8,6 +8,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+/**
+ * 自定义MybatisPlus的注解处理器，集成spring的注解继承能力
+ */
 @ConditionalOnMissingBean(AnnotationHandler.class)
 public class MyAnnotationHandler implements AnnotationHandler {
     @Override

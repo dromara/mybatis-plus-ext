@@ -113,18 +113,18 @@ public class MidConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnNameUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getColumnName(selfField);
     }
 
     public String getJoinColumnName() {
-        return TableColumnNameUtil.getRealColumnName(joinField);
+        return TableColumnNameUtil.getColumnName(joinField);
     }
 
     public String getSelfMidColumnName() {
-        return TableColumnNameUtil.getRealColumnName(selfMidField);
+        return TableColumnNameUtil.getColumnName(selfMidField);
     }
 
     public String getJoinMidColumnName() {
-        return TableColumnNameUtil.getRealColumnName(joinMidField);
+        return TableColumnNameUtil.getColumnName(joinMidField);
     }
 }

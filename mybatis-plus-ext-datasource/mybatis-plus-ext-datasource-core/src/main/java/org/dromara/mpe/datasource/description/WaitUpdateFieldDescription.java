@@ -28,10 +28,10 @@ public class WaitUpdateFieldDescription {
     }
 
     public String getEntityColumnName() {
-        return TableColumnNameUtil.getRealColumnName(entityField);
+        return TableColumnNameUtil.getColumnName(entityField);
     }
 
     public String getSourceColumnName() {
-        return TableColumnNameUtil.getRealColumnName(sourceField);
+        return TableColumnNameUtil.getColumnName(sourceField);
     }
 }

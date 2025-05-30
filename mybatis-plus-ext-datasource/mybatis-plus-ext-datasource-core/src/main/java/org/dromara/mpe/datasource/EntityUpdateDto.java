@@ -1,9 +1,8 @@
-package org.dromara.mpe.base.event;
+package org.dromara.mpe.datasource;
 
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
-import org.dromara.mpe.magic.util.BeanClassUtil;
 import lombok.Getter;
-import org.springframework.context.ApplicationEvent;
+import org.dromara.mpe.magic.util.BeanClassUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  * @author don
  */
 @Getter
-public class EntityUpdateEvent<E> extends ApplicationEvent {
+public class EntityUpdateDto<E> {
 
     /**
      * 需要冗余的类
@@ -27,8 +26,7 @@ public class EntityUpdateEvent<E> extends ApplicationEvent {
     private final Set<String> fields;
 
     @SafeVarargs
-    private EntityUpdateEvent(E entity, SFunction<E, ?>... fields) {
-        super("");
+    private EntityUpdateDto(E entity, SFunction<E, ?>... fields) {
         this.entityClass = (Class<E>) entity.getClass();
         this.entityName = entityClass.getName();
         this.entity = entity;
@@ -40,7 +38,7 @@ public class EntityUpdateEvent<E> extends ApplicationEvent {
     }
 
     @SafeVarargs
-    public static <E> EntityUpdateEvent<E> create(E entity, SFunction<E, ?>... fields) {
-        return new EntityUpdateEvent<>(entity, fields);
+    public static <E> EntityUpdateDto<E> create(E entity, SFunction<E, ?>... fields) {
+        return new EntityUpdateDto<>(entity, fields);
     }
 }

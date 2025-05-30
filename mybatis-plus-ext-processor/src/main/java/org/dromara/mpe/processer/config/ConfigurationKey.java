@@ -1,7 +1,5 @@
 package org.dromara.mpe.processer.config;
 
-import org.dromara.mpe.autotable.annotation.Table;
-
 /**
  * 配置键值。
  */
@@ -20,7 +18,7 @@ public enum ConfigurationKey {
     /**
      * 全局entity开启自动创建的标志注解。
      */
-    GLOBAL_ENABLE_ANNOTATION("processor.global.annotation", Table.class.getName()),
+    GLOBAL_ENABLE_ANNOTATION("processor.global.annotation", org.dromara.mpe.autotable.annotation.Table.class.getName()),
 
     /**
      * 包含实体所有字段的类的名称后缀。
@@ -77,8 +75,7 @@ public enum ConfigurationKey {
      * <p>指定的Repository的父类，通常用于自定义Repository的场景
      * <p>要求：
      * <p>1、值需要是类的全路径
-     * <p>2、自定义的父类Repository必须继承自org.dromara.mpe.base.repository.BaseRepository
-     * <p>3、自定义的父类Repository必须保留泛型M,E
+     * <p>2、自定义的父类Repository必须保留泛型M,E
      */
     REPOSITORY_SUPERCLASS_NAME("processor.repositorySuperclassName", "");
 

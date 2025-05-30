@@ -27,7 +27,7 @@
 
         <dependency>
             <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-core</artifactId>
+            <artifactId>mybatis-plus-spring</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
         <dependency>
@@ -40,6 +40,11 @@
         <dependency>
             <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dromara.mpe</groupId>
+            <artifactId>mybatis-plus-ext-autotable-annotation</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

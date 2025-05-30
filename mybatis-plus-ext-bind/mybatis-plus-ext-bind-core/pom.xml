@@ -20,6 +20,11 @@
             <artifactId>spring-boot-starter</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.dromara.mpe</groupId>
+            <artifactId>mybatis-plus-ext-bind-annotation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.dromara.mpe</groupId>
@@ -32,12 +37,12 @@
             <artifactId>mybatis-plus-core</artifactId>
             <version>${mybatis-plus.version}</version>
         </dependency>
-
         <dependency>
-            <groupId>org.dromara.mpe</groupId>
-            <artifactId>mybatis-plus-ext-bind-annotation</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring</artifactId>
+            <version>${mybatis-plus.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>

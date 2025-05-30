@@ -53,7 +53,7 @@ public class FieldDescriptionBuilder {
         Class<?> entityClass = bindFieldAnno.entity();
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
 
-        String realColumnName = TableColumnNameUtil.getRealColumnName(entityClass, bindFieldAnno.field());
+        String realColumnName = TableColumnNameUtil.getColumnName(entityClass, bindFieldAnno.field());
         Method readMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldAnno.field());
         List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindFieldAnno.conditions());
         List<OrderByDescription> orderByList = getOrderByList(entityClass, bindFieldAnno.orderBy());
@@ -74,7 +74,7 @@ public class FieldDescriptionBuilder {
 
         final Class<?> finalEntityClass = entityClass;
         List<String> selectColumns = Arrays.stream(bindEntity.selectFields())
-                .map(fieldName -> TableColumnNameUtil.getRealColumnName(finalEntityClass, fieldName))
+                .map(fieldName -> TableColumnNameUtil.getColumnName(finalEntityClass, fieldName))
                 .collect(Collectors.toList());
         List<JoinConditionDescription> conditionList = getConditionList(beanClass, entityClass, bindEntity.conditions());
         List<OrderByDescription> orderByList = getOrderByList(entityClass, bindEntity.orderBy());
@@ -92,7 +92,7 @@ public class FieldDescriptionBuilder {
         }
 
         Method setMethod = BeanClassUtil.getWriteMethod(beanClass, field);
-        String realColumnName = TableColumnNameUtil.getRealColumnName(entityClass, bindFieldByMid.field());
+        String realColumnName = TableColumnNameUtil.getColumnName(entityClass, bindFieldByMid.field());
         Method bindFieldGetMethod = BeanClassUtil.getReadMethod(entityClass, bindFieldByMid.field());
 
         MidConditionDescription conditionList = getCondition(beanClass, entityClass, bindFieldByMid.conditions());
@@ -116,7 +116,7 @@ public class FieldDescriptionBuilder {
         final Class<?> finalEntityClass = entityClass;
         List<ColumnDescription> selectColumns = Arrays.stream(bindEntity.selectFields())
                 .map(fieldName -> {
-                    String columnName = TableColumnNameUtil.getRealColumnName(finalEntityClass, fieldName);
+                    String columnName = TableColumnNameUtil.getColumnName(finalEntityClass, fieldName);
                     return new ColumnDescription(columnName, fieldName);
                 })
                 .collect(Collectors.toList());

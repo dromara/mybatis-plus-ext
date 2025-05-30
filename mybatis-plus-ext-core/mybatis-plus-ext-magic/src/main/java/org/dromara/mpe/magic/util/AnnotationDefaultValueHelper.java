@@ -12,6 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * 注解默认值构建助手
+ */
 @Slf4j
 public class AnnotationDefaultValueHelper {
 

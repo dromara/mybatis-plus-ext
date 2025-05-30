@@ -51,6 +51,6 @@ public class OrderByDescription {
     }
 
     public String getColumnName() {
-        return TableColumnNameUtil.getRealColumnName(field);
+        return TableColumnNameUtil.getColumnName(field);
     }
 }

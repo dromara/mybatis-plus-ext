@@ -1,7 +1,7 @@
-package org.dromara.mpe.base.repository;
+package org.dromara.mpe.bind.repository;
 
 import com.baomidou.mybatisplus.extension.repository.IRepository;
-import org.dromara.mpe.base.wrapper.MyLambdaQueryChainWrapper;
+import org.dromara.mpe.bind.wrapper.MyLambdaQueryChainWrapper;
 
 /**
  * 拓展lambdaQuery能力，集成了bind相关的查询能力

@@ -1,9 +1,9 @@
 package org.dromara.mpe.demo.processor.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.dromara.mpe.base.repository.BaseRepository;
+import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CustomSuperRepository<M extends BaseMapper<E>, E> extends BaseRepository<M, E> {
+public class CustomSuperRepository<M extends BaseMapper<E>, E> extends CrudRepository<M, E> {
 }

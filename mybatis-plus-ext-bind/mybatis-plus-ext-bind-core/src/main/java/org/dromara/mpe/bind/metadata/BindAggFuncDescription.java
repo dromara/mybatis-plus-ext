@@ -79,7 +79,7 @@ public class BindAggFuncDescription {
         AggFuncField aggFuncField = bindFunction.aggField();
         this.aggFunc = aggFuncField.func();
         if (StringUtils.hasText(aggFuncField.field())) {
-            this.aggColumnRealName = TableColumnNameUtil.getRealColumnName(entityClass, aggFuncField.field());
+            this.aggColumnRealName = TableColumnNameUtil.getColumnName(entityClass, aggFuncField.field());
         } else {
             this.aggColumnRealName = aggFuncField.field();
         }

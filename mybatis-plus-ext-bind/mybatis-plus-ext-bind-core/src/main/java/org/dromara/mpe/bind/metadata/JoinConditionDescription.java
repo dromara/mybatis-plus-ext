@@ -65,10 +65,10 @@ public class JoinConditionDescription {
     }
 
     public String getSelfColumnName() {
-        return TableColumnNameUtil.getRealColumnName(selfField);
+        return TableColumnNameUtil.getColumnName(selfField);
     }
 
     public String getJoinColumnName() {
-        return TableColumnNameUtil.getRealColumnName(joinField);
+        return TableColumnNameUtil.getColumnName(joinField);
     }
 }

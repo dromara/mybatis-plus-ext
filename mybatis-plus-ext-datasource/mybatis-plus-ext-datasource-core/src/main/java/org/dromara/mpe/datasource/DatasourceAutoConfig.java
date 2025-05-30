@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @Import({
-        DataSourceManager.class,
         DataSourceInitScanEntityEventListener.class
 })
 public class DatasourceAutoConfig {

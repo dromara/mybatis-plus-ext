@@ -2,11 +2,11 @@ package org.dromara.mpe.bind.builder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
-import org.dromara.mpe.base.MapperScanner;
 import org.dromara.mpe.bind.CollectionSplitter;
 import org.dromara.mpe.bind.metadata.FieldDescription;
 import org.dromara.mpe.bind.metadata.MidConditionDescription;
 import org.dromara.mpe.bind.metadata.OrderByDescription;
+import org.dromara.mpe.magic.MapperExecuter;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -144,7 +144,7 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
                     queryWrapper.last(conditionSign.getLast());
 
                     System.out.println("-------");
-                    return MapperScanner.getMapperExecute(conditionSign.getJoinEntityClass(), mapper -> mapper.selectList(queryWrapper));
+                    return MapperExecuter.getMapperExecute(conditionSign.getJoinEntityClass(), mapper -> mapper.selectList(queryWrapper));
                 })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -187,7 +187,7 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
                     }
 
                     Class<MID> entity = (Class<MID>) midConditionDescription.getMidEntity();
-                    return MapperScanner.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
+                    return MapperExecuter.getMapperExecute(entity, mapper -> mapper.selectList(queryWrapper));
                 })
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
