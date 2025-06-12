@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-demo</artifactId>
         <groupId>org.dromara.mpe</groupId>
-        <version>3.5.12-EXT860</version>
+        <version>3.5.12-EXT861</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
