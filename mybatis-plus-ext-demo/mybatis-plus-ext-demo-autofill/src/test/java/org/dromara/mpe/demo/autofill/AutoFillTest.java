@@ -19,6 +19,7 @@ public class AutoFillTest {
         User user = new User();
         user.setId(id);
         userRepository.save(user);
+        System.out.println(user.toString());
     }
 
     /**
@@ -27,6 +28,7 @@ public class AutoFillTest {
     @Test
     public void check() {
         User user = userRepository.getById(id);
+        System.out.println(user.toString());
         assert user.getDeptName().equals(DeptNameAutoFillHandler.deptName);
         assert user.getName().equals(UserNameAutoFillHandler.userName);
         assert user.getRegisteredDate() != null;

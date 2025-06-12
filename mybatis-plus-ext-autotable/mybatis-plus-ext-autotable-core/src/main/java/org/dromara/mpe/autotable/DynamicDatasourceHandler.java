@@ -1,5 +1,6 @@
 package org.dromara.mpe.autotable;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import org.dromara.autotable.core.dynamicds.IDataSourceHandler;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.util.StringUtils;
 
 /**
  * 多数据源模式
@@ -45,10 +47,16 @@ public class DynamicDatasourceHandler implements IDataSourceHandler {
     @Override
     public String getDataSourceName(Class clazz) {
 
+        DS ds = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, DS.class);
+        if(ds != null) {
+            return ds.value();
+        }
+
         Table tableAnno = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, Table.class);
-        if (tableAnno != null) {
+        if (tableAnno != null && StringUtils.hasText(tableAnno.dsName())) {
             return tableAnno.dsName();
         }
+
         return dynamicDataSourceProperties.getPrimary();
     }
 }

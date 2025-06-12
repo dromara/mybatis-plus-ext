@@ -1,5 +1,6 @@
 package org.dromara.mpe.processer.builder;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
@@ -45,12 +46,21 @@ public class MapperBuilder extends BaseBuilder {
         String dsAnnoImport = null;
         String dsAnno = null;
         if (autoMapper.withDSAnnotation()) {
+            String dsName = null;
             Table table = element.getAnnotation(Table.class);
             if (table != null && !table.dsName().isEmpty()) {
-                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
-                dsAnno = "@DS(\"" + table.dsName() + "\")";
+                dsName = table.dsName();
             } else {
-                warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + mapperPackageName + "." + mapperName + "添加@DS ");
+                DS ds = element.getAnnotation(DS.class);
+                if (ds != null && !ds.value().isEmpty()) {
+                    dsName = ds.value();
+                } else {
+                    warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + mapperPackageName + "." + mapperName + "添加@DS ");
+                }
+            }
+            if (dsName != null) {
+                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
+                dsAnno = "@DS(\"" + dsName + "\")";
             }
         }
 

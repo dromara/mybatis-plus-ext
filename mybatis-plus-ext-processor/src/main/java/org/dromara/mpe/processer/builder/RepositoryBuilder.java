@@ -1,5 +1,6 @@
 package org.dromara.mpe.processer.builder;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
@@ -56,12 +57,21 @@ public class RepositoryBuilder extends BaseBuilder {
         String dsAnnoImport = null;
         String dsAnno = null;
         if (autoRepository.withDSAnnotation()) {
+            String dsName = null;
             Table table = element.getAnnotation(Table.class);
-            if (table != null) {
-                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
-                dsAnno = "@DS(\"" + table.dsName() + "\")";
+            if (table != null && !table.dsName().isEmpty()) {
+                dsName = table.dsName();
             } else {
-                warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + repositoryPackageName + "." + repositoryName + "添加@DS ");
+                DS ds = element.getAnnotation(DS.class);
+                if (ds != null && !ds.value().isEmpty()) {
+                    dsName = ds.value();
+                } else {
+                    warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + repositoryPackageName + "." + repositoryName + "添加@DS ");
+                }
+            }
+            if (dsName != null) {
+                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
+                dsAnno = "@DS(\"" + dsName + "\")";
             }
         }
 

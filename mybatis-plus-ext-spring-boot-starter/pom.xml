@@ -21,6 +21,12 @@
 
         <dependency>
             <groupId>org.dromara.mpe</groupId>
+            <artifactId>mybatis-plus-ext-autofill-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara.mpe</groupId>
             <artifactId>mybatis-plus-ext-autotable-core</artifactId>
             <version>${project.version}</version>
         </dependency>

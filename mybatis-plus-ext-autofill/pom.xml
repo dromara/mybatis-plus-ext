@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dromara.mpe</groupId>
+        <artifactId>mybatis-plus-ext</artifactId>
+        <version>3.5.12-EXT852</version>
+    </parent>
+
+    <name>mybatis-plus-ext-autofill</name>
+    <modules>
+        <module>mybatis-plus-ext-autofill-core</module>
+        <module>mybatis-plus-ext-autofill-annotation</module>
+    </modules>
+    <artifactId>mybatis-plus-ext-autofill</artifactId>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <!-- 为了获取spring的上下文，进而获取bean管理 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+</project>

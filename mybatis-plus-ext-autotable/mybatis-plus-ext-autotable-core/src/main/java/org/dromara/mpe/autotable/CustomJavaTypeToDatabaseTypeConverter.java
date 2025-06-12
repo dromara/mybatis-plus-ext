@@ -3,7 +3,7 @@ package org.dromara.mpe.autotable;
 import com.baomidou.mybatisplus.annotation.TableField;
 import org.apache.ibatis.type.UnknownTypeHandler;
 import org.dromara.autotable.core.converter.JavaTypeToDatabaseTypeConverter;
-import org.dromara.mpe.annotation.handler.FieldDateTypeHandler;
+import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
 import org.dromara.mpe.magic.util.EnumUtil;
 

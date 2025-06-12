@@ -3,7 +3,7 @@ package org.dromara.mpe.autotable;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import org.dromara.autotable.core.AutoTableMetadataAdapter;
 import org.dromara.autotable.core.converter.JavaTypeToDatabaseTypeConverter;
-import org.dromara.mpe.annotation.handler.FieldDateTypeHandler;
+import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.SpringContextUtil;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

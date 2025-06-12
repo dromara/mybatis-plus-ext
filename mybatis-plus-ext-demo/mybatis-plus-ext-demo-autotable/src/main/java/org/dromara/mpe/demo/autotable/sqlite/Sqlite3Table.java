@@ -13,7 +13,7 @@ import org.dromara.autotable.annotation.enums.IndexSortTypeEnum;
 import org.dromara.autotable.annotation.enums.IndexTypeEnum;
 import org.dromara.autotable.annotation.mysql.MysqlTypeConstant;
 import lombok.Data;
-import org.dromara.mpe.annotation.Exclude;
+import org.dromara.mpe.autofill.annotation.Exclude;
 import org.dromara.mpe.autotable.annotation.Column;
 import org.dromara.mpe.autotable.annotation.ColumnId;
 import org.dromara.mpe.autotable.annotation.Table;

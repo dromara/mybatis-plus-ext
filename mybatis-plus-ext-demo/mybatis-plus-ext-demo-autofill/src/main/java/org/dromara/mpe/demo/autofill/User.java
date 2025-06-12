@@ -3,8 +3,8 @@ package org.dromara.mpe.demo.autofill;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.dromara.autotable.annotation.ColumnComment;
-import org.dromara.mpe.annotation.InsertFillData;
-import org.dromara.mpe.annotation.InsertFillTime;
+import org.dromara.mpe.autofill.annotation.InsertFillData;
+import org.dromara.mpe.autofill.annotation.InsertFillTime;
 import org.dromara.mpe.autotable.annotation.Column;
 import org.dromara.mpe.autotable.annotation.Table;
 

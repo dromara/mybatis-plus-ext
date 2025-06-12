@@ -3,7 +3,7 @@ package org.dromara.mpe.demo.condition.daily;
 import org.dromara.autotable.annotation.ColumnComment;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.dromara.mpe.annotation.InsertFillData;
+import org.dromara.mpe.autofill.annotation.InsertFillData;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.condition.metadata.annotation.DynamicCondition;
 import org.dromara.mpe.demo.condition.FilterByCurrentUser;

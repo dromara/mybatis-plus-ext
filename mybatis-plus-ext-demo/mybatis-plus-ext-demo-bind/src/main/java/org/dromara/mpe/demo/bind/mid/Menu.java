@@ -2,7 +2,7 @@ package org.dromara.mpe.demo.bind.mid;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.dromara.mpe.annotation.InsertFillTime;
+import org.dromara.mpe.autofill.annotation.InsertFillTime;
 import org.dromara.mpe.autotable.annotation.Table;
 
 /**

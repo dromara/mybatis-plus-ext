@@ -1,6 +1,6 @@
 package org.dromara.mpe.demo.condition;
 
-import org.dromara.mpe.annotation.handler.AutoFillHandler;
+import org.dromara.mpe.autofill.annotation.handler.AutoFillHandler;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
