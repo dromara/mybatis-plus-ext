@@ -132,7 +132,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
                 Object userInfo = null;
 
-                AutoFillHandler instance = getAutoFillHandler(handler);
+                AutoFillHandler instance = getAutoFillHandler(clazz.getSimpleName() + "#" + field.getName(), handler);
                 if (instance != null) {
                     userInfo = instance.getVal(object, clazz, field);
                 }
@@ -154,12 +154,12 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     /**
      * 缓存AutoFillHandler，同时寻找
      */
-    private AutoFillHandler getAutoFillHandler(Class<? extends AutoFillHandler> autoFillHandler) {
+    private AutoFillHandler getAutoFillHandler(String fieldSignature, Class<? extends AutoFillHandler> autoFillHandler) {
 
         try {
             return SpringContextUtil.getBeanOfType(autoFillHandler);
         } catch (NoUniqueBeanDefinitionException ignore) {
-            throw new RuntimeException("发现了多个" + autoFillHandler.getName() + "的实现，请保持spring中只有一个实例。");
+            throw new RuntimeException(fieldSignature + "处理中，发现了多个" + autoFillHandler.getName() + "的实现，请指定spring的默认实现，或者在注解上具体指明实现类。");
         } catch (NoSuchBeanDefinitionException ignore) {
             if (autoFillHandler.isInterface()) {
                 log.warn("没有找到{}的实现，操作人信息无法自动填充。", autoFillHandler.getName());

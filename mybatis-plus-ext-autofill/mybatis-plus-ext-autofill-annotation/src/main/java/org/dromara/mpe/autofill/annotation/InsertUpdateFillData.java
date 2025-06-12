@@ -3,7 +3,6 @@ package org.dromara.mpe.autofill.annotation;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import org.dromara.mpe.autofill.annotation.handler.AutoFillHandler;
-import org.dromara.mpe.autofill.annotation.handler.DefaultAuditHandler;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Documented;
@@ -19,14 +18,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 @TableField(fill = FieldFill.INSERT_UPDATE)
-@FillData(DefaultAuditHandler.class)
+@FillData(AutoFillHandler.class)
 public @interface InsertUpdateFillData {
 
     /**
      * 可以自定义信息生成方式
      */
     @AliasFor(annotation = FillData.class, attribute = "value")
-    Class<? extends AutoFillHandler> value();
+    Class<? extends AutoFillHandler> value() default AutoFillHandler.class;
 
     /**
      * 若对象上存在值，是否覆盖

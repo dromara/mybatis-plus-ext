@@ -16,6 +16,9 @@ public class User {
     @ColumnComment("主键")
     private String id;
     @Column(comment = "姓名", length = 300)
+    @InsertFillData
+    private String otherName;
+    @Column(comment = "姓名", length = 300)
     @InsertFillData(UserNameAutoFillHandler.class)
     private String name;
     @Column(comment = "部门姓名", length = 300)
