@@ -9,6 +9,7 @@
         <version>3.5.12-EXT860</version>
     </parent>
 
+    <name>mybatis-plus-ext-autofill-core</name>
     <artifactId>mybatis-plus-ext-autofill-core</artifactId>
 
     <dependencies>
