@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({
-        AutoFillMetaObjectHandler.class,
-        AutoFillMetaObjectHandler.AutoFillMetaObjectHandlerChecker.class,
+        AutoFillMetaObjectHandler.class
 })
 public class AutofillAutoConfig {
 
