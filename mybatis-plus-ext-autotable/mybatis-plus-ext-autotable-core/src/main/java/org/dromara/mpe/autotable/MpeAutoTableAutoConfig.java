@@ -20,8 +20,10 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter(MybatisPlusAutoConfiguration.class)
 @Import({
         SpringContextUtil.class,
+        CustomInitializeBeans.class,
         DynamicDatasourceHandler.class,
         CustomAutoTableClassScanner.class,
+        CustomDataSourceInfoExtractor.class,
 })
 public class MpeAutoTableAutoConfig {
 

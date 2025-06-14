@@ -126,22 +126,14 @@ public class CustomAutoTableMetadataAdapter implements AutoTableMetadataAdapter 
     /**
      * 根据注解顺序和配置，获取字段对应的数据库字段名
      *
-     * @param field
-     * @return
+     * @param clazz 类
+     * @param field 字段
+     * @return 字段对应的数据库字段名
      */
     @Override
     public String getColumnName(Class<?> clazz, Field field) {
 
-        TableField tableField = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableField.class);
-        if (tableField != null && StringUtils.hasText(tableField.value()) && tableField.exist()) {
-            return filterSpecialChar(tableField.value());
-        }
-        TableId tableId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, TableId.class);
-        if (tableId != null && StringUtils.hasText(tableId.value())) {
-            return filterSpecialChar(tableId.value());
-        }
-
-        return smartConvert(MybatisPlusProperties.mapUnderscoreToCamelCase, field.getName());
+        return TableColumnNameUtil.getColumnName(field);
     }
 
     @Override
@@ -150,7 +142,7 @@ public class CustomAutoTableMetadataAdapter implements AutoTableMetadataAdapter 
         // 当没有配置任何默认值，且mybatis-plus配置了logic的默认 常规值的情况下，设置为默认值
         boolean isLogicDeleteField = Objects.equals(MybatisPlusProperties.logicDeleteField, field.getName());
         String logicNotDeleteValue = MybatisPlusProperties.logicNotDeleteValue;
-        if(isLogicDeleteField && StringUtils.hasText(logicNotDeleteValue)) {
+        if (isLogicDeleteField && StringUtils.hasText(logicNotDeleteValue)) {
             return new ColumnDefault() {
 
                 @Override
@@ -170,25 +162,5 @@ public class CustomAutoTableMetadataAdapter implements AutoTableMetadataAdapter 
             };
         }
         return AutoTableMetadataAdapter.super.getColumnDefaultValue(field, clazz);
-    }
-
-    private static String filterSpecialChar(String name) {
-
-        return name.replaceAll("`", "");
-    }
-
-    public static String smartConvert(Boolean camelToUnderline, String column) {
-
-        // 表上单独开启字段下划线申明
-        if (camelToUnderline != null && camelToUnderline) {
-            column = com.baomidou.mybatisplus.core.toolkit.StringUtils.camelToUnderline(column);
-        }
-
-        // 全局大写命名
-        if (MybatisPlusProperties.capitalMode) {
-            column = column.toUpperCase();
-        }
-
-        return column;
     }
 }

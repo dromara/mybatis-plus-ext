@@ -27,7 +27,8 @@ public class TableColumnNameUtil {
 
             String finalTableName = "";
 
-            boolean addTablePrefix = StringUtils.hasText(MybatisPlusProperties.tablePrefix);
+            String tablePrefix = MybatisPlusProperties.tablePrefix;
+            boolean addTablePrefix = StringUtils.hasText(tablePrefix);
 
             TableName mybatisPlusTableName = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, TableName.class);
             if (mybatisPlusTableName != null && StringUtils.hasText(mybatisPlusTableName.value())) {
@@ -37,7 +38,7 @@ public class TableColumnNameUtil {
                 }
             }
             if (!StringUtils.hasText(finalTableName)) {
-                finalTableName = smartConvert(MybatisPlusProperties.tableUnderline, clazz.getSimpleName());
+                finalTableName = smartConvert(clazz.getSimpleName());
             }
             // 添加表前缀
             if (addTablePrefix) {
@@ -63,7 +64,7 @@ public class TableColumnNameUtil {
             return filterSpecialChar(tableId.value());
         }
 
-        return smartConvert(MybatisPlusProperties.mapUnderscoreToCamelCase, field.getName());
+        return smartConvert(field.getName());
     }
 
     /**
@@ -84,10 +85,12 @@ public class TableColumnNameUtil {
             return filterSpecialChar(tableId.value());
         }
 
-        return smartConvert(MybatisPlusProperties.mapUnderscoreToCamelCase, field.getName());
+        return smartConvert(field.getName());
     }
 
-    private static String smartConvert(boolean underCamel, String column) {
+    private static String smartConvert(String column) {
+
+        boolean underCamel = MybatisPlusProperties.mapUnderscoreToCamelCase;
 
         // 开启字段下划线申明
         if (underCamel) {
