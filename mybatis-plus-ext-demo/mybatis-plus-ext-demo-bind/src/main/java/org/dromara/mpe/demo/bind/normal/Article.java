@@ -1,5 +1,6 @@
 package org.dromara.mpe.demo.bind.normal;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.dromara.mpe.autotable.annotation.Table;
@@ -14,6 +15,7 @@ import org.dromara.mpe.processer.annotation.AutoRepository;
 @AutoDefine
 @AutoRepository
 @Table
+@TableName(autoResultMap = true)
 public class Article {
 
     private String id;

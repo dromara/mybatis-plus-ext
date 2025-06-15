@@ -1,5 +1,6 @@
 package org.dromara.mpe.autotable;
 
+import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import org.dromara.autotable.core.AutoTableMetadataAdapter;
 import org.dromara.autotable.core.converter.JavaTypeToDatabaseTypeConverter;
@@ -7,6 +8,7 @@ import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.SpringContextUtil;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -23,7 +25,6 @@ import java.util.stream.Collectors;
         CustomInitializeBeans.class,
         DynamicDatasourceHandler.class,
         CustomAutoTableClassScanner.class,
-        CustomDataSourceInfoExtractor.class,
 })
 public class MpeAutoTableAutoConfig {
 
@@ -35,5 +36,11 @@ public class MpeAutoTableAutoConfig {
     @Bean
     public JavaTypeToDatabaseTypeConverter customJavaTypeToDatabaseTypeConverter(ObjectProvider<FieldDateTypeHandler> fieldDateTypeHandlers) {
         return new CustomJavaTypeToDatabaseTypeConverter(fieldDateTypeHandlers.stream().collect(Collectors.toList()));
+    }
+
+    @Bean
+    @ConditionalOnClass(DynamicRoutingDataSource.class)
+    public CustomDataSourceInfoExtractor customDataSourceInfoExtractor() {
+        return new CustomDataSourceInfoExtractor();
     }
 }
