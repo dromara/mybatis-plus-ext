@@ -17,7 +17,7 @@ import java.util.List;
 //@Component
 public class EntityScanner implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Autowired
+    @Autowired(required = false)
     private List<IEntityRegister> entityRegisters;
 
     @Override
