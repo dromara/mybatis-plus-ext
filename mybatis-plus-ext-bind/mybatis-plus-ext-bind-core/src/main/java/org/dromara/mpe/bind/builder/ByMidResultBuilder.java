@@ -143,7 +143,6 @@ public class ByMidResultBuilder<BEAN, ENTITY> {
                     // last sql
                     queryWrapper.last(conditionSign.getLast());
 
-                    System.out.println("-------");
                     return MapperExecuter.getMapperExecute(conditionSign.getJoinEntityClass(), mapper -> mapper.selectList(queryWrapper));
                 })
                 .flatMap(Collection::stream)
