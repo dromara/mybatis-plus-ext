@@ -1,6 +1,7 @@
 package org.dromara.mpe.demo.datasource;
 
 import org.dromara.autotable.springboot.EnableAutoTableTest;
+import org.dromara.mpe.datasource.DataSourceManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ class DemoDatasourceApplicationTests {
         String newName = sourceObject.getName() + ":update";
         sourceObject.setName(newName);
         sourceObjectRepository.updateById(sourceObject);
+        DataSourceManager.triggerUpdate(sourceObject, SourceObject::getName);
 
         TargetObject targetObject = targetObjectRepository.lambdaQueryPlus()
                 .eq(TargetObject::getSourceId, sourceObject.getId())

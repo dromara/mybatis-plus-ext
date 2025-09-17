@@ -17,6 +17,6 @@ public interface IBaseRepository<E> extends IRepository<E> {
      * @return MyLambdaQueryChainWrapper
      */
     default MyLambdaQueryChainWrapper<E> lambdaQueryPlus() {
-        return new MyLambdaQueryChainWrapper<>(getBaseMapper());
+        return new MyLambdaQueryChainWrapper<>(getBaseMapper(), getEntityClass());
     }
 }

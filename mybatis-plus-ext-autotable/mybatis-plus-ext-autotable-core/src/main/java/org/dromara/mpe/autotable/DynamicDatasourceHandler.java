@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  * @author don
  */
 @Slf4j
-@ConditionalOnClass(DynamicDataSourceProperties.class)
+@ConditionalOnClass(name = "com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties")
 @ConditionalOnProperty(
         prefix = DynamicDataSourceProperties.PREFIX,
         name = {"enabled"},
@@ -48,7 +48,7 @@ public class DynamicDatasourceHandler implements IDataSourceHandler {
     public String getDataSourceName(Class clazz) {
 
         DS ds = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, DS.class);
-        if(ds != null) {
+        if (ds != null) {
             return ds.value();
         }
 

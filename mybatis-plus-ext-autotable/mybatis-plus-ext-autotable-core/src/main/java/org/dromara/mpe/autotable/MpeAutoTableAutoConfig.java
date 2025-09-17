@@ -1,13 +1,11 @@
 package org.dromara.mpe.autotable;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;
 import org.dromara.autotable.core.AutoTableMetadataAdapter;
 import org.dromara.autotable.core.converter.JavaTypeToDatabaseTypeConverter;
 import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.SpringContextUtil;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
  * @author don
  */
 @Configuration
-@AutoConfigureAfter(MybatisPlusAutoConfiguration.class)
+@AutoConfigureOrder(99)
 @Import({
         SpringContextUtil.class,
         CustomInitializeBeans.class,
@@ -39,7 +37,7 @@ public class MpeAutoTableAutoConfig {
     }
 
     @Bean
-    @ConditionalOnClass(DynamicRoutingDataSource.class)
+    @ConditionalOnClass(name = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource")
     public CustomDataSourceInfoExtractor customDataSourceInfoExtractor() {
         return new CustomDataSourceInfoExtractor();
     }

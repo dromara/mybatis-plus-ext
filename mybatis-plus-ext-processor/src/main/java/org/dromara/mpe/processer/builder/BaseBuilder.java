@@ -12,8 +12,14 @@ import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,11 +29,13 @@ public abstract class BaseBuilder {
     protected final Messager messager;
     protected final Elements elementUtils;
     protected final MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
+    protected final String projectRoot;
 
-    protected BaseBuilder(Filer filer, Messager messager, Elements elementUtils, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
+    protected BaseBuilder(Filer filer, Messager messager, Elements elementUtils, String projectRoot, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
         this.filer = filer;
         this.messager = messager;
         this.elementUtils = elementUtils;
+        this.projectRoot = projectRoot;
         this.mybatisPlusExtProcessConfig = mybatisPlusExtProcessConfig;
     }
 
@@ -97,27 +105,69 @@ public abstract class BaseBuilder {
      * 判断是否已经被手动创建了
      */
     protected boolean isExist(String packageName, String fileName) {
-        if (!fileName.endsWith(".java")) {
-            fileName = fileName + ".java";
+        String fullName = packageName + "." + fileName;
+        boolean exists = checkByTypeElement(fullName);
+        if (!exists) {
+            exists = checkBySourcePathResource(fullName);
         }
-        FileObject fileObject = null;
-        try {
-            fileObject = this.filer.getResource(StandardLocation.SOURCE_PATH, packageName, fileName);
-            // 兼容IDEA的默认编译行为
-            if (fileObject == null) {
-                fileObject = this.filer.getResource(StandardLocation.CLASS_PATH, packageName, fileName);
-                return true;
-            }
-        } catch (IOException ignored) {
+        if (!exists && projectRoot != null) {
+            exists = checkByFileSystem(fullName);
         }
 
-        if (fileObject != null) {
+        if (exists) {
             log("存在跳过:" + packageName + "." + fileName);
             return true;
         } else {
             log("自动创建:" + packageName + "." + fileName);
             return false;
         }
+    }
+
+    private boolean checkByTypeElement(String fqcn) {
+        try {
+            TypeElement te = elementUtils.getTypeElement(fqcn);
+            return te != null;
+        } catch (Exception e) {
+            // 理论上不会，但保险起见
+            return false;
+        }
+    }
+
+    private boolean checkBySourcePathResource(String fqcn) {
+        String resourcePath = fqcn.replace('.', '/') + ".java";
+        try {
+            FileObject fo = filer.getResource(StandardLocation.SOURCE_PATH, "", resourcePath);
+            // 如果能获取到 FileObject 且能 openInputStream，说明源文件能找到
+            try (InputStream is = fo.openInputStream()) {
+                // 读取少量字节验证
+                if (is.read() != -1) return true;
+            } catch (IOException e) {
+                // 这里表示即便拿到 FileObject，也可能无法打开（不同实现差异）
+                return false;
+            }
+        } catch (FilerException fe) {
+            // FilerException 可能因资源已被创建或其它原因抛出，忽略或记录
+        } catch (IOException ioe) {
+            // 没找到资源会抛 IOException
+            // messager.printMessage(Kind.NOTE, "[ExistenceCheckProcessor] SOURCE_PATH 未找到: " + resourcePath);
+        }
+        return false;
+    }
+
+    private boolean checkByFileSystem(String fqcn) {
+        // 直接去 projectRoot/src/main/java 或 src/main/java 之类的位置找
+        String relative = fqcn.replace('.', File.separatorChar) + ".java";
+        List<Path> candidateRoots = new ArrayList<>();
+        candidateRoots.add(Paths.get(projectRoot, "src", "main", "java"));
+        candidateRoots.add(Paths.get(projectRoot, "src", "test", "java"));
+        candidateRoots.add(Paths.get(projectRoot, "src")); // 兜底
+        for (Path root : candidateRoots) {
+            Path p = root.resolve(relative);
+            if (Files.exists(p)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected void log(String msg) {

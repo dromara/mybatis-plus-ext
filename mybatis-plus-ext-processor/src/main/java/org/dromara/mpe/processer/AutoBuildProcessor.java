@@ -17,6 +17,7 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedOptions;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -25,12 +26,14 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author don
  */
 @AutoService(Processor.class)
+@SupportedOptions({"projectRoot", "check.targets"}) // 可传 projectRoot、和要检测的 targets 列表（逗号分隔）
 public class AutoBuildProcessor extends AbstractProcessor {
 
     private DefineBuilder defineBuilder;
@@ -38,6 +41,7 @@ public class AutoBuildProcessor extends AbstractProcessor {
     private RepositoryBuilder repositoryBuilder;
     private MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig;
     private Class<? extends Annotation> globalAnnotationClass;
+    private String projectRoot; // 可选的 fallback 根目录
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -48,9 +52,13 @@ public class AutoBuildProcessor extends AbstractProcessor {
         Messager messager = processingEnv.getMessager();
         mybatisPlusExtProcessConfig = MybatisPlusExtProcessConfig.getInstance(filer);
 
-        defineBuilder = new DefineBuilder(filer, messager, typeUtils, elementUtils, mybatisPlusExtProcessConfig);
-        mapperBuilder = new MapperBuilder(filer, messager, typeUtils, elementUtils, mybatisPlusExtProcessConfig);
-        repositoryBuilder = new RepositoryBuilder(filer, messager, typeUtils, elementUtils, mybatisPlusExtProcessConfig, mapperBuilder);
+        Map<String, String> options = processingEnv.getOptions();
+        this.projectRoot = options.get("projectRoot");
+
+
+        defineBuilder = new DefineBuilder(filer, messager, typeUtils, elementUtils, projectRoot, mybatisPlusExtProcessConfig);
+        mapperBuilder = new MapperBuilder(filer, messager, typeUtils, elementUtils, projectRoot, mybatisPlusExtProcessConfig);
+        repositoryBuilder = new RepositoryBuilder(filer, messager, typeUtils, elementUtils, projectRoot, mybatisPlusExtProcessConfig, mapperBuilder);
     }
 
     @Override

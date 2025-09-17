@@ -21,8 +21,8 @@ public class DefineBuilder extends BaseBuilder {
 
     private final Types typeUtils;
 
-    public DefineBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
-        super(filer, messager, elementUtils, mybatisPlusExtProcessConfig);
+    public DefineBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, String projectRoot, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
+        super(filer, messager, elementUtils, projectRoot, mybatisPlusExtProcessConfig);
         this.typeUtils = typeUtils;
     }
 

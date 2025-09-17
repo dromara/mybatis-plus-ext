@@ -1,6 +1,5 @@
 package org.dromara.mpe.processer.builder;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
@@ -13,6 +12,9 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,8 +22,8 @@ public class MapperBuilder extends BaseBuilder {
 
     private final Elements elementUtils;
 
-    public MapperBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
-        super(filer, messager, elementUtils, mybatisPlusExtProcessConfig);
+    public MapperBuilder(Filer filer, Messager messager, Types typeUtils, Elements elementUtils, String projectRoot, MybatisPlusExtProcessConfig mybatisPlusExtProcessConfig) {
+        super(filer, messager, elementUtils, projectRoot, mybatisPlusExtProcessConfig);
         this.elementUtils = elementUtils;
     }
 
@@ -48,18 +50,25 @@ public class MapperBuilder extends BaseBuilder {
         if (autoMapper.withDSAnnotation()) {
             String dsName = null;
             Table table = element.getAnnotation(Table.class);
+            String dsAnnoClassName = "com.baomidou.dynamic.datasource.annotation.DS";
             if (table != null && !table.dsName().isEmpty()) {
                 dsName = table.dsName();
             } else {
-                DS ds = element.getAnnotation(DS.class);
-                if (ds != null && !ds.value().isEmpty()) {
-                    dsName = ds.value();
-                } else {
+                try {
+                    Class<? extends Annotation> dsClass = (Class<? extends Annotation>) Class.forName(dsAnnoClassName);
+                    Annotation ds = element.getAnnotation(dsClass);
+                    // ds 是 Annotation 对象
+                    Method valueMethod = ds.annotationType().getMethod("value");
+                    Object value = valueMethod.invoke(ds);
+                    dsName = (String) value;
+                } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException ignore) {
+                }
+                if (dsName == null) {
                     warn(entityPackageName + "." + entityName + "缺少@Table的dsName配置，无法为" + mapperPackageName + "." + mapperName + "添加@DS ");
                 }
             }
             if (dsName != null) {
-                dsAnnoImport = "import com.baomidou.dynamic.datasource.annotation.DS;";
+                dsAnnoImport = "import " + dsAnnoClassName + ";";
                 dsAnno = "@DS(\"" + dsName + "\")";
             }
         }

@@ -29,12 +29,6 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-spring</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>dynamic-datasource-spring-boot-common</artifactId>
-            <version>${dynamic-datasource.version}</version>
-            <optional>true</optional>
-        </dependency>
 
         <dependency>
             <groupId>org.dromara.mpe</groupId>
@@ -58,6 +52,15 @@
             <plugin>
                 <groupId>net.ju-n.maven.plugins</groupId>
                 <artifactId>checksum-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArgs>
+                        <arg>-AprojectRoot=${project.basedir}</arg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

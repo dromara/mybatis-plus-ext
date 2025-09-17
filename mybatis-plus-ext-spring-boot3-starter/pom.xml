@@ -12,10 +12,6 @@
     <name>mybatis-plus-ext-spring-boot3-starter</name>
     <artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
 
-    <properties>
-        <mybatis-spring.version>3.0.4</mybatis-spring.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.dromara.mpe</groupId>

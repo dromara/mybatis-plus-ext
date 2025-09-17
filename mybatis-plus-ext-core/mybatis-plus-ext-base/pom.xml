@@ -18,11 +18,11 @@
             <artifactId>mybatis-plus-ext-magic</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>${mybatis-spring.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.mybatis</groupId>-->
+<!--            <artifactId>mybatis-spring</artifactId>-->
+<!--            <version>${mybatis-spring.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

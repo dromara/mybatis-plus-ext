@@ -19,6 +19,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 // 声明字典关联关系
+// 整个字典的核心就是@BindField这个注解，独立的@JoinCondition和自定义的@Dict都是为了填充@BindField中缺失的conditions值
 @BindField(entity = SysDict.class, field = SysDictDefine.dictVal, conditions = @JoinCondition(selfField = "", joinField = ""))
 @JoinCondition(selfField = "", joinField = SysDictDefine.dictKey)
 public @interface Dict {
