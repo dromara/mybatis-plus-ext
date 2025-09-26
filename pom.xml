@@ -39,7 +39,7 @@
     <properties>
         <spring-boot.version>2.7.18</spring-boot.version>
         <mybatis-plus.version>3.5.14</mybatis-plus.version>
-        <auto-table.version>2.5.7</auto-table.version>
+        <auto-table.version>2.5.9</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- maven配置-->
