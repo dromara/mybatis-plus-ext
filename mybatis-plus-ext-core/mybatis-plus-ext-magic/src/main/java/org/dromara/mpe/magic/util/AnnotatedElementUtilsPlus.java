@@ -51,8 +51,7 @@ public class AnnotatedElementUtilsPlus extends AnnotatedElementUtils {
                         // 比对，如果与默认值不同，则说明是自定义值
                         if (compareValIsDiff(annoVal, defaultVal)) {
                             newVal = annoVal;
-                            // 找到不同就退出了，此时体现就是，要么该注解是最贴近原始注解的注解，要么该注解是在最上(前)面的那个注解
-                            break;
+                            // 持续遍历直到最后一个满足条件的，此时体现就是，要么该注解是最贴近原始注解的注解，要么该注解是在最下(后)面的那个注解，要么就是父子类中的子类自身的注解
                         }
                     } catch (Exception e) {
                         log.warn("合并TableField过程中，获取注解值出错", e);
