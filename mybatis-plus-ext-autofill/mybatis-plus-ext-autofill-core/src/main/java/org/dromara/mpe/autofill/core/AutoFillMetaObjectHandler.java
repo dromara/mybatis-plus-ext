@@ -8,6 +8,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.dromara.mpe.autofill.annotation.DefaultValue;
 import org.dromara.mpe.autofill.annotation.FillData;
 import org.dromara.mpe.autofill.annotation.FillTime;
+import org.dromara.mpe.autofill.annotation.NoTrim;
 import org.dromara.mpe.autofill.annotation.handler.AutoFillHandler;
 import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
@@ -69,6 +70,13 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
             fields.addAll(Arrays.asList(declaredFields));
         }
 
+        // 去除前后空白字符
+        if (SpringContextUtil.getBeanOfType(AutoFillProperties.class).getAutoTrim()) {
+            fields.stream()
+                    .filter(field -> metaObject.hasSetter(field.getName()))
+                    .forEach(field -> trimValue(metaObject, field));
+        }
+
         List<Field> fieldList = fields.stream()
                 .filter(field -> metaObject.hasSetter(field.getName()))
                 .filter(field -> {
@@ -96,6 +104,24 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
             // 操作时间
             setOptionDate(metaObject, clazz, field, now);
         });
+    }
+
+    private void trimValue(MetaObject metaObject, Field field) {
+
+        NoTrim noTrim = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, NoTrim.class);
+        if (noTrim != null) {
+            return;
+        }
+
+        Object fieldVal = this.getFieldValByName(field.getName(), metaObject);
+        if (fieldVal == null) {
+            return;
+        }
+
+        if (fieldVal instanceof String) {
+            String newVal = ((String) fieldVal).trim();
+            this.setFieldValByName(field.getName(), newVal, metaObject);
+        }
     }
 
     private void setDefaultVale(MetaObject metaObject, Field field) {
