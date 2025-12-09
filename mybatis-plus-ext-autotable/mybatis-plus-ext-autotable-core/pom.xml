@@ -3,7 +3,7 @@
     <parent>
         <artifactId>mybatis-plus-ext-autotable</artifactId>
         <groupId>org.dromara.mpe</groupId>
-        <version>3.5.14-EXT884</version>
+        <version>3.5.15-EXT890</version>
     </parent>
     <name>mybatis-plus-ext-autotable-core</name>
     <modelVersion>4.0.0</modelVersion>
