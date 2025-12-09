@@ -38,8 +38,8 @@
 
     <properties>
         <spring-boot.version>2.7.18</spring-boot.version>
-        <mybatis-plus.version>3.5.14</mybatis-plus.version>
-        <auto-table.version>2.5.10</auto-table.version>
+        <mybatis-plus.version>3.5.15</mybatis-plus.version>
+        <auto-table.version>2.5.11</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
 
         <!-- maven配置-->
@@ -75,6 +75,7 @@
         <module>mybatis-plus-ext-processor</module>
         <module>mybatis-plus-ext-spring-boot-starter</module>
         <module>mybatis-plus-ext-spring-boot3-starter</module>
+        <module>mybatis-plus-ext-spring-boot4-starter</module>
         <module>mybatis-plus-ext-autofill</module>
     </modules>
 
