@@ -101,12 +101,21 @@ public class ResultBuilder<BEAN, ENTITY> {
                 try {
                     String column = condition.getJoinColumnName();
                     Object val = condition.getSelfFieldGetMethod().invoke(bean);
-                    whereItemList.add(new QueryWrapperBuilder.WhereItem(column, val));
+                    if(val != null) {
+                        whereItemList.add(new QueryWrapperBuilder.WhereItem(column, val));
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException("获取字段" + condition.getSelfFieldName() + "的值失败。", e);
                 }
             }
-            whereSet.add(new QueryWrapperBuilder.Where(whereItemList, CustomConditionParser.parse(bean, conditionSign.getCustomCondition())));
+            if(!whereItemList.isEmpty()) {
+                whereSet.add(new QueryWrapperBuilder.Where(whereItemList, CustomConditionParser.parse(bean, conditionSign.getCustomCondition())));
+            }
+        }
+
+        // 没有组织到有效的条件，直接返回空集合
+        if(whereSet.isEmpty()) {
+            return Collections.emptyList();
         }
 
         // 拆分查询条件，防止条件过多导致sql中in条件内容过长
