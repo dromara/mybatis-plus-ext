@@ -12,6 +12,19 @@
     <name>mybatis-plus-ext-spring-boot3-starter</name>
     <artifactId>mybatis-plus-ext-spring-boot3-starter</artifactId>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- 覆盖根pom的Spring Boot 2.7.18版本管理，确保SB3相关传递依赖解析到正确的Spring Boot 3.x版本 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot3.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.dromara.mpe</groupId>
