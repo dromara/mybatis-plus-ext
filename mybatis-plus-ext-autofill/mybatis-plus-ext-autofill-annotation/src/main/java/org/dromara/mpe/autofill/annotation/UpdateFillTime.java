@@ -33,4 +33,13 @@ public @interface UpdateFillTime {
      */
     @AliasFor(annotation = FillTime.class, attribute = "override")
     boolean override() default true;
+
+    /**
+     * 时区，为空时使用系统默认时区（或全局配置 mpe.default-timezone）。
+     * <p>仅对 String、LocalDate、LocalDateTime 类型字段生效，
+     * Date 和 Long 类型存储的是绝对时间戳，不受时区影响。</p>
+     * <p>示例: "Asia/Shanghai", "UTC", "America/New_York"</p>
+     */
+    @AliasFor(annotation = FillTime.class, attribute = "timezone")
+    String timezone() default "";
 }

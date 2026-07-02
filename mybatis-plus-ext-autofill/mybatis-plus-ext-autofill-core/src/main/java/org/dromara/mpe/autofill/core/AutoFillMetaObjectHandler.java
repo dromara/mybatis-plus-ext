@@ -21,9 +21,12 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -197,10 +200,12 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
         Boolean override = null;
         String format = null;
+        String timezone = null;
         FillTime fillTime = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, FillTime.class);
         if (fillTime != null) {
             override = fillTime.override();
             format = fillTime.format();
+            timezone = fillTime.timezone();
         }
         if (override != null && format != null) {
 
@@ -209,14 +214,48 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
 
             if (canSet) {
                 Class<?> type = getDateType(clazz, field);
+                ZoneId zoneId = resolveZoneId(timezone, clazz, field);
 
-                Object nowDate = Optional.ofNullable(now.now(type, format))
+                Object nowDate = Optional.ofNullable(now.now(type, format, zoneId))
                         .orElseThrow(() -> new RuntimeException("类：" + clazz.toString() + "的字段：" + field.getName()
-                                + "的类型不支持。仅支持String、Long、long、Date、LocalDate、LocalDateTime"));
+                                + "的类型（" + type.getName() + "）不支持。仅支持String、Long、long、Date、LocalDate、LocalDateTime"));
 
                 this.setFieldValByName(field.getName(), nowDate, metaObject);
             }
         }
+    }
+
+    /**
+     * 解析时区：注解级别 > 全局配置 > 系统默认
+     */
+    private ZoneId resolveZoneId(String timezone, Class<?> clazz, Field field) {
+        // 注解级别时区
+        if (timezone != null && !timezone.isEmpty()) {
+            try {
+                return ZoneId.of(timezone);
+            } catch (DateTimeException e) {
+                throw new RuntimeException("类：" + clazz.getName() + " 的字段：" + field.getName()
+                        + " 配置的时区 \"" + timezone + "\" 无效，请使用标准时区ID，如 Asia/Shanghai、UTC", e);
+            }
+        }
+        // 全局配置时区
+        try {
+            String globalTimezone = SpringContextUtil.getBeanOfType(AutoFillProperties.class).getDefaultTimezone();
+            if (globalTimezone != null && !globalTimezone.isEmpty()) {
+                try {
+                    return ZoneId.of(globalTimezone);
+                } catch (DateTimeException e) {
+                    throw new RuntimeException("全局时区配置 mpe.default-timezone=\"" + globalTimezone + "\" 无效，请使用标准时区ID，如 Asia/Shanghai、UTC", e);
+                }
+            }
+        } catch (RuntimeException e) {
+            if (e instanceof DateTimeException || e.getCause() instanceof DateTimeException) {
+                throw e;
+            }
+            log.warn("读取全局时区配置失败，将使用系统默认时区", e);
+        }
+        // 系统默认时区
+        return ZoneId.systemDefault();
     }
 
     /**
@@ -303,35 +342,35 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
     }
 
     /**
-     * 框架内部使用，定义当前时间的时间对象
+     * 框架内部使用，捕获一次当前时刻，按指定时区生成时间值。
+     * 同一 fill 操作内所有字段共享同一时刻，保证时间戳一致性。
      */
     private static class Now {
 
-        private final LocalDateTime localDateTime = LocalDateTime.now();
-        private final LocalDate localDate = this.localDateTime.toLocalDate();
-        private final Date date = Date.from(this.localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        private final Long timestamp = this.date.getTime();
+        private final Instant instant = Instant.now();
 
-        public Object now(Class<?> type, String format) {
+        public Object now(Class<?> type, String format, ZoneId zoneId) {
+
+            ZonedDateTime zonedNow = instant.atZone(zoneId);
 
             if (type == String.class) {
-                return this.localDateTime.format(DateTimeFormatter.ofPattern(format));
+                return zonedNow.format(DateTimeFormatter.ofPattern(format));
             }
 
             if (type == long.class || type == Long.class) {
-                return timestamp;
+                return instant.toEpochMilli();
             }
 
             if (type == Date.class) {
-                return date;
+                return Date.from(instant);
             }
 
             if (type == LocalDate.class) {
-                return localDate;
+                return zonedNow.toLocalDate();
             }
 
             if (type == LocalDateTime.class) {
-                return localDateTime;
+                return zonedNow.toLocalDateTime();
             }
 
             return null;
