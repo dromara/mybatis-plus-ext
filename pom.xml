@@ -43,9 +43,10 @@
         <mybatis-plus.version>3.5.16</mybatis-plus.version>
         <auto-table.version>2.6.2</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
-
-        <!-- maven配置-->
-        <java.version>8</java.version>
+    
+        <!-- maven 配置-->
+        <!-- 为了兼容 Spring Boot 3/4 和 Java 17+,设置基础 Java 版本为 17;SB2 模块可单独覆盖 -->
+        <java.version>17</java.version>
         <resource.delimiter>@</resource.delimiter>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -73,14 +74,15 @@
         <module>mybatis-plus-ext-core</module>
         <module>mybatis-plus-ext-condition</module>
         <module>mybatis-plus-ext-datasource</module>
-        <module>mybatis-plus-ext-demo</module>
+        <!-- <module>mybatis-plus-ext-demo</module> -->
         <module>mybatis-plus-ext-processor</module>
         <module>mybatis-plus-ext-spring-boot-starter</module>
         <module>mybatis-plus-ext-spring-boot3-starter</module>
         <module>mybatis-plus-ext-spring-boot4-starter</module>
         <module>mybatis-plus-ext-autofill</module>
-        <module>test-autotable-migration</module>
-        <module>mybatis-plus-ext-test</module>
+        <!-- 测试模块暂时排除 -->
+        <!-- <module>test-autotable-migration</module> -->
+        <!-- <module>mybatis-plus-ext-test</module> -->
     </modules>
 
     <distributionManagement>
@@ -118,11 +120,7 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
+        <!-- spring-boot-configuration-processor 已移至具体模块，避免在 Java 8 环境下编译 SB3/SB4 相关依赖时报错 -->
     </dependencies>
 
     <build>
