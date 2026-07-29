@@ -39,6 +39,12 @@ public @interface Column {
     String value() default "";
 
     /**
+     * 是否为数据库表字段
+     */
+    @AliasFor(annotation = TableField.class, attribute = "exist")
+    boolean exist() default true;
+
+    /**
      * 字段类型：不填默认使用属性的数据类型进行转换，转换失败的字段不会添加
      *
      * @return 字段类型

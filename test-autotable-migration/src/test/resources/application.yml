@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    dynamic:
+      primary: my-sqlite
+      strict: false
+      datasource:
+        my-sqlite:
+          url: 'jdbc:sqlite::memory:'
+          driver-class-name: org.sqlite.JDBC
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: my_
+
+auto-table:
+  mode: create
+  auto-drop-column: true
+  strict-extends: false
+
+logging:
+  level:
+    org.dromara.autotable: DEBUG

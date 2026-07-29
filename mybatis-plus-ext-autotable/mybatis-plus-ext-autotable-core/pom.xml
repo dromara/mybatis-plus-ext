@@ -21,15 +21,15 @@
             <artifactId>mybatis-plus-ext-magic</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.dromara.mpe</groupId>
-            <artifactId>mybatis-plus-ext-autofill-annotation</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.dromara.autotable</groupId>
             <artifactId>auto-table-spring-boot-starter</artifactId>
+            <version>${auto-table.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dromara.autotable</groupId>
+            <artifactId>auto-table-adapter-mybatis-plus</artifactId>
             <version>${auto-table.version}</version>
         </dependency>
         <dependency>

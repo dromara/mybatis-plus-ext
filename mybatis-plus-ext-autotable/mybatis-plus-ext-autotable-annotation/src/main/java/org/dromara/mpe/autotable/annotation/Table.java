@@ -39,6 +39,12 @@ public @interface Table {
     String schema() default "";
 
     /**
+     * 是否保持使用全局 tablePrefix 的值
+     */
+    @AliasFor(annotation = TableName.class, attribute = "keepGlobalPrefix")
+    boolean keepGlobalPrefix() default false;
+
+    /**
      * 表注释
      */
     @AliasFor(annotation = AutoTable.class, attribute = "comment")

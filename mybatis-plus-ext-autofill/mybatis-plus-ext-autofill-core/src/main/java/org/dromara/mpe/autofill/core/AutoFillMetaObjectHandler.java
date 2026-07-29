@@ -10,7 +10,6 @@ import org.dromara.mpe.autofill.annotation.FillData;
 import org.dromara.mpe.autofill.annotation.FillTime;
 import org.dromara.mpe.autofill.annotation.NoTrim;
 import org.dromara.mpe.autofill.annotation.handler.AutoFillHandler;
-import org.dromara.mpe.autofill.annotation.handler.FieldDateTypeHandler;
 import org.dromara.mpe.magic.util.AnnotatedElementUtilsPlus;
 import org.dromara.mpe.magic.util.SpringContextUtil;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -213,7 +212,7 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
                     || override;
 
             if (canSet) {
-                Class<?> type = getDateType(clazz, field);
+                Class<?> type = field.getType();
                 ZoneId zoneId = resolveZoneId(timezone, clazz, field);
 
                 Object nowDate = Optional.ofNullable(now.now(type, format, zoneId))
@@ -256,23 +255,6 @@ public class AutoFillMetaObjectHandler implements MetaObjectHandler {
         }
         // 系统默认时区
         return ZoneId.systemDefault();
-    }
-
-    /**
-     * 获取日期类字段的类型
-     */
-    private Class<?> getDateType(Class<?> clazz, Field field) {
-
-        List<FieldDateTypeHandler> fieldTypeHandlers = SpringContextUtil.getBeansOfTypeList(FieldDateTypeHandler.class);
-        Class<?> type = fieldTypeHandlers.stream()
-                .map(handler -> handler.getDateType(clazz, field))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
-        if (type == null) {
-            type = field.getType();
-        }
-        return type;
     }
 
     /**

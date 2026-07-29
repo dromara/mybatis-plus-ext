@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: 'jdbc:sqlite::memory:'
+    driver-class-name: org.sqlite.JDBC
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+auto-table:
+  mode: create
+  auto-drop-column: true
