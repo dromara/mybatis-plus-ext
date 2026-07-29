@@ -45,7 +45,8 @@
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     
         <!-- maven 配置-->
-        <!-- 为了兼容 Spring Boot 3/4 和 Java 17+,设置基础 Java 版本为 17;SB2 模块可单独覆盖 -->
+        <!-- Spring Boot 2.7.x 支持 Java 8+,SB3.5.x 要求 Java 17,SB4 要求 Java 21+
+             为同时兼容，设置基础版本为 17;SB2 Starter 可在子模块单独调整 (如果需要) -->
         <java.version>17</java.version>
         <resource.delimiter>@</resource.delimiter>
         <maven.compiler.source>${java.version}</maven.compiler.source>
