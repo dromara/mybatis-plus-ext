@@ -1,6 +1,6 @@
 package org.dromara.mpe.processer.builder;
 
-import com.baomidou.mybatisplus.extension.repository.CrudRepository;
+import com.baomidou.mybatisplus.spring.repository.CrudRepository;
 import com.squareup.javapoet.ClassName;
 import org.dromara.mpe.autotable.annotation.Table;
 import org.dromara.mpe.processer.annotation.AutoRepository;

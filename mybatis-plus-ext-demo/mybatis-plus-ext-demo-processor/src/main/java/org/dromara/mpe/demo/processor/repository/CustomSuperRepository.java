@@ -1,7 +1,7 @@
 package org.dromara.mpe.demo.processor.repository;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.repository.CrudRepository;
+import com.baomidou.mybatisplus.spring.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

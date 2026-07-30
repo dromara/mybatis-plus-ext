@@ -2,7 +2,7 @@ package org.dromara.mpe.magic.util;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
-import com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler;
+import com.baomidou.mybatisplus.core.toolkit.EnumUtils;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class EnumUtil {
 
     public static boolean isMpEnums(Class<?> enumClassType) {
-        return MybatisEnumTypeHandler.isMpEnums(enumClassType);
+        return EnumUtils.isMpEnums(enumClassType);
     }
 
     /**
