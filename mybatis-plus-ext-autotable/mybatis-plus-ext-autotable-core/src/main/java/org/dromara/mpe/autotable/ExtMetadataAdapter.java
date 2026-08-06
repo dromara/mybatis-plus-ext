@@ -41,19 +41,16 @@ public class ExtMetadataAdapter extends MybatisPlusMetadataAdapter implements In
     /**
      * 获取表名
      * <p>
-     * 优先读取 ext @Table.value()，经过 smartConvert（驼峰转下划线/大写）和 filterSpecialChar（去除反引号）后返回。
+     * 优先读取 ext @Table.value()，显式指定的表名原样使用（与 MP 语义一致），仅经过 filterSpecialChar（去除反引号）后返回。
      * 表前缀逻辑：当全局 tablePrefix 配置存在时，仅当 @Table.keepGlobalPrefix() 为 true 时才追加前缀。
-     * 若 @Table 不存在或 value 为空，回退到 super（读取 @TableName）。
+     * 若 @Table 不存在或 value 为空，回退到 super（读取 @TableName，兜底类名才做驼峰转换）。
      */
     @Override
     public String getTableName(Class<?> clazz) {
         Table table = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(clazz, Table.class);
         if (table != null && hasText(table.value())) {
-            String tableName = table.value();
-            // 驼峰转下划线 / 大写转换
-            tableName = smartConvert(tableName);
-            // 去除反引号
-            tableName = filterSpecialChar(tableName);
+            // 显式指定的表名原样使用，仅去除反引号
+            String tableName = filterSpecialChar(table.value());
 
             // 表前缀处理：keepGlobalPrefix=true → 保持使用全局前缀；keepGlobalPrefix=false → 不追加前缀
             String tablePrefix = getConfig().getTablePrefix();
@@ -88,20 +85,20 @@ public class ExtMetadataAdapter extends MybatisPlusMetadataAdapter implements In
      * 获取字段对应的数据库列名
      * <p>
      * 优先读取 ext @ColumnId.value()，其次读取 ext @Column.value()，
-     * 经过 smartConvert 和 filterSpecialChar 转换后返回。
-     * 若两者都不存在或值为空，回退到 super（读取 @TableField/@TableId）。
+     * 显式指定的列名原样使用（与 MP 语义一致），仅经过 filterSpecialChar 后返回。
+     * 若两者都不存在或值为空，回退到 super（读取 @TableField/@TableId，兜底字段名才做驼峰转换）。
      */
     @Override
     public String getColumnName(Class<?> clazz, Field field) {
         // 先尝试 @ColumnId
         ColumnId columnId = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, ColumnId.class);
         if (columnId != null && hasText(columnId.value())) {
-            return filterSpecialChar(smartConvert(columnId.value()));
+            return filterSpecialChar(columnId.value());
         }
         // 再尝试 @Column
         Column column = AnnotatedElementUtilsPlus.findDeepMergedAnnotation(field, Column.class);
         if (column != null && hasText(column.value())) {
-            return filterSpecialChar(smartConvert(column.value()));
+            return filterSpecialChar(column.value());
         }
         // 回退到 super
         return super.getColumnName(clazz, field);

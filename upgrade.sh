@@ -1,11 +1,12 @@
 # 版本升级
-version=3.5.17-EXT1000
+version=3.5.17-EXT1004
 
 echo "开始替换pom.xml的版本号：${version}"
 mvn versions:set -DnewVersion=${version}
 
 echo "开始commit到本地仓库：${version}"
-git commit -am "版本升级：${version}"
+git add -A
+git commit -m "版本升级：${version}"
 
 tagName=v${version}
 echo "开始打tag：${tagName}"

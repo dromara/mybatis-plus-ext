@@ -1,6 +1,8 @@
 package org.dromara.mpe.test;
 
 import org.dromara.autotable.springboot.EnableAutoTableTest;
+import org.dromara.mpe.test.entity.TestExplicitNameTable;
+import org.dromara.mpe.test.entity.TestExplicitNameTableMapper;
 import org.dromara.mpe.test.entity.TestInheritTable;
 import org.dromara.mpe.test.entity.TestInheritTableMapper;
 import org.dromara.mpe.test.entity.TestTable;
@@ -28,6 +30,9 @@ public class AutoTableMigrationTest {
 
     @Autowired
     private TestInheritTableMapper testInheritTableMapper;
+
+    @Autowired
+    private TestExplicitNameTableMapper testExplicitNameTableMapper;
 
     @Autowired
     private DataSource dataSource;
@@ -87,7 +92,48 @@ public class AutoTableMigrationTest {
         assertFalse(containsIgnoreCase(columns, "extra"), "extra（@Ignore）不应存在");
     }
 
-    // ===== 3. 测试 CRUD =====
+    // ===== 3. 测试显式指定的表名/列名原样使用（回归：不能被驼峰转下划线破坏） =====
+
+    @Test
+    public void testExplicitTableNameKeptVerbatim() throws Exception {
+        List<String> tables = getTableNames();
+        // 显式指定的全大写表名必须原样使用（keepGlobalPrefix 默认 false，不加前缀）
+        assertTrue(tables.contains("LY_RZ_ZY"), "显式表名 LY_RZ_ZY 应原样创建，实际: " + tables);
+        // 不能出现被驼峰转换破坏后的表名
+        assertFalse(containsIgnoreCase(tables, "l_y__r_z__z_y"), "显式表名不应被驼峰转下划线破坏");
+    }
+
+    @Test
+    public void testExplicitColumnNamesKeptVerbatim() throws Exception {
+        List<String> columns = getColumnNames("LY_RZ_ZY");
+        System.out.println("LY_RZ_ZY 的列: " + columns);
+
+        // 显式指定的全大写列名必须原样使用
+        assertTrue(columns.contains("SSBH"), "@ColumnId 显式列名 SSBH 应原样使用，实际: " + columns);
+        assertTrue(columns.contains("ZYMC"), "@Column 显式列名 ZYMC 应原样使用，实际: " + columns);
+        assertFalse(containsIgnoreCase(columns, "s_s_b_h"), "显式列名不应被驼峰转下划线破坏");
+        // 未显式指定列名的字段，仍应兜底做驼峰转下划线
+        assertTrue(containsIgnoreCase(columns, "attachment_path"), "兜底字段名应驼峰转下划线为 attachment_path");
+    }
+
+    @Test
+    public void testExplicitNameTableCrud() {
+        // DDL 建出的名字与运行时 SQL 使用的名字一致，CRUD 才能正常工作
+        TestExplicitNameTable entity = new TestExplicitNameTable();
+        entity.setName("资源名称");
+        entity.setAttachmentPath("/tmp/file.png");
+
+        int rows = testExplicitNameTableMapper.insert(entity);
+        assertEquals(1, rows, "显式大写表名的实体插入应成功");
+        assertNotNull(entity.getSourceId(), "插入后主键应被自动填充");
+
+        TestExplicitNameTable found = testExplicitNameTableMapper.selectById(entity.getSourceId());
+        assertNotNull(found, "应能按主键查到插入的数据");
+        assertEquals("资源名称", found.getName());
+        assertEquals("/tmp/file.png", found.getAttachmentPath());
+    }
+
+    // ===== 4. 测试 CRUD =====
 
     @Test
     public void testCrudOperations() {
