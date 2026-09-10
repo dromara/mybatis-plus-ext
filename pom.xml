@@ -7,7 +7,7 @@
     <groupId>org.dromara.mpe</groupId>
     <artifactId>mybatis-plus-ext</artifactId>
     <packaging>pom</packaging>
-    <version>3.5.17-EXT1006</version>
+    <version>3.5.17-EXT1007</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>mybatis-plus框架的拓展包，基于spring
@@ -41,7 +41,7 @@
         <spring-boot3.version>3.5.9</spring-boot3.version>
         <spring-boot4.version>4.0.1</spring-boot4.version>
         <mybatis-plus.version>3.5.17</mybatis-plus.version>
-        <auto-table.version>2.7.0</auto-table.version>
+        <auto-table.version>2.7.1</auto-table.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
     
         <!-- maven 配置-->
@@ -83,6 +83,7 @@
         <module>mybatis-plus-ext-autofill</module>
         <!-- 测试模块暂时排除 -->
         <!-- <module>test-autotable-migration</module> -->
+        <!-- <module>test-autotable-migration-sb4</module> -->
         <!-- <module>mybatis-plus-ext-test</module> -->
     </modules>
 
